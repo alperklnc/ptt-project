@@ -215,7 +215,7 @@ def main():
 
             ##second combine two angle
             inside=math.tan(math.radians(right_shoulder_angle))**2+math.tan(math.radians(right_shoulder_angle_back))**2
-            angle3D= math.degrees(math.atan(math.sqrt(inside))
+            angle3D= math.degrees(math.atan(math.sqrt(inside)))
             # Write the calculated number of frames per second on the frame.
             cv2.putText(frame, 'FPS: {}'.format(int(frames_per_second)), (10, 30), cv2.FONT_HERSHEY_PLAIN, 2,
                         (0, 255, 0), 3)
