@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 def detectPose(image, pose, display=True):
     # Initializing mediapipe pose class.
     mp_pose = mp.solutions.pose
+
     # Setting up the Pose function.
     # Initializing mediapipe drawing class, useful for annotation.
     mp_drawing = mp.solutions.drawing_utils
@@ -66,6 +67,67 @@ def detectPose(image, pose, display=True):
         # Return the output image and the found landmarks.
         return output_image, landmarks
 
+
+def detectPose2(image, pose, display=True):
+    # Initializing mediapipe pose class.
+    mp_pose = mp.solutions.pose
+
+    # Setting up the Pose function.
+    # Initializing mediapipe drawing class, useful for annotation.
+    mp_drawing = mp.solutions.drawing_utils
+
+    # Create a copy of the input image.
+    output_image = image.copy()
+
+    # Convert the image from BGR into RGB format.
+    imageRGB = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    # Perform the Pose Detection.
+    results = pose.process(imageRGB)
+
+    # Retrieve the height and width of the input image.
+    height, width, _ = image.shape
+
+    # Initialize a list to store the detected landmarks.
+    landmarks = []
+
+    # Check if any landmarks are detected.
+    if results.pose_landmarks:
+
+        # Draw Pose landmarks on the output image.
+        mp_drawing.draw_landmarks(image=output_image, landmark_list=results.pose_landmarks,
+                                  connections=mp_pose.POSE_CONNECTIONS)
+
+        # Iterate over the detected landmarks.
+        for landmark in results.pose_landmarks.landmark:
+            # Append the landmark into the list.
+            landmarks.append((int(landmark.x * width), int(landmark.y * height),
+                              (landmark.z * width)))
+
+    # Check if the original input image and the resultant image are specified to be displayed.
+    if display:
+
+        # Display the original input image and the resultant image.
+        plt.figure(figsize=[22, 22])
+        plt.subplot(121);
+        plt.imshow(image[:, :, ::-1]);
+        plt.title("Original Image");
+        plt.axis('off');
+        plt.subplot(122);
+        plt.imshow(output_image[:, :, ::-1]);
+        plt.title("Output Image");
+        plt.axis('off');
+        plt.show();
+
+        ##this cause error
+        # Also Plot the Pose landmarks in 3D.
+        mp_drawing.plot_landmarks(results.pose_world_landmarks, mp_pose.POSE_CONNECTIONS)
+
+    # Otherwise
+    else:
+
+        # Return the output image and the found landmarks.
+        return output_image, landmarks
 
 def calculateAngle2D(landmark1, landmark2, landmark3):
 
@@ -128,6 +190,17 @@ def main():
     # Setup Pose function for video.
     pose_video = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5)  # , model_complexity=1)
 
+    ## second pose naming
+    mp_pose2 = mp.solutions.pose
+    # Setting up the Pose function.
+    pose2 = mp_pose2.Pose(static_image_mode=True, min_detection_confidence=0.3)  # , model_complexity=2)
+    # Initializing mediapipe drawing class, useful for annotation.
+    mp_drawing2 = mp.solutions.drawing_utils
+
+    ## real time
+    # Setup Pose function for video.
+    pose_video2 = mp_pose2.Pose(static_image_mode=False, min_detection_confidence=0.5)  # , model_complexity=1)
+
     # Initialize the VideoCapture object to read from the webcam.
     video = cv2.VideoCapture(0)
 
@@ -180,14 +253,14 @@ def main():
         frame = cv2.resize(frame, (int(frame_width * (640 / frame_height)), 640))
 
         # Resize second
-        frame2 = cv2.resize(frame, (int(frame2_width * (640 / frame2_height)), 640))
+        frame2 = cv2.resize(frame2, (int(frame2_width * (640 / frame2_height)), 640))
 
         # Perform Pose landmark detection.
         frame, landmarks = detectPose(frame, pose_video, display=False)
 
         ##second
         # Perform Pose landmark detection.
-        frame2, landmarks2 = detectPose(frame2, pose_video, display=False)
+        frame2, landmarks2 = detectPose(frame2, pose_video2, display=False)
 
         ##### Calculate angle
         right_shoulder_angle=0
@@ -199,7 +272,7 @@ def main():
             print("left shoulder angle " + str(right_shoulder_angle))
         ##second
         right_shoulder_angle_back = 0
-        if landmarks:
+        if landmarks2:
             right_shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose.PoseLandmark.RIGHT_HIP.value],
                                               landmarks2[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
                                               landmarks2[mp_pose.PoseLandmark.RIGHT_ELBOW.value])
@@ -216,6 +289,10 @@ def main():
             ##second combine two angle
             inside=math.tan(math.radians(right_shoulder_angle))**2+math.tan(math.radians(right_shoulder_angle_back))**2
             angle3D= math.degrees(math.atan(math.sqrt(inside)))
+
+            if right_shoulder_angle>90 and right_shoulder_angle_back>90:
+                angle3D= 180 -angle3D
+            
             # Write the calculated number of frames per second on the frame.
             cv2.putText(frame, 'FPS: {}'.format(int(frames_per_second)), (10, 30), cv2.FONT_HERSHEY_PLAIN, 2,
                         (0, 255, 0), 3)
@@ -227,9 +304,10 @@ def main():
         time1 = time2
 
         combination = np.hstack((frame, frame2))
+
         # Display the frame.
         cv2.imshow('Pose Detection', combination)
-
+        #cv2.imshow('Pose Detection 2', frame2)
         # Wait until a key is pressed.
         # Retreive the ASCII code of the key pressed
         k = cv2.waitKey(1) & 0xFF
