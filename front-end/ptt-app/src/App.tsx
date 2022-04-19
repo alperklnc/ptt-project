@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./components/login-page/Login";
-import DoctorPage from "./components/doctor-page/DoctorPage";
+import Login from "./views/login-page/Login";
+import DoctorPage from "./views/doctor-page/DoctorPage";
 
 function App() {
   return (
