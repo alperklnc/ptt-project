@@ -15,7 +15,7 @@ function Login() {
   return (
     <div className="App">
       <Grid container style={{ minHeight: "100vh" }}>
-        <Grid item xs={12} sm={6} md={8}>
+        <Grid item xs={12} sm={6} md={7}>
           <img
             className="Login-Image"
             src="https://www.care2curephysiotherapy.com/wp-content/uploads/2019/09/physiotherapy_techniques.jpg"
@@ -27,7 +27,7 @@ function Login() {
           item
           xs={12}
           sm={6}
-          md={4}
+          md={5}
           alignItems="center"
           direction="column"
           justifyContent="space-between"

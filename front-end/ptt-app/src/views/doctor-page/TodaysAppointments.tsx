@@ -5,6 +5,9 @@ import HeaderContainer from "./HeaderContainer";
 
 import "./DoctorPage.css";
 
+const ScreenSizeDetector = require('screen-size-detector');
+const screen = new ScreenSizeDetector();
+
 interface Props {
   patientName1: string;
   patientName2: string;
@@ -23,10 +26,10 @@ const TodaysAppointments: React.FC<Props> = (props) => {
       <Grid
         container
         item
-        direction="column"
-        height="550px"
+        direction="row"
+        height={screen.height/4}
         style={{
-          padding: "40px",
+          padding: screen.width/64,
         }}
       >
         <PatientHolder

@@ -8,11 +8,16 @@ import NavBar from "../nav-bar/NavBar";
 import TodaysAppointments from "./TodaysAppointments";
 import NextPatient from "./NextPatient";
 
+const ScreenSizeDetector = require('screen-size-detector');
+const screen = new ScreenSizeDetector();
+
 export default function DoctorPage() {
   return (
     <div>
       <NavBar doctorName="Dr. Strange" color="#4EC6C7" />
-      <div style={{ padding: "50px 100px" }}>
+      <div style={{ padding: screen.width/30,
+                    paddingLeft:screen.width/30,
+                    paddingRight:screen.width/30 }}>
         <Grid
           container
           style={{

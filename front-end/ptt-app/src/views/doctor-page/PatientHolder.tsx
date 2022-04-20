@@ -2,6 +2,9 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
+const ScreenSizeDetector = require('screen-size-detector');
+const screen = new ScreenSizeDetector();
+
 interface PatientHolderProps {
   patientName: string;
   hour: string;
@@ -20,7 +23,7 @@ const PatientHolder: React.FC<PatientHolderProps> = (props) => {
         style={{
           display: "flex",
           flexDirection: "row",
-          marginBottom: "10px",
+          marginBottom: screen.height/70,
           border: "0px solid",
           backgroundColor: "transparent",
         }}
@@ -31,8 +34,8 @@ const PatientHolder: React.FC<PatientHolderProps> = (props) => {
             flexDirection: "column",
             justifyContent: "center",
             backgroundColor: props.color,
-            height: props.height,
-            width: "120px",
+            height: screen.height/22,
+            width: screen.width/20,
           }}
         >
           <Typography
@@ -41,7 +44,7 @@ const PatientHolder: React.FC<PatientHolderProps> = (props) => {
               flexDirection: "column",
               textAlign: "center",
               color: "white",
-              fontSize: props.fontSize,
+              fontSize: screen.width/90,
             }}
           >
             {props.hour}
@@ -52,10 +55,10 @@ const PatientHolder: React.FC<PatientHolderProps> = (props) => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            border: "4px solid #4EC6C7",
+            border: "2px solid #4EC6C7",
             borderColor: props.color,
-            height: props.height,
-            width: props.width,
+            height: screen.height/22,
+            width: screen.width/3.5,
           }}
         >
           <Typography
@@ -63,8 +66,8 @@ const PatientHolder: React.FC<PatientHolderProps> = (props) => {
               display: "flex",
               flexDirection: "column",
               textAlign: "left",
-              paddingLeft: "20px",
-              fontSize: props.fontSize,
+              paddingLeft: "15px",
+              fontSize: screen.width/90,
             }}
           >
             {props.patientName}

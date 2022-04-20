@@ -8,37 +8,17 @@
   font-size: 20px;
 }
 
-.Login-Container {
-  display: flex;
-  flex-direction: column;
-
-  max-width: 400px;
-  min-width: 400px;
-  padding: 40px;
-  background-color: white;
-  box-shadow: 10px 10px 10px lightgray;
-}
-
-.header-continaer {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  background-color: #4ec6c7 !important;
-  height: 60px !important;
-  width: 100%;
-}
-
 .Header {
-  font-size: 26px !important;
+  font-size: 2vw;
   font-weight: bold !important;
   text-align: left;
-  padding: 20px;
+  padding: 3vw;
   color: white;
 }
 
 .Button {
   background-color: #4ec6c7 !important;
-  font-size: 18px !important;
+  font-size: 1.5vw;
   margin: 40px !important;
   padding: 8px;
   border-radius: 10px !important;
@@ -57,23 +37,20 @@
 
 .Text {
   padding: 8px 16px;
-  font-size: 20px !important;
-  font-weight: 550 !important;
+  font-size: 1.5vw;
 }
 
 .Patient-Name {
-  font-size: 22px !important;
+  font-size: 1.8vw;
   text-align: center;
 }
 
 .progress {
   display: flex;
   overflow: hidden;
-  height: 40px !important;
-  width: 400px;
   border-radius: 0.25rem;
   margin-left: 16px;
-  font-size: 20px !important;
+  font-size: 1.2vw !important;
   background-color: #e9ecef;
   color: #4ec6c7 !important;
 }

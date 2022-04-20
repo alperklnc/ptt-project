@@ -8,6 +8,10 @@ import AvatarImage from "../../patient1.jpg";
 import "./DoctorPage.css";
 
 import HeaderContainer from "./HeaderContainer";
+import { height } from "@mui/system";
+
+const ScreenSizeDetector = require('screen-size-detector');
+const screen = new ScreenSizeDetector();
 
 interface Props {
   patientName: string;
@@ -24,14 +28,14 @@ const NextPatient: React.FC<Props> = (props) => {
   return (
     <div className="box-shadow">
       <HeaderContainer title="Sıradaki Hasta" />
-      <Grid container direction="row" height="300px">
+      <Grid container direction="row" height={screen.height/2.45}>
         <Grid
           container
           item
           sm={8}
           direction="column"
           style={{
-            padding: "30px",
+            padding: screen.width/64,
           }}
         >
           <Typography className="Text">08:30 - 1 Nisan 2022</Typography>
@@ -44,6 +48,10 @@ const NextPatient: React.FC<Props> = (props) => {
             now={props.progress}
             label={`${props.progress}%`}
             variant="progress-bg"
+            style={{
+              width:screen.width/5,
+              height:screen.height/18
+            }}
           />
         </Grid>
         <Grid
@@ -64,7 +72,7 @@ const NextPatient: React.FC<Props> = (props) => {
             <Avatar
               alt="Hasta 1"
               src={AvatarImage}
-              sx={{ width: 192, height: 192 }}
+              sx={{ width: screen.width/10, height: screen.width/10 }}
             />
           </div>
           <div style={{ marginBottom: "30px" }}>

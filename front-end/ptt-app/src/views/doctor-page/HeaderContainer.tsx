@@ -3,6 +3,9 @@ import Typography from "@mui/material/Typography";
 
 import "./DoctorPage.css";
 
+const ScreenSizeDetector = require('screen-size-detector');
+const screen = new ScreenSizeDetector();
+
 interface Props {
   title: string;
   color?: string;
@@ -19,7 +22,7 @@ const HeaderContainer: React.FC<Props> = (props) => {
         justifyContent: "center",
         backgroundColor: props.backgroundColor,
         color: props.color,
-        height: props.height,
+        height: screen.height/12,
       }}
     >
       <Typography className="Header">{props.title}</Typography>

@@ -58,16 +58,19 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     transition: theme.transitions.create("width"),
     width: "100%",
     [theme.breakpoints.up("md")]: {
-      width: "30ch",
+      width: "25ch",
     },
   },
 }));
 
 const StyledIconButton = styled(IconButton)((theme) => ({
-  fontSize: "20px",
-  padding: "30px",
+  fontSize: screen.width/80,
+  padding: screen.width/70,
   "&:hover": { backgroundColor: "transparent" },
 }));
+
+const ScreenSizeDetector = require('screen-size-detector');
+const screen = new ScreenSizeDetector();
 
 const NavBar: React.FC<Props> = (props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -187,9 +190,9 @@ const NavBar: React.FC<Props> = (props) => {
           style={{
             backgroundColor: "#ffffff",
             color: props.color,
-            minHeight: "80px",
-            paddingLeft: "120px",
-            paddingRight: "120px",
+            minHeight: screen.height/10,
+            paddingLeft: screen.width/16,
+            paddingRight: screen.width/16,
           }}
         >
           <IconButton
@@ -224,14 +227,14 @@ const NavBar: React.FC<Props> = (props) => {
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <StyledIconButton
               aria-label="home page"
-              size="large"
+              size="medium"
               color="inherit"
               onClick={handleHomePageClick}
             >
               Ana Sayfa
             </StyledIconButton>
             <StyledIconButton
-              size="large"
+              size="small"
               color="inherit"
               onClick={handleAppointmentsClick}
             >
@@ -249,7 +252,7 @@ const NavBar: React.FC<Props> = (props) => {
                 style={{
                   backgroundColor: props.color,
                   color: "white",
-                  fontSize: "20px",
+                  fontSize: screen.width/75,
                   padding: "8px 30px",
                   borderRadius: "10px",
                 }}
