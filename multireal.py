@@ -223,6 +223,13 @@ def main():
 
     # Initialize a variable to store the time of the previous frame.
     time1 = 0
+    angle_list = []
+    local_max = 0
+    total_max =[]
+    for i in range(100):
+        total_max.append(0)
+    count=0
+
 
     # Iterate until the video is accessed successfully.
     while video.isOpened() and video2.isOpened():
@@ -265,18 +272,19 @@ def main():
         ##### Calculate angle
         right_shoulder_angle=0
 
+
         if landmarks:
             right_shoulder_angle = calculateAngle2D(landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value],
                                               landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
                                               landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value])
-            print("left shoulder angle " + str(right_shoulder_angle))
+            #print("left shoulder angle side " + str(right_shoulder_angle))
         ##second
         right_shoulder_angle_back = 0
         if landmarks2:
-            right_shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose.PoseLandmark.RIGHT_HIP.value],
-                                              landmarks2[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
-                                              landmarks2[mp_pose.PoseLandmark.RIGHT_ELBOW.value])
-            print("left shoulder angle " + str(right_shoulder_angle_back))
+            right_shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.RIGHT_HIP.value],
+                                              landmarks2[mp_pose2.PoseLandmark.RIGHT_SHOULDER.value],
+                                              landmarks2[mp_pose2.PoseLandmark.RIGHT_ELBOW.value])
+            #print("left shoulder angle front " + str(right_shoulder_angle_back))
 
         # Set the time for this frame to the current time.
         time2 = time()
@@ -285,6 +293,12 @@ def main():
         if (time2 - time1) > 0:
             # Calculate the number of frames per second.
             frames_per_second = 1.0 / (time2 - time1)
+
+            ##
+            if right_shoulder_angle < 90.5 and right_shoulder_angle > 89.5:
+                right_shoulder_angle = 89
+            if right_shoulder_angle_back < 90.5 and right_shoulder_angle_back > 89.5:
+                right_shoulder_angle_back = 89
 
             ##second combine two angle
             inside=math.tan(math.radians(right_shoulder_angle))**2+math.tan(math.radians(right_shoulder_angle_back))**2
@@ -298,7 +312,20 @@ def main():
                         (0, 255, 0), 3)
             cv2.putText(frame, 'Left shoulder: {}'.format(int(angle3D)), (200, 30), cv2.FONT_HERSHEY_PLAIN, 2,
                         (0, 255, 0), 3)
+            angle_list.append(angle3D)
+            #print("total angle  "+str(angle3D))
 
+            if angle3D > local_max and angle3D>20:
+                local_max = angle3D
+                total_max[count] = local_max
+            if angle3D < 25 and local_max >35:
+                local_max = 0
+                count += 1
+
+            #plt.plot(total_max);
+            #plt.show()
+            #plt.close()
+            
         # Update the previous frame time to this frame time.
         # As this frame will become previous frame in next iteration.
         time1 = time2
@@ -314,6 +341,7 @@ def main():
 
         # Check if 'ESC' is pressed.
         if (k == 27):
+            print(total_max)
             # Break the loop.
             break
 
