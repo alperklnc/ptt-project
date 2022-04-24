@@ -68,67 +68,6 @@ def detectPose(image, pose, display=True):
         return output_image, landmarks
 
 
-def detectPose2(image, pose, display=True):
-    # Initializing mediapipe pose class.
-    mp_pose = mp.solutions.pose
-
-    # Setting up the Pose function.
-    # Initializing mediapipe drawing class, useful for annotation.
-    mp_drawing = mp.solutions.drawing_utils
-
-    # Create a copy of the input image.
-    output_image = image.copy()
-
-    # Convert the image from BGR into RGB format.
-    imageRGB = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-    # Perform the Pose Detection.
-    results = pose.process(imageRGB)
-
-    # Retrieve the height and width of the input image.
-    height, width, _ = image.shape
-
-    # Initialize a list to store the detected landmarks.
-    landmarks = []
-
-    # Check if any landmarks are detected.
-    if results.pose_landmarks:
-
-        # Draw Pose landmarks on the output image.
-        mp_drawing.draw_landmarks(image=output_image, landmark_list=results.pose_landmarks,
-                                  connections=mp_pose.POSE_CONNECTIONS)
-
-        # Iterate over the detected landmarks.
-        for landmark in results.pose_landmarks.landmark:
-            # Append the landmark into the list.
-            landmarks.append((int(landmark.x * width), int(landmark.y * height),
-                              (landmark.z * width)))
-
-    # Check if the original input image and the resultant image are specified to be displayed.
-    if display:
-
-        # Display the original input image and the resultant image.
-        plt.figure(figsize=[22, 22])
-        plt.subplot(121);
-        plt.imshow(image[:, :, ::-1]);
-        plt.title("Original Image");
-        plt.axis('off');
-        plt.subplot(122);
-        plt.imshow(output_image[:, :, ::-1]);
-        plt.title("Output Image");
-        plt.axis('off');
-        plt.show();
-
-        ##this cause error
-        # Also Plot the Pose landmarks in 3D.
-        mp_drawing.plot_landmarks(results.pose_world_landmarks, mp_pose.POSE_CONNECTIONS)
-
-    # Otherwise
-    else:
-
-        # Return the output image and the found landmarks.
-        return output_image, landmarks
-
 def calculateAngle2D(landmark1, landmark2, landmark3):
 
     # Get the required landmarks coordinates.
@@ -226,8 +165,10 @@ def main():
     angle_list = []
     local_max = 0
     total_max =[]
-    for i in range(100):
+    total_hip = []
+    for i in range(20):
         total_max.append(0)
+        total_hip.append(0)
     count=0
 
 
@@ -271,12 +212,15 @@ def main():
 
         ##### Calculate angle
         right_shoulder_angle=0
-
+        hip_angle=0
 
         if landmarks:
             right_shoulder_angle = calculateAngle2D(landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value],
                                               landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
                                               landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value])
+            hip_angle = calculateAngle2D(landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
+                                              landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value],
+                                              landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value])
             #print("left shoulder angle side " + str(right_shoulder_angle))
         ##second
         right_shoulder_angle_back = 0
@@ -310,16 +254,20 @@ def main():
             # Write the calculated number of frames per second on the frame.
             cv2.putText(frame, 'FPS: {}'.format(int(frames_per_second)), (10, 30), cv2.FONT_HERSHEY_PLAIN, 2,
                         (0, 255, 0), 3)
-            cv2.putText(frame, 'Left shoulder: {}'.format(int(angle3D)), (200, 30), cv2.FONT_HERSHEY_PLAIN, 2,
-                        (0, 255, 0), 3)
+            cv2.putText(frame, 'Hip angle: {}'.format(int(hip_angle)), (200, 30), cv2.FONT_HERSHEY_PLAIN, 2,
+                       (0, 255, 0), 3)
+            #cv2.putText(frame, 'Left shoulder: {}'.format(int(angle3D)), (200, 30), cv2.FONT_HERSHEY_PLAIN, 2,
+            #            (0, 255, 0), 3)
             angle_list.append(angle3D)
             #print("total angle  "+str(angle3D))
 
             if angle3D > local_max and angle3D>20:
                 local_max = angle3D
-                total_max[count] = local_max
+                total_max[count] = int(local_max)
+                total_hip[count] = hip_angle
             if angle3D < 25 and local_max >35:
                 local_max = 0
+                print("hip angle "+str(hip_angle))
                 count += 1
 
             #plt.plot(total_max);
@@ -341,7 +289,10 @@ def main():
 
         # Check if 'ESC' is pressed.
         if (k == 27):
+            print("total arm angle")
             print(total_max)
+            print("hip angles")
+            print(total_hip)
             # Break the loop.
             break
 
