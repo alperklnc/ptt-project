@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { Button, Grid, TextField } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import NavBar from "../nav-bar/NavBar";
 
 import "./NewPatient.css";
@@ -30,7 +32,7 @@ export default function NewPatient() {
             display: "flex",
             flexDirection: "column",
             backgroundColor: "#FDFDFD",
-            padding: "3vh",
+            padding: "4vh",
             boxShadow: "10px 10px 10px #E8E8E8",
           }}
         >
@@ -42,17 +44,59 @@ export default function NewPatient() {
           >
             <Typography
               style={{
-                fontSize: "1.2vw",
+                fontSize: "1.3vw",
               }}
             >
               Yeni Hasta Kayıt
             </Typography>
             <Divider />
-            <TextField margin="normal" label="Ad" variant="standard" />
-            <TextField margin="normal" label="Soyad" variant="standard" />
-            <TextField margin="normal" label="Mail" variant="standard" />
-            <TextField margin="normal" label="Telefon" variant="standard" />
-            <TextField margin="normal" label="Tedavi" variant="standard" />
+            <TextField label="Ad" variant="standard" />
+            <TextField label="Soyad" variant="standard" />
+            <TextField label="Mail" variant="standard" />
+            <TextField label="Telefon" variant="standard" />
+            <Grid>
+              <Typography
+                style={{
+                  fontSize: "1vw",
+                  marginTop: "3vh",
+                }}
+              >
+                Donuk Omuz Egzersizleri
+              </Typography>
+              <Divider />
+              <FormGroup>
+                <FormControlLabel
+                  control={<Checkbox defaultChecked />}
+                  label="Makara"
+                />
+                <FormControlLabel
+                  control={<Checkbox defaultChecked />}
+                  label="Sopa"
+                />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="Omuz İzometrik"
+                />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="Omuz Egzersiz Lastiği"
+                />
+                <FormControlLabel control={<Checkbox />} label="Top" />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="Duvarda Kaydırma"
+                />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="Omuz Serbest Ağırlık"
+                />
+                <FormControlLabel
+                  control={<Checkbox defaultChecked />}
+                  label="Codman"
+                />
+                <FormControlLabel control={<Checkbox />} label="Germe" />
+              </FormGroup>
+            </Grid>
           </div>
           <Button
             type="submit"
