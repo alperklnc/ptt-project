@@ -98,7 +98,7 @@ const NavBar: React.FC<Props> = (props) => {
   };
 
   const handleHomePageClick = () => {
-    window.location.href = "https://www.kuh.ku.edu.tr/";
+    window.location.href = "/doctor-page";
   };
   const handleAppointmentsClick = () => {
     window.location.href = "https://www.kuh.ku.edu.tr/";
@@ -107,7 +107,7 @@ const NavBar: React.FC<Props> = (props) => {
     window.location.href = "https://www.kuh.ku.edu.tr/";
   };
   const handleNewPatientClick = () => {
-    window.location.href = "https://www.kuh.ku.edu.tr/randevu-al";
+    window.location.href = "/new-patient";
   };
 
   const menuId = "primary-search-account-menu";

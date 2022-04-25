@@ -10,7 +10,7 @@ import "./DoctorPage.css";
 import HeaderContainer from "./HeaderContainer";
 import { height } from "@mui/system";
 
-const ScreenSizeDetector = require('screen-size-detector');
+const ScreenSizeDetector = require("screen-size-detector");
 const screen = new ScreenSizeDetector();
 
 interface Props {
@@ -22,20 +22,19 @@ interface Props {
 }
 
 const NextPatient: React.FC<Props> = (props) => {
-  const startSession = () =>
-    (window.location.href = "https://www.kuh.ku.edu.tr/");
+  const startSession = () => (window.location.href = "/patient-page");
 
   return (
     <div className="box-shadow">
       <HeaderContainer title="Sıradaki Hasta" />
-      <Grid container direction="row" height={screen.height/2.45}>
+      <Grid container direction="row" height={screen.height / 2.45}>
         <Grid
           container
           item
           sm={8}
           direction="column"
           style={{
-            padding: screen.width/64,
+            padding: screen.width / 64,
           }}
         >
           <Typography className="Text">08:30 - 1 Nisan 2022</Typography>
@@ -49,8 +48,8 @@ const NextPatient: React.FC<Props> = (props) => {
             label={`${props.progress}%`}
             variant="progress-bg"
             style={{
-              width:screen.width/5,
-              height:screen.height/18
+              width: screen.width / 5,
+              height: screen.height / 18,
             }}
           />
         </Grid>
@@ -72,7 +71,7 @@ const NextPatient: React.FC<Props> = (props) => {
             <Avatar
               alt="Hasta 1"
               src={AvatarImage}
-              sx={{ width: screen.width/10, height: screen.width/10 }}
+              sx={{ width: screen.width / 10, height: screen.width / 10 }}
             />
           </div>
           <div style={{ marginBottom: "30px" }}>
