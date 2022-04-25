@@ -10,7 +10,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/doctor-page" element={<DoctorPage />} />
-        <Route path="/new-patient" element={<DoctorPage />} />
+        <Route path="/new-patient" element={<NewPatient />} />
         <Route path="/patient-page" element={<PatientPage />} />
         <Route path="/" element={<NewPatient />} />
       </Routes>
