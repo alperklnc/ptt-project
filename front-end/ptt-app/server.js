@@ -1,62 +1,68 @@
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
 dotenv.config();
+import expres from "express";
+const app = expres();
 
-import express from "express";
-import { setupReactViews } from "express-tsx-views";
-import jws from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import passport from "passport";
+import flash from "express-flash";
+import session from "express-session";
 
-import path from "path";
-
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const app = express();
-app.use(express.json());
-
-const users = [
-  {
-    username: "admin",
-    mail: "admin@admin.com",
-    password: "admin",
-  },
-  {
-    username: "dr.strange",
-    mail: "strange@smth.com",
-    password: "strange",
-  },
-];
-
-const options = {
-  viewsDirectory: path.resolve(__dirname, "../src/views"),
-};
-
-setupReactViews(app, options);
-
-app.use(express.static(path.join(__dirname, "public")));
-
-app.get("/", (req, res, next) => {
-  res.render("Login");
+import initializePassport from "./passport-config.js";
+initializePassport(passport, (email) => {
+  users.find((user) => user.email === email);
 });
 
-/*
-app.get("/users", authenticateToken, (req, res) => {
-  res.json(users.filter((user) => user.username === req.user.name));
+const users = [];
+
+app.set("view engine", "ejs");
+app.use(expres.urlencoded({ extended: false }));
+app.use(flash());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get("/", (req, res) => {
+  res.render("index.ejs");
 });
 
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+app.get("/login", (req, res) => {
+  res.render("login.ejs");
+});
 
-  if (token == null) return res.sendStatus(401);
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true,
+  })
+);
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
-}
-*/
-app.listen(3000);
+app.get("/register", (req, res) => {
+  res.render("register.ejs");
+});
+
+app.post("/register", async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    users.push({
+      id: Date.now().toString(),
+      name: req.body.name,
+      email: req.body.email,
+      password: hashedPassword,
+    });
+    res.redirect("/login");
+  } catch {
+    res.redirect("register");
+  }
+  console.log(users);
+});
+
+app.listen(4000);

@@ -64,12 +64,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const StyledIconButton = styled(IconButton)((theme) => ({
-  fontSize: screen.width/80,
-  padding: screen.width/70,
+  fontSize: screen.width / 80,
+  padding: screen.width / 70,
   "&:hover": { backgroundColor: "transparent" },
 }));
 
-const ScreenSizeDetector = require('screen-size-detector');
+const ScreenSizeDetector = require("screen-size-detector");
 const screen = new ScreenSizeDetector();
 
 const NavBar: React.FC<Props> = (props) => {
@@ -190,9 +190,9 @@ const NavBar: React.FC<Props> = (props) => {
           style={{
             backgroundColor: "#ffffff",
             color: props.color,
-            minHeight: screen.height/10,
-            paddingLeft: screen.width/16,
-            paddingRight: screen.width/16,
+            minHeight: screen.height / 10,
+            paddingLeft: screen.width / 16,
+            paddingRight: screen.width / 16,
           }}
         >
           <IconButton
@@ -252,7 +252,7 @@ const NavBar: React.FC<Props> = (props) => {
                 style={{
                   backgroundColor: props.color,
                   color: "white",
-                  fontSize: screen.width/75,
+                  fontSize: screen.width / 75,
                   padding: "8px 30px",
                   borderRadius: "10px",
                 }}
