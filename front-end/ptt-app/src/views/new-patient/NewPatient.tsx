@@ -32,9 +32,6 @@ const NewPatient: React.FC = () => {
     const name = target.name;
     const value = target.type === "checkbox" ? target.checked : target.value;
 
-    console.log("Name: " + name);
-    console.log("Value: " + value);
-
     setPatient({ ...patient, [name]: value });
   };
 

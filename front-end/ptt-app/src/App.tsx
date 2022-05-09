@@ -35,7 +35,7 @@ const App: React.FC = () => {
 
       <div>
         <Routes>
-          <Route path="/" element={<TutorialsList />} />
+          <Route path="/" element={<Login />} />
           <Route path="/tutorials" element={<TutorialsList />} />
           <Route path="/add" element={<AddTutorial />} />
           <Route path="/tutorials/:id" element={<Tutorial />} />

@@ -1,15 +1,49 @@
-import React from "react";
+import React, { useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Grid, TextField, InputAdornment } from "@mui/material";
 import { AccountCircle, LockRounded } from "@mui/icons-material";
-import "./Login.css";
 
-function Login() {
+import "./Login.css";
+import ILoginData from "../../types/Login";
+import LoginDataService from "../../services/LoginService";
+
+const Login: React.FC = () => {
   const navigate = useNavigate();
 
-  const login = () => {
-    // This will navigate to second component
-    navigate("/doctor-page");
+  const initialLoginData = {
+    username: null,
+    email: "",
+    password: "",
+  };
+
+  const [loginData, setLoginData] = useState<ILoginData>(initialLoginData);
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+
+    setLoginData({ ...loginData, [name]: value });
+  };
+
+  const login = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+
+    var data = {
+      username: loginData.username,
+      email: loginData.email,
+      password: loginData.password,
+    };
+
+    console.log(data);
+    //navigate("/doctor-page");
+
+    LoginDataService.authenticate(data)
+      .then((response: any) => {
+        console.log(response.data);
+        // if(response) navigate("/doctor-page");
+      })
+      .catch((e: Error) => {
+        console.log(e);
+      });
   };
 
   return (
@@ -45,6 +79,8 @@ function Login() {
                   </InputAdornment>
                 ),
               }}
+              name="email"
+              onChange={handleInputChange}
             />
             <TextField
               margin="normal"
@@ -57,6 +93,8 @@ function Login() {
                   </InputAdornment>
                 ),
               }}
+              name="password"
+              onChange={handleInputChange}
             />
             <a
               className="Forgot-Password"
@@ -90,6 +128,6 @@ function Login() {
       </Grid>
     </div>
   );
-}
+};
 
 export default Login;
