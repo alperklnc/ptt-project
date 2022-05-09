@@ -3,7 +3,7 @@ export default interface IPatientData {
     lname: string,
     email: string,
     phone: string,
-    reqSession: number,
+    reqSession: string,
     session: number,
     recovery: number,
     makara: boolean,

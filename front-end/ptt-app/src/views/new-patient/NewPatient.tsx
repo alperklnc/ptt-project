@@ -17,7 +17,7 @@ const NewPatient: React.FC = () => {
     lname: "",
     email: "",
     phone: "",
-    reqSession: 0,
+    reqSession: "",
     session: 0,
     recovery: 0,
     makara: false,
