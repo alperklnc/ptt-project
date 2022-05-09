@@ -3,10 +3,7 @@ import { Grid } from "@mui/material";
 import PatientHolder from "./PatientHolder";
 import HeaderContainer from "./HeaderContainer";
 
-import "./DoctorPage.css";
-
-const ScreenSizeDetector = require('screen-size-detector');
-const screen = new ScreenSizeDetector();
+import "../css/style-sheet.css";
 
 interface Props {
   patientName1: string;
@@ -23,15 +20,7 @@ const TodaysAppointments: React.FC<Props> = (props) => {
   return (
     <div className="box-shadow">
       <HeaderContainer title="Bugünün Randevuları" />
-      <Grid
-        container
-        item
-        direction="row"
-        height={screen.height/4}
-        style={{
-          padding: screen.width/64,
-        }}
-      >
+      <Grid container item direction="row" height="25vh" className="Container">
         <PatientHolder
           patientName={props.patientName1}
           hour="08:30"

@@ -5,9 +5,9 @@ import Divider from "@mui/material/Divider";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import NavBar from "../nav-bar/NavBar";
+import NavBar from "../components/NavBar";
 
-import "./NewPatient.css";
+import "../css/NewPatient.css";
 import IPatientData from "../../types/Patient";
 import PatientDataService from "../../services/PatientService";
 

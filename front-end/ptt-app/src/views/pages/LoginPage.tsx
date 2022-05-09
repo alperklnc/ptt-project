@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Grid, TextField, InputAdornment } from "@mui/material";
 import { AccountCircle, LockRounded } from "@mui/icons-material";
 
-import "./Login.css";
+import "../css/Login.css";
 import ILoginData from "../../types/Login";
 import LoginDataService from "../../services/LoginService";
 
@@ -34,7 +34,7 @@ const Login: React.FC = () => {
     };
 
     console.log(data);
-    //navigate("/doctor-page");
+    navigate("/doctor-page");
 
     LoginDataService.authenticate(data)
       .then((response: any) => {
@@ -47,7 +47,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="App">
+    <div className="Page">
       <Grid container style={{ minHeight: "100vh" }}>
         <Grid item xs={12} sm={6} md={7}>
           <img
@@ -68,7 +68,7 @@ const Login: React.FC = () => {
         >
           <div />
           <div className="Login-Container" style={{ justifyContent: "center" }}>
-            <header className="Header">Hesabınıza Giriş Yapın</header>
+            <p className="Title">Hesabınıza Giriş Yapın</p>
             <TextField
               margin="normal"
               label="Kullanıcı Adı / e-mail"
@@ -113,8 +113,7 @@ const Login: React.FC = () => {
                 padding: "8px",
                 fontSize: "18px",
                 textTransform: "none",
-                minWidth: "250px",
-                maxWidth: "400px",
+                width: "15vw",
                 alignSelf: "center",
               }}
               variant="contained"

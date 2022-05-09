@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Grid } from "@mui/material";
 
-import NavBar from "../nav-bar/NavBar";
-import PatientInfo from "../patient-page/PatientInfo";
-import HeaderContainer from "../doctor-page/HeaderContainer";
+import NavBar from "../components/NavBar";
+import PatientInfo from "../components/PatientInfo";
+import HeaderContainer from "../components/HeaderContainer";
 
 export default function ExercisePage() {
   return (

@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Grid } from "@mui/material";
 
-import NavBar from "../nav-bar/NavBar";
-import TodaysAppointments from "./TodaysAppointments";
-import NextPatient from "./NextPatient";
+import NavBar from "../components/NavBar";
+import TodaysAppointments from "../components/TodaysAppointments";
+import NextPatient from "../components/NextPatient";
 
 export default function DoctorPage() {
   return (

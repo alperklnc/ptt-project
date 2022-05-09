@@ -5,13 +5,9 @@ import { ProgressBar } from "react-bootstrap";
 import Typography from "@mui/material/Typography";
 import AvatarImage from "../../patient1.jpg";
 
-import "./DoctorPage.css";
+import "../css/style-sheet.css";
 
 import HeaderContainer from "./HeaderContainer";
-import { height } from "@mui/system";
-
-const ScreenSizeDetector = require("screen-size-detector");
-const screen = new ScreenSizeDetector();
 
 interface Props {
   patientName: string;
@@ -27,20 +23,16 @@ const NextPatient: React.FC<Props> = (props) => {
   return (
     <div className="box-shadow">
       <HeaderContainer title="Sıradaki Hasta" />
-      <Grid container direction="row" height={screen.height / 2.45}>
-        <Grid
-          container
-          item
-          sm={8}
-          direction="column"
-          style={{
-            padding: screen.width / 64,
-          }}
-        >
-          <Typography className="Text">08:30 - 1 Nisan 2022</Typography>
-          <Typography className="Text">Donuk Omuz Tedavisi</Typography>
-          <Typography className="Text">Seans 3/12</Typography>
-          <Typography className="Text">Toplam İyileşme</Typography>
+      <Grid container direction="row" height="40vh">
+        <Grid container item sm={8} direction="column" className="Container">
+          <Typography className="NextPatient-Text">
+            08:30 - 1 Nisan 2022
+          </Typography>
+          <Typography className="NextPatient-Text">
+            Donuk Omuz Tedavisi
+          </Typography>
+          <Typography className="NextPatient-Text">Seans 3/12</Typography>
+          <Typography className="NextPatient-Text">Toplam İyileşme</Typography>
 
           <ProgressBar
             className="progress"
@@ -48,8 +40,8 @@ const NextPatient: React.FC<Props> = (props) => {
             label={`${props.progress}%`}
             variant="progress-bg"
             style={{
-              width: screen.width / 5,
-              height: screen.height / 18,
+              width: "22vw",
+              height: "4vh",
             }}
           />
         </Grid>
@@ -71,16 +63,20 @@ const NextPatient: React.FC<Props> = (props) => {
             <Avatar
               alt="Hasta 1"
               src={AvatarImage}
-              sx={{ width: screen.width / 10, height: screen.width / 10 }}
+              sx={{ width: "10vw", height: "10vw" }}
             />
           </div>
           <div style={{ marginBottom: "30px" }}>
-            <Typography className="Patient-Name">Hasta 1</Typography>
+            <Typography className="NextPatient-Name">Hasta 1</Typography>
           </div>
         </Grid>
       </Grid>
       <Grid container justifyContent="center">
-        <Button className="Button" variant="contained" onClick={startSession}>
+        <Button
+          className="NextPatient-Button"
+          variant="contained"
+          onClick={startSession}
+        >
           Seansı Başlat
         </Button>
       </Grid>

@@ -1,9 +1,13 @@
+.Page {
+  text-align: center;
+}
+
 .Login-Container {
   display: flex;
   flex-direction: column;
-  height: 450px;
-  
-  padding: 40px;
+  height: 60vh;
+  width: 30vw;
+  padding: 3vw;
   background-color: white;
   box-shadow: 10px 10px 10px lightgray;
 }
@@ -15,19 +19,11 @@
   box-shadow: 10px 10px 10px lightgray;
 }
 
-.Header {
-  font-size: 18px;
-  margin-bottom: 20px;
-  color: black;
+.Title {
+  padding-bottom: 3vh;
   text-align: left;
-}
-
-.Button {
-  background-color: #4ec6c7;
-}
-
-.App {
-  text-align: center;
+  font-size: 1.3vw;
+  font-weight: bold;
 }
 
 .Forgot-Password {

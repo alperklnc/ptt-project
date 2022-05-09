@@ -2,9 +2,6 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-const ScreenSizeDetector = require('screen-size-detector');
-const screen = new ScreenSizeDetector();
-
 interface PatientHolderProps {
   patientName: string;
   hour: string;
@@ -23,53 +20,34 @@ const PatientHolder: React.FC<PatientHolderProps> = (props) => {
         style={{
           display: "flex",
           flexDirection: "row",
-          marginBottom: screen.height/70,
+          marginBottom: "1vh",
           border: "0px solid",
           backgroundColor: "transparent",
         }}
       >
         <Box
+          className="PatientHolder-Box"
           style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
             backgroundColor: props.color,
-            height: screen.height/22,
-            width: screen.width/20,
+            width: "5vw",
           }}
         >
           <Typography
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              textAlign: "center",
-              color: "white",
-              fontSize: screen.width/90,
-            }}
+            className="PatientHolder-Text"
+            style={{ color: "white", textAlign: "center" }}
           >
             {props.hour}
           </Typography>
         </Box>
         <Box
+          className="PatientHolder-Box"
           style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
             border: "2px solid #4EC6C7",
             borderColor: props.color,
-            height: screen.height/22,
-            width: screen.width/3.5,
+            width: "30vw",
           }}
         >
-          <Typography
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              textAlign: "left",
-              paddingLeft: "15px",
-              fontSize: screen.width/90,
-            }}
-          >
+          <Typography className="PatientHolder-Text">
             {props.patientName}
           </Typography>
         </Box>

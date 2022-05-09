@@ -3,7 +3,6 @@ import { Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-import "./PatientPage.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function PatientInfo() {
