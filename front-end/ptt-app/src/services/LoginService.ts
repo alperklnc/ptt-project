@@ -4,6 +4,7 @@ import ILoginData from "../types/Login";
 const getAll = () => {
   return http.get<Array<ILoginData>>("/doctor");
 };
+
 const get = (name: string) => {
   return http.get<ILoginData>(`/doctor/${name}`);
 };

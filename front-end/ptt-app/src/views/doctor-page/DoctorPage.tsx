@@ -1,23 +1,21 @@
 import * as React from "react";
 import { Grid } from "@mui/material";
 
-import "./DoctorPage.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-
 import NavBar from "../nav-bar/NavBar";
 import TodaysAppointments from "./TodaysAppointments";
 import NextPatient from "./NextPatient";
-
-const ScreenSizeDetector = require('screen-size-detector');
-const screen = new ScreenSizeDetector();
 
 export default function DoctorPage() {
   return (
     <div>
       <NavBar doctorName="Dr. Strange" color="#4EC6C7" />
-      <div style={{ padding: screen.width/30,
-                    paddingLeft:screen.width/30,
-                    paddingRight:screen.width/30 }}>
+      <div
+        style={{
+          padding: "3vw",
+          paddingLeft: "3vw",
+          paddingRight: "3vw",
+        }}
+      >
         <Grid
           container
           style={{

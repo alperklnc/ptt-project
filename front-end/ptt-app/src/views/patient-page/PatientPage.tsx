@@ -2,13 +2,10 @@ import * as React from "react";
 import { Grid } from "@mui/material";
 
 import "./PatientPage.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 import NavBar from "../nav-bar/NavBar";
 import PatientInfo from "./PatientInfo";
 import ExerciseTable from "./ExerciseTable";
-const ScreenSizeDetector = require("screen-size-detector");
-const screen = new ScreenSizeDetector();
 
 export default function PatientPage() {
   return (
@@ -17,9 +14,9 @@ export default function PatientPage() {
       <PatientInfo />
       <div
         style={{
-          padding: screen.width / 30,
-          paddingLeft: screen.width / 30,
-          paddingRight: screen.width / 30,
+          padding: "3.5vw",
+          paddingLeft: "3.5vw",
+          paddingRight: "3.5vw",
         }}
       >
         <Grid
