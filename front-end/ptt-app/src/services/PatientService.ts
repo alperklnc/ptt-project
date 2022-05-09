@@ -1,25 +1,26 @@
 import http from "../http-common";
 import IPatientData from "../types/Patient";
+
 const getAll = () => {
-  return http.get<Array<IPatientData>>("/patients");
+  return http.get<Array<IPatientData>>("/patient");
 };
-const get = (name: string) => {
-  return http.get<IPatientData>(`/patients/${name}`);
+const get = (fname: string) => {
+  return http.get<IPatientData>(`/patient/${fname}`);
 };
 const create = (data: IPatientData) => {
-  return http.post<IPatientData>("/patients", data);
+  return http.post<IPatientData>("/patient", data);
 };
-const update = (name: string, data: IPatientData) => {
-  return http.put<any>(`/patients/${name}`, data);
+const update = (fname: string, data: IPatientData) => {
+  return http.put<any>(`/patient/${fname}`, data);
 };
-const remove = (name: string) => {
-  return http.delete<any>(`/patients/${name}`);
+const remove = (fname: string) => {
+  return http.delete<any>(`/patient/${fname}`);
 };
 const removeAll = () => {
-  return http.delete<any>(`/patients`);
+  return http.delete<any>(`/patient`);
 };
-const findByName = (name: string) => {
-  return http.get<Array<IPatientData>>(`/patients?title=${name}`);
+const findByName = (fname: string) => {
+  return http.get<Array<IPatientData>>(`/patient?fname=${fname}`);
 };
 const PatientService = {
   getAll,

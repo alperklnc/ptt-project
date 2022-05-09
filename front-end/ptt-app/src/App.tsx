@@ -14,7 +14,7 @@ import TutorialsList from "./components/TutorialsList";
 
 const App: React.FC = () => {
   return (
-   <div>
+    <div>
       <nav className="navbar navbar-expand navbar-dark bg-dark">
         <a href="/tutorials" className="navbar-brand">
           bezKoder
@@ -35,10 +35,10 @@ const App: React.FC = () => {
 
       <div>
         <Routes>
-          <Route path="/" element={<TutorialsList/>} />
-          <Route path="/tutorials" element={<TutorialsList/>} />
-          <Route path="/add" element={<AddTutorial/>} />
-          <Route path="/tutorials/:id" element={<Tutorial/>} />
+          <Route path="/" element={<TutorialsList />} />
+          <Route path="/tutorials" element={<TutorialsList />} />
+          <Route path="/add" element={<AddTutorial />} />
+          <Route path="/tutorials/:id" element={<Tutorial />} />
 
           <Route path="/doctor-page" element={<DoctorPage />} />
           <Route path="/patient-page" element={<PatientPage />} />
@@ -47,6 +47,6 @@ const App: React.FC = () => {
       </div>
     </div>
   );
-}
+};
 
 export default App;

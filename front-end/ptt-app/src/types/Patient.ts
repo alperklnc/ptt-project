@@ -1,6 +1,10 @@
 export default interface IPatientData {
-    id: number,
-    name: string,
+    fname: string,
+    lname: string,
     email: string,
+    phone: string,
+    reqSession: number,
     session: number,
+    recovery: number,
+    makara: boolean,
   }
