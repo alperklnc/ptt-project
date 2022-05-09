@@ -8,7 +8,7 @@ import ExerciseTable from "../components/ExerciseTable";
 export default function PatientPage() {
   return (
     <div>
-      <NavBar doctorName="Dr. Strange" color="#4EC6C7" />
+      <NavBar />
       <PatientInfo />
       <div
         style={{

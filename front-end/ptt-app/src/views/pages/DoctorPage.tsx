@@ -8,7 +8,7 @@ import NextPatient from "../components/NextPatient";
 export default function DoctorPage() {
   return (
     <div>
-      <NavBar doctorName="Dr. Strange" color="#4EC6C7" />
+      <NavBar />
       <div
         style={{
           padding: "3vw",

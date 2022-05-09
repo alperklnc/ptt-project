@@ -8,7 +8,7 @@ import HeaderContainer from "../components/HeaderContainer";
 export default function ExercisePage() {
   return (
     <div>
-      <NavBar doctorName="Dr. Strange" color="#4EC6C7" />
+      <NavBar />
       <PatientInfo />
       <div
         style={{

@@ -80,7 +80,7 @@ const NewPatient: React.FC = () => {
 
   return (
     <div>
-      <NavBar doctorName="Dr. Strange" color="#4EC6C7" />
+      <NavBar />
       {submitted ? (
         <div>
           <h4>You submitted successfully!</h4>

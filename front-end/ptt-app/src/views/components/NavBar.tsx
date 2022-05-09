@@ -18,7 +18,7 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 interface Props {
-  doctorName: string;
+  doctorName?: string;
   color?: string;
 }
 
@@ -288,6 +288,7 @@ const NavBar: React.FC<Props> = (props) => {
 };
 
 NavBar.defaultProps = {
+  doctorName: "Dr. Strange",
   color: "#4EC6C7",
 };
 
