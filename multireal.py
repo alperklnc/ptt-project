@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 from time import time
 import mediapipe as mp
-import matplotlib.pyplot as plt
+import sys
 
 mp_pose = mp.solutions.pose;
 mp_pose2 = mp.solutions.pose;
@@ -35,26 +35,8 @@ def detectPose(image, pose, display=True):
             # Append the landmark into the list.
             landmarks.append((int(landmark.x * width), int(landmark.y * height),
                               (landmark.z * width)))
-    # Check if the original input image and the resultant image are specified to be displayed.
-    if display:
-        # Display the original input image and the resultant image.
-        plt.figure(figsize=[22, 22])
-        plt.subplot(121);
-        plt.imshow(image[:, :, ::-1]);
-        plt.title("Original Image");
-        plt.axis('off');
-        plt.subplot(122);
-        plt.imshow(output_image[:, :, ::-1]);
-        plt.title("Output Image");
-        plt.axis('off');
-        plt.show();
-        ##this cause error
-        # Also Plot the Pose landmarks in 3D.
-        mp_drawing.plot_landmarks(results.pose_world_landmarks, mp_pose.POSE_CONNECTIONS)
-    # Otherwise
-    else:
-        # Return the output image and the found landmarks.
-        return output_image, landmarks
+    # Return the output image and the found landmarks.
+    return output_image, landmarks
 
 
 def calculateAngle2D(landmark1, landmark2, landmark3):
@@ -226,7 +208,7 @@ def Exer5(landmarks1, landmarks2):
                                                landmarks2[mp_pose2.PoseLandmark.LEFT_SHOULDER.value],
                                                landmarks2[mp_pose2.PoseLandmark.LEFT_ELBOW.value])
 
-    angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back);
+    angle3D = calculateAngle3D(360 - shoulder_angle, 360 - shoulder_angle_back);
     return angle3D, hip_angle
 
 
@@ -248,7 +230,7 @@ def Exer6(landmarks1, landmarks2):
                                      landmarks2[mp_pose.PoseLandmark.LEFT_HIP.value],
                                      landmarks2[mp_pose.PoseLandmark.LEFT_KNEE.value])
 
-    angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back);
+    angle3D = calculateAngle3D(360 - shoulder_angle, 360 - shoulder_angle_back);
     return angle3D, hip_angle
 
 
@@ -299,12 +281,19 @@ def Exer8(landmarks1, landmarks2):
 # ---------------------------------------------#
 
 def main():
-
+    """
+    Taking input inside
     side = input("Enter week side of patient! (RIGHT or LEFT)\n")
     print("\tweek side is ", side)
     exercise = int(input("Enter exercise number of patient!(1-4)\n"))
     print("\texercise number is " + str(exercise))
+    """
 
+    side = sys.argv[1]
+    exercise = int(sys.argv[2])
+
+    print("\tweek side is ", side)
+    print("\texercise number is " + str(exercise))
     # Setup Pose function for video.
     pose_video = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.5)  # , model_complexity=1)
 
@@ -382,7 +371,7 @@ def main():
                         (0, 255, 0), 3)
             # cv2.putText(frame, 'Hip angle: {}'.format(int(hip_angle)), (200, 30), cv2.FONT_HERSHEY_PLAIN, 2,
             #           (0, 255, 0), 3) '# exercise '+str(exercise)+' '+
-            cv2.putText(frame, side+' shoulder angle : {}'.format(int(angle3D)), (200, 30), cv2.FONT_HERSHEY_PLAIN, 2,
+            cv2.putText(frame, side + ' shoulder angle : {}'.format(int(angle3D)), (200, 30), cv2.FONT_HERSHEY_PLAIN, 2,
                         (0, 255, 0), 3)
             angle_list.append(angle3D)
             # print("total angle  "+str(angle3D))
@@ -422,5 +411,6 @@ def main():
     video.release()
     # Close the windows.
     cv2.destroyAllWindows()
+
 
 main()
