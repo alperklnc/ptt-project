@@ -378,6 +378,7 @@ def main():
 
             if angle3D > local_max and angle3D > 20:
                 local_max = angle3D
+                # this list should returned
                 total_max[count] = int(local_max)
                 total_hip[count] = hip_angle
 
@@ -386,6 +387,15 @@ def main():
                 print("hip angle " + str(hip_angle))
                 count += 1
 
+        # 10 repetation is done
+        if count == 10:
+            print("Ten exercise finished")
+            print("total arm angle")
+            print(total_max)
+            print("hip angles")
+            print(total_hip)
+            # Break the loop.
+            break
         # Update the previous frame time to this frame time.
         # As this frame will become previous frame in next iteration.
         time1 = time2
@@ -399,7 +409,8 @@ def main():
         k = cv2.waitKey(1) & 0xFF
 
         # Check if 'ESC' is pressed.
-        if (k == 27):
+
+        if k == 27:
             print("total arm angle")
             print(total_max)
             print("hip angles")
