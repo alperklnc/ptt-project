@@ -6,7 +6,12 @@ import Typography from "@mui/material/Typography";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/style-sheet.css";
 
-export default function PatientInfo() {
+interface Props {
+  type?: string;
+  session?: number;
+}
+
+const ExerciseInfo: React.FC<Props> = (props) => {
   return (
     <div>
       <Grid
@@ -25,19 +30,8 @@ export default function PatientInfo() {
         }}
       >
         <Grid item xs={3}>
-          <Typography className="PatientInfo-Text">Adar Bayan</Typography>
-        </Grid>
-        <Grid item xs={3}>
           <Typography className="PatientInfo-Text">
-            Donuk Omuz Tedavisi
-          </Typography>
-        </Grid>
-        <Grid item xs={3}>
-          <Typography className="PatientInfo-Text">Seans 3/10</Typography>
-        </Grid>
-        <Grid item xs={3}>
-          <Typography className="PatientInfo-Text">
-            Toplam İyileşme: %60
+            {props.type} Egzersizi
           </Typography>
         </Grid>
       </Grid>
@@ -49,4 +43,6 @@ export default function PatientInfo() {
       ></Box>
     </div>
   );
-}
+};
+
+export default ExerciseInfo;

@@ -5,6 +5,7 @@ import DoctorPage from "./views/pages/DoctorPage";
 import NewPatient from "./views/pages/NewPatient";
 import PatientPage from "./views/pages/PatientPage";
 import ExercisePage from "./views/pages/ExercisePage";
+import Test from "./test";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -14,7 +15,7 @@ const App: React.FC = () => {
     <div>
       <div>
         <Routes>
-          <Route path="/" element={<LoginPage />} />
+          <Route path="/" element={<Test />} />
           <Route path="/doctor-page" element={<DoctorPage />} />
           <Route path="/patient-page" element={<PatientPage />} />
           <Route path="/exercise-page" element={<ExercisePage />} />

@@ -7,12 +7,18 @@ import "../css/Login.css";
 import ILoginData from "../../types/Login";
 import LoginDataService from "../../services/LoginService";
 
+import APIService from "../../services/APIService";
+
+interface Props {
+  username: string;
+  password: string;
+}
+
 const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const initialLoginData = {
-    username: null,
-    email: "",
+    username: "",
     password: "",
   };
 
@@ -29,7 +35,6 @@ const Login: React.FC = () => {
 
     var data = {
       username: loginData.username,
-      email: loginData.email,
       password: loginData.password,
     };
 
@@ -38,10 +43,12 @@ const Login: React.FC = () => {
 
     LoginDataService.authenticate(data)
       .then((response: any) => {
+        console.log("then");
         console.log(response.data);
         // if(response) navigate("/doctor-page");
       })
       .catch((e: Error) => {
+        console.log("error");
         console.log(e);
       });
   };
@@ -79,7 +86,7 @@ const Login: React.FC = () => {
                   </InputAdornment>
                 ),
               }}
-              name="email"
+              name="username"
               onChange={handleInputChange}
             />
             <TextField

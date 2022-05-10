@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,6 +8,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+
+interface Props {
+  url: string;
+}
 
 function createData(
   type: string,
@@ -43,8 +48,10 @@ const StyledTableHeaderCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-export default function DenseTable() {
-  const onClick = () => (window.location.href = "http://github.com");
+const ExerciseTable: React.FC<Props> = (props) => {
+  const navigate = useNavigate();
+
+  const onClick = () => navigate(props.url);
 
   return (
     <TableContainer component={Paper}>
@@ -94,4 +101,6 @@ export default function DenseTable() {
       </Table>
     </TableContainer>
   );
-}
+};
+
+export default ExerciseTable;

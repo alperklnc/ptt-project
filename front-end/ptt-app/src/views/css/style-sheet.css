@@ -8,7 +8,7 @@
 
 .NextPatient-Text {
   padding: 8px 16px;
-  font-size: 1.2vw !important;
+  font-size: 1.1vw !important;
 }
 
 .NextPatient-Name {
@@ -39,19 +39,19 @@
   flex-direction: column;
   text-align: left;
   padding-left: 15px;
-  font-size: "2vh";
+  font-size: 1vw !important;
 }
 
 .Header-Container {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 8vh;
+  height: 7vh;
   background-color: #4EC6C7;
 }
 
 .Header-Text {
-  font-size: 1.4vw !important;
+  font-size: 1.2vw !important;
   font-weight: bold !important;
   text-align: left;
   padding: 3vw;
@@ -70,4 +70,18 @@
 
 .bg-progress-bg {
   background-color: #4ec6c7 !important;
+}
+
+.Image {
+  width: 80%;
+  height: 80%;
+  object-fit: cover;
+  align-self: center;
+  margin-top: 3vh;
+}
+
+.PatientInfo-Text {
+  text-align: center !important;
+  color: white !important;
+  font-size: 1.2vw !important;
 }

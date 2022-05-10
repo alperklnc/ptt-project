@@ -23,7 +23,7 @@ export default function PatientPage() {
             display: "flex",
           }}
         >
-          <ExerciseTable></ExerciseTable>
+          <ExerciseTable url="/exercise-page"></ExerciseTable>
         </Grid>
       </div>
     </div>

@@ -51,7 +51,6 @@ const NewPatient: React.FC = () => {
 
     console.log(data);
 
-    /*
     PatientDataService.create(data)
       .then((response: any) => {
         setPatient({
@@ -70,7 +69,6 @@ const NewPatient: React.FC = () => {
       .catch((e: Error) => {
         console.log(e);
       });
-      */
   };
 
   const newPatient = () => {

@@ -10,11 +10,12 @@ import "../css/style-sheet.css";
 import HeaderContainer from "./HeaderContainer";
 
 interface Props {
-  patientName: string;
-  progress: number;
-  session: number;
-  therapy: string;
-  date: string;
+  name?: string;
+  progress?: number;
+  reqSession?: number;
+  session?: number;
+  type?: string;
+  date?: string;
 }
 
 const NextPatient: React.FC<Props> = (props) => {
@@ -25,13 +26,11 @@ const NextPatient: React.FC<Props> = (props) => {
       <HeaderContainer title="Sıradaki Hasta" />
       <Grid container direction="row" height="40vh">
         <Grid container item sm={8} direction="column" className="Container">
+          <Typography className="NextPatient-Text">{props.date}</Typography>
+          <Typography className="NextPatient-Text">{props.type}</Typography>
           <Typography className="NextPatient-Text">
-            08:30 - 1 Nisan 2022
+            {props.session}/{props.reqSession}
           </Typography>
-          <Typography className="NextPatient-Text">
-            Donuk Omuz Tedavisi
-          </Typography>
-          <Typography className="NextPatient-Text">Seans 3/12</Typography>
           <Typography className="NextPatient-Text">Toplam İyileşme</Typography>
 
           <ProgressBar
@@ -67,7 +66,7 @@ const NextPatient: React.FC<Props> = (props) => {
             />
           </div>
           <div style={{ marginBottom: "30px" }}>
-            <Typography className="NextPatient-Name">Hasta 1</Typography>
+            <Typography className="NextPatient-Name">{props.name}</Typography>
           </div>
         </Grid>
       </Grid>

@@ -1,5 +1,4 @@
 export default interface ILoginData {
-    username?: string | null,
-    email: string,
+    username: string,
     password: string,
   }

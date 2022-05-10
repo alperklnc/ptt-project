@@ -5,7 +5,16 @@ import NavBar from "../components/NavBar";
 import TodaysAppointments from "../components/TodaysAppointments";
 import NextPatient from "../components/NextPatient";
 
-export default function DoctorPage() {
+interface Props {
+  name?: string;
+  type?: string;
+  reqSession?: number;
+  session?: number;
+  progress?: number;
+  date?: string;
+}
+
+const DoctorPage: React.FC<Props> = (props) => {
   return (
     <div>
       <NavBar />
@@ -24,11 +33,12 @@ export default function DoctorPage() {
         >
           <Grid container item xs={11.8} sm={5.8}>
             <NextPatient
-              patientName="Hasta X"
-              progress={60}
-              session={3}
-              therapy="Donuk Omuz Tedavisi"
-              date="08:30 - 1 Nisan 2022"
+              name={props.name}
+              progress={props.progress}
+              reqSession={props.reqSession}
+              session={props.session}
+              type={props.type}
+              date={props.date}
             />
           </Grid>
           <Grid xs={0.0} sm={0.2} />
@@ -48,4 +58,15 @@ export default function DoctorPage() {
       </div>
     </div>
   );
-}
+};
+
+DoctorPage.defaultProps = {
+  name: "Adar Bayan",
+  type: "Donuk Omuz",
+  reqSession: 10,
+  session: 3,
+  progress: 60,
+  date: "10 Mayıs 2022",
+};
+
+export default DoctorPage;
