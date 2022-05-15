@@ -1,4 +1,5 @@
 import * as React from "react";
+import Iframe from "react-iframe";
 import { Grid } from "@mui/material";
 
 import "../css/style-sheet.css";
@@ -6,6 +7,7 @@ import "../css/style-sheet.css";
 import NavBar from "../components/NavBar";
 import ExerciseInfo from "../components/ExerciseInfo";
 import HeaderContainer from "../components/HeaderContainer";
+import MyChart from "../components/MyChart";
 
 export default function ExercisePage() {
   return (
@@ -32,11 +34,7 @@ export default function ExercisePage() {
             direction="column"
           >
             <HeaderContainer title="Grafik" />
-            <img
-              className="Image"
-              src="https://media.springernature.com/lw685/springer-static/image/art%3A10.1038%2Fs41598-017-08350-x/MediaObjects/41598_2017_8350_Fig4_HTML.jpg"
-              alt="graph"
-            />
+            <MyChart />
           </Grid>
           <Grid xs={0.0} sm={0.2} />
 
@@ -48,12 +46,17 @@ export default function ExercisePage() {
             sm={5.8}
             direction="column"
           >
-            <HeaderContainer title="Pose" />
-            <img
-              className="Image"
-              src="https://google.github.io/mediapipe/images/mobile/pose_tracking_example.gif"
-              alt="pose"
-            />
+            <Grid item>
+              <HeaderContainer title="Pose" />
+            </Grid>
+            <Grid item>
+              <iframe
+                src="http://127.0.0.1:5000/"
+                width="100%"
+                height="400%"
+                id="pose"
+              ></iframe>
+            </Grid>
           </Grid>
         </Grid>
       </div>
