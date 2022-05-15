@@ -7,8 +7,6 @@ import "../css/Login.css";
 import ILoginData from "../../types/Login";
 import LoginDataService from "../../services/LoginService";
 
-import APIService from "../../services/APIService";
-
 interface Props {
   username: string;
   password: string;

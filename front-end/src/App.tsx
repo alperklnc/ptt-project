@@ -5,7 +5,6 @@ import DoctorPage from "./views/pages/DoctorPage";
 import NewPatientPage from "./views/pages/NewPatientPage";
 import PatientPage from "./views/pages/PatientPage";
 import ExercisePage from "./views/pages/ExercisePage";
-import Test from "./test";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
