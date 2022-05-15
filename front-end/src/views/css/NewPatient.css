@@ -1,0 +1,10 @@
+.container {
+    padding-top: 3vh;
+    width: 30vw;
+  }
+  
+  
+  .btn {
+    padding: 5px 10px;
+    cursor: pointer;
+  }
