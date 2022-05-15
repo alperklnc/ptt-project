@@ -1,5 +1,6 @@
 import cv2
 import mediapipe as mp
+import numpy as np
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
@@ -29,11 +30,17 @@ with mp_pose.Pose(
         image,
         results.pose_landmarks,
         mp_pose.POSE_CONNECTIONS,
-        landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style())
+        mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2),
+        mp_drawing.DrawingSpec(color=(245,66,230), thickness=15, circle_radius=10))
     #Skeleton
-    skeleton = cv2.subtract(image,image1)
+
+    skeleton = image-image1
+    white_skeleton = np.array(skeleton)
+    white_skeleton = np.where(white_skeleton>0,255,white_skeleton)
+
+    
     # Flip the image horizontally for a selfie-view display.
-    cv2.imshow('MediaPipe Pose', cv2.flip(skeleton, 1))
+    cv2.imshow('MediaPipe Pose', cv2.flip(white_skeleton, 1))
     if cv2.waitKey(5) & 0xFF == 27:
       break
 cap.release()
