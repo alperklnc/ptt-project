@@ -1,6 +1,8 @@
 import * as React from "react";
 import Typography from "@mui/material/Typography";
 
+import "../css/style-sheet.css";
+
 interface Props {
   title: string;
 }

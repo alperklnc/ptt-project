@@ -1,4 +1,5 @@
 import * as React from "react";
+import Iframe from "react-iframe";  
 import { Grid } from "@mui/material";
 
 import "../css/style-sheet.css";
@@ -48,12 +49,14 @@ export default function ExercisePage() {
             sm={5.8}
             direction="column"
           >
-            <HeaderContainer title="Pose" />
-            <img
-              className="Image"
-              src="https://google.github.io/mediapipe/images/mobile/pose_tracking_example.gif"
-              alt="pose"
-            />
+            <Grid item><HeaderContainer title="Pose" /></Grid>
+            <Grid item><iframe src="https://www.youtube.com/embed/xDMP3i36naA" 
+             width="100%"
+            height= "250%" 
+            allow='autoplay'
+            id="pose" 
+            
+            ></iframe></Grid>
           </Grid>
         </Grid>
       </div>
