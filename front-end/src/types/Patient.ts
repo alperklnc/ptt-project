@@ -8,6 +8,7 @@ export default interface IPatientData {
   patientDisease: string,
   reqSession: string,
   frequency: string,
+  sessionHour: string,
   exercises: Array<String>,
   session: number,
   recovery: number,

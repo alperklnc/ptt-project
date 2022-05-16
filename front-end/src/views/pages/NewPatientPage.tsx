@@ -38,6 +38,7 @@ const NewPatient: React.FC = () => {
     patientDisease: "",
     reqSession: "",
     frequency: "",
+    sessionHour: "",
     exercises: [],
     session: 0,
     recovery: 0,
@@ -88,6 +89,7 @@ const NewPatient: React.FC = () => {
       patientDisease: patient.patientDisease,
       reqSession: patient.reqSession,
       frequency: patient.frequency,
+      sessionHour: patient.sessionHour,
       exercises: patient.exercises,
       session: patient.session,
       recovery: patient.recovery,
@@ -106,6 +108,7 @@ const NewPatient: React.FC = () => {
           patientDisease: patient.patientDisease,
           reqSession: patient.reqSession,
           frequency: patient.frequency,
+          sessionHour: patient.sessionHour,
           exercises: patient.exercises,
           session: patient.session,
           recovery: patient.recovery,
@@ -192,6 +195,7 @@ const NewPatient: React.FC = () => {
                   label="Mail"
                   variant="standard"
                   name="patientEmail"
+                  placeholder="email@email.com"
                   value={patient.patientEmail}
                   onChange={handleInputChange}
                 />
@@ -268,6 +272,14 @@ const NewPatient: React.FC = () => {
                   variant="standard"
                   name="frequency"
                   value={patient.frequency}
+                  onChange={handleInputChange}
+                />
+                <TextField
+                  label="Seans Saati"
+                  variant="standard"
+                  name="sessionHour"
+                  placeholder="14:30"
+                  value={patient.sessionHour}
                   onChange={handleInputChange}
                 />
 
