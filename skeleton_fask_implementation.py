@@ -1,11 +1,12 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-from flask import Flask,render_template,Response
+from flask import Flask,render_template,Response,jsonify, render_template
+import time
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
-
+a_list = [1]
 # For webcam input:
 app=Flask(__name__)
 cap = cv2.VideoCapture(0)
@@ -36,25 +37,34 @@ def generate_frames():
           mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2),
           mp_drawing.DrawingSpec(color=(245,66,230), thickness=15, circle_radius=10))
       #Skeleton
-
+      
+      print(a_list[0])
       skeleton = image-image1
       white_skeleton = np.array(skeleton)
       white_skeleton = np.where(white_skeleton>0,255,white_skeleton)
       ret,buffer=cv2.imencode('.jpg',white_skeleton)
       frame=buffer.tobytes()
-
+    
       yield(b'--frame\r\n'
                     b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
     
     # Flip the image horizontally for a selfie-view display.
     cv2.imshow('MediaPipe Pose', cv2.flip(white_skeleton, 1))
+    
+
+def increase():
+  return str(a_list[0])
+
 @app.route('/')
-
-
-@app.route('/video')
 def video():
     return Response(generate_frames(),mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/data')
+def data():
+    return Response(increase())
+  
+
 
 if __name__=="__main__":
     app.run(debug=True)
