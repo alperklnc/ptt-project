@@ -4,8 +4,8 @@ import IPatientData from "../types/Patient";
 const getAll = () => {
   return http.get<Array<IPatientData>>("/api/patient");
 };
-const get = (fname: string) => {
-  return http.get<IPatientData>(`/api/patient/${fname}`);
+const getById = (id: number) => {
+  return http.get<IPatientData>(`/api/patient/${id}`);
 };
 const create = (data: IPatientData) => {
   return http.post<IPatientData>("/api/patient", data);
@@ -24,7 +24,7 @@ const findByName = (fname: string) => {
 };
 const PatientService = {
   getAll,
-  get,
+  getById,
   create,
   update,
   remove,

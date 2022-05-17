@@ -16,7 +16,6 @@ import "../css/NewPatient.css";
 import IPatientData from "../../types/Patient";
 import PatientDataService from "../../services/PatientService";
 
-var weekDaysList: string[] = [];
 var exercisesList: string[] = [];
 
 function remove(array: string[], element: string) {
@@ -36,12 +35,12 @@ const NewPatient: React.FC = () => {
     patientTellNo: "",
     isMan: false,
     patientDisease: "",
-    reqSession: "",
-    frequency: "",
+    sessionAmount: 0,
+    period: 0,
     sessionHour: "",
     exercises: [],
-    session: 0,
-    recovery: 0,
+    //session: 0,
+    //recovery: 0,
   };
 
   const [patient, setPatient] = useState<IPatientData>(initialPatientState);
@@ -52,19 +51,28 @@ const NewPatient: React.FC = () => {
     const name = target.name;
     const value = target.type === "checkbox" ? target.checked : target.value;
 
+    var period = patient.period;
+    if (target.name === "period") {
+      period = parseInt(target.value);
+    }
+
+    var sessionAmount = patient.sessionAmount;
+    if (target.name === "sessionAmount") {
+      sessionAmount = parseInt(target.value);
+    }
+
     var isMan = false;
 
     if (target.type === "radio") {
-      console.log((event.target as HTMLInputElement).value);
       isMan = (event.target as HTMLInputElement).value === "male";
     }
 
     if (target.type === "checkbox") {
-      if (target.id === "day") {
+      if (target.id === "exercise") {
         if (target.checked) {
-          weekDaysList.push(target.name);
+          exercisesList.push(target.name);
         } else {
-          remove(weekDaysList, target.name);
+          remove(exercisesList, target.name);
         }
       }
     }
@@ -74,6 +82,8 @@ const NewPatient: React.FC = () => {
       ["isMan"]: isMan,
       ["exercises"]: exercisesList,
       [name]: value,
+      ["period"]: period,
+      ["sessionAmount"]: sessionAmount,
     });
   };
 
@@ -87,18 +97,18 @@ const NewPatient: React.FC = () => {
       patientTellNo: patient.patientTellNo,
       isMan: patient.isMan,
       patientDisease: patient.patientDisease,
-      reqSession: patient.reqSession,
-      frequency: patient.frequency,
+      sessionAmount: patient.sessionAmount,
+      period: patient.period,
       sessionHour: patient.sessionHour,
       exercises: patient.exercises,
-      session: patient.session,
-      recovery: patient.recovery,
+      //session: patient.session,
+      //recovery: patient.recovery,
     };
+
+    console.log(data);
 
     PatientDataService.create(data)
       .then((response: any) => {
-        console.log(data);
-
         setPatient({
           patientFirstName: patient.patientFirstName,
           patientLastName: patient.patientLastName,
@@ -106,12 +116,12 @@ const NewPatient: React.FC = () => {
           patientTellNo: patient.patientTellNo,
           isMan: patient.isMan,
           patientDisease: patient.patientDisease,
-          reqSession: patient.reqSession,
-          frequency: patient.frequency,
+          sessionAmount: patient.sessionAmount,
+          period: patient.period,
           sessionHour: patient.sessionHour,
           exercises: patient.exercises,
-          session: patient.session,
-          recovery: patient.recovery,
+          //session: patient.session,
+          //recovery: patient.recovery,
         });
         setSubmitted(true);
         console.log(response.data);
@@ -262,16 +272,16 @@ const NewPatient: React.FC = () => {
                 <TextField
                   label="Gerekli Seans Sayısı"
                   variant="standard"
-                  name="reqSession"
-                  value={patient.reqSession}
+                  name="sessionAmount"
+                  value={patient.sessionAmount}
                   onChange={handleInputChange}
                 />
 
                 <TextField
                   label="Seans Sıklığı"
                   variant="standard"
-                  name="frequency"
-                  value={patient.frequency}
+                  name="period"
+                  value={patient.period}
                   onChange={handleInputChange}
                 />
                 <TextField

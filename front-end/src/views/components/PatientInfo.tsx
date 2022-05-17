@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react";
 import { Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -6,7 +7,15 @@ import Typography from "@mui/material/Typography";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/style-sheet.css";
 
-export default function PatientInfo() {
+import IPatientData from "../../types/Patient";
+import PatientDataService from "../../services/PatientService";
+
+interface Props {
+  data?: IPatientData;
+}
+
+const PatientInfo: React.FC<Props> = (props) => {
+  console.log(props);
   return (
     <div>
       <Grid
@@ -25,7 +34,7 @@ export default function PatientInfo() {
         }}
       >
         <Grid item xs={3}>
-          <Typography className="PatientInfo-Text">Adar Bayan</Typography>
+          <Typography className="PatientInfo-Text"></Typography>
         </Grid>
         <Grid item xs={3}>
           <Typography className="PatientInfo-Text">
@@ -49,4 +58,5 @@ export default function PatientInfo() {
       ></Box>
     </div>
   );
-}
+};
+export default PatientInfo;
