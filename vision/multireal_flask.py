@@ -356,8 +356,8 @@ def helper():
     total_max = []
     total_hip = []
     for i in range(10):
-        total_max.append(0)
-        total_hip.append(0)
+        total_max.append(-5)
+        total_hip.append(-5)
     count = 0
 
     # Iterate until the video is accessed successfully.
@@ -431,6 +431,8 @@ def helper():
             
             if angle3D < 35 and local_max > 45:
                 local_max = 0
+                total_max[count]=lastx
+                total_hip[count]=lasty
                 print("hip angle " + str(hip_angle))
                 count += 1
         
