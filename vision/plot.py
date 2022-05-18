@@ -36,7 +36,7 @@ def main():
     current_point_x_list = [current_point_x]
     current_point_y_list = [current_point_y]
     plt.plot(current_point_x_list,current_point_y_list, 'r^',markersize = 8)
-    plt.plot(axes_x,axes_y, linestyle='-', marker='^', color='k',markersize=6)
+    plt.plot(axes_x,axes_y, linestyle='-', color='k',markersize=6)
     plt.xlim(0,110)
     plt.ylim(0,180)
     plt.show()
