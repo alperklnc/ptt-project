@@ -5,6 +5,8 @@ from time import time
 import mediapipe as mp
 import sys
 from flask import Flask,render_template,Response
+from matplotlib import pyplot as plt
+
 mp_pose = mp.solutions.pose
 mp_pose2 = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
@@ -12,6 +14,8 @@ mp_drawing_styles = mp.solutions.drawing_styles
 video = cv2.VideoCapture(0)
 video2 = cv2.VideoCapture(1)
 app=Flask(__name__)
+axes_x = [0, 210]
+axes_y = [0, 0]
 
 def detectPose(image, pose, display=True):
     # Initializing mediapipe pose class.
@@ -285,6 +289,19 @@ def Exer8(landmarks1, landmarks2):
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back);
     return angle3D, hip_angle
 
+def rotate(origin, point):
+    angle=45
+    ox, oy = origin
+    px, py = point
+    qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
+    qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+    return qx, qy
+
+def set_axes():
+    for i in range(2):
+        point = [axes_x[i], axes_y[i]]
+        axes_x[i], axes_y[i] = rotate([0, 0], point)
+
 
     
  
@@ -400,10 +417,19 @@ def helper():
                 local_max = angle3D
                 # this list should returned
                 total_max[count] = int(local_max)
-                total_hip[count] = hip_angle
+                total_hip[count] = hip_angle - 180
                 print("shoulder angle " + str(angle3D))
-
-            if angle3D < 25 and local_max > 35:
+                
+            plt.close("all")
+            lastx, lasty = rotate([0, 0], [total_max[count], total_hip[count]])
+            plt.plot(total_max, total_hip, 'o', 'b')
+            plt.plot([lastx], [lasty], 'g^')
+            plt.plot(axes_x, axes_y, linestyle='-', color='k')
+            plt.xlim(0, 110)
+            plt.ylim(0, 180)
+            plt.show(block=False)
+            
+            if angle3D < 35 and local_max > 45:
                 local_max = 0
                 print("hip angle " + str(hip_angle))
                 count += 1
