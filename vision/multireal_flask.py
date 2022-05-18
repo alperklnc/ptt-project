@@ -321,7 +321,7 @@ def helper():
     exercise = int(input("Enter exercise number of patient!(1-4)\n"))
     print("\texercise number is " + str(exercise))
     """
-   
+    set_axes()
     side = sys.argv[1]
     exercise = int(sys.argv[2])
 
@@ -422,12 +422,14 @@ def helper():
                 
             plt.close("all")
             lastx, lasty = rotate([0, 0], [total_max[count], total_hip[count]])
-            plt.plot(total_max, total_hip, 'o', 'b')
+            plt.plot(total_max[:,count-1], total_hip[:,count-1], 'o', 'b')
             plt.plot([lastx], [lasty], 'g^')
             plt.plot(axes_x, axes_y, linestyle='-', color='k')
             plt.xlim(0, 110)
             plt.ylim(0, 180)
             plt.show(block=False)
+            plt.savefig('testplot.png')
+            graphIMage = Image.open('testplot.png').save('testplot.jpg','JPEG')
             
             if angle3D < 35 and local_max > 45:
                 local_max = 0
