@@ -95,7 +95,7 @@ class PDF(FPDF):
         self.cell(cellWidth, cellHeight, "8/10", 0, 0, 'L', 0)
 
         #photo
-        self.image("photo.JPG",175,25,30,40)
+        #self.image("photo.JPG",175,25,30,40)
 
     def create_table(self):
         ##Header for this section
