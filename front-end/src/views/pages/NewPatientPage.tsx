@@ -51,7 +51,7 @@ const NewPatient: React.FC = () => {
     const name = target.name;
     const value = target.type === "checkbox" ? target.checked : target.value;
 
-    var sessionAmount = patient.period ? patient.period : 0;
+    var sessionAmount = patient.sessionAmount ? patient.sessionAmount : 0;
     if (target.name === "sessionAmount") {
       sessionAmount = target.value ? parseInt(target.value) : 0;
     }

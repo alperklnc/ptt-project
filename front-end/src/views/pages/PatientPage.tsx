@@ -9,8 +9,12 @@ import ExerciseTable from "../components/ExerciseTable";
 import IPatientData from "../../types/Patient";
 import PatientDataService from "../../services/PatientService";
 
-export default function PatientPage() {
-  var initialPatientState = {
+interface IProps {
+  data?: IPatientData;
+}
+
+class PatientPage extends React.Component<IProps> {
+  initialPatientState = {
     patientFirstName: "",
     patientLastName: "",
     patientEmail: "",
@@ -25,14 +29,41 @@ export default function PatientPage() {
     recovery: 0,
   };
 
-  var patientData: IPatientData;
+  patientData: IPatientData;
 
-  //const [patient, setPatient] = useState<IPatientData>(initialPatientState);
+  componentWillMount() {
+    console.log("componentWillMount - Patient Page");
+  }
+  constructor(props: IProps) {
+    console.log("constructor - Patient Page");
+    super(props);
+    this.patientData = this.initialPatientState;
+    PatientDataService.getById(1)
+      .then((response: any) => {
+        console.log(response.data);
+        this.patientData = {
+          patientFirstName: response.data.patientFirstName,
+          patientLastName: response.data.patientLastName,
+          patientEmail: response.data.patientEmail,
+          patientTellNo: response.data.patientTellNo,
+          isMan: response.data.isMan,
+          patientDisease: response.data.patientDisease,
+          sessionAmount: response.data.sessionAmount,
+          period: response.data.period,
+          sessionHour: response.data.sessionHour,
+          exercises: response.data.exercises,
+        };
+      })
+      .catch((e: Error) => {
+        console.log(e);
+      });
+    console.log(this.patientData);
+  }
 
-  const setPatient = (response: any) => {
-    const data = response.data[27];
+  setPatient = (response: any) => {
+    const data = response.data;
 
-    patientData = {
+    this.patientData = {
       patientFirstName: data.patientFirstName,
       patientLastName: data.patientLastName,
       patientEmail: data.patientEmail,
@@ -43,60 +74,43 @@ export default function PatientPage() {
       period: data.period,
       sessionHour: data.sessionHour,
       exercises: data.exercises,
-      session: data.session,
-      recovery: data.recovery,
     };
-
-    return patientData;
   };
 
-  const getAllPatient = () => {
-    PatientDataService.getAll().then((response: any) => {
-      patientData = setPatient(response);
-      console.log(patientData);
-    });
-  };
-
-  function getPatientData() {
-    getAllPatient();
-
-    return patientData;
-  }
-
-  const getPatientInfo = (id: number) => {
+  getPatientInfo = (id: number) => {
     PatientDataService.getById(id)
       .then((response: any) => {
-        console.log(response);
+        console.log(response.data);
+        this.setPatient(response);
       })
       .catch((e: Error) => {
         console.log(e);
       });
   };
 
-  useEffect(() => {
-    getPatientInfo(27);
-  }, []);
-
-  return (
-    <div>
-      <NavBar />
-      <PatientInfo />
-      <div
-        style={{
-          padding: "3.5vw",
-          paddingLeft: "3.5vw",
-          paddingRight: "3.5vw",
-        }}
-      >
-        <Grid
-          container
+  render() {
+    return (
+      <div>
+        <NavBar />
+        <PatientInfo />
+        <div
           style={{
-            display: "flex",
+            padding: "3.5vw",
+            paddingLeft: "3.5vw",
+            paddingRight: "3.5vw",
           }}
         >
-          <ExerciseTable url="/exercise-page"></ExerciseTable>
-        </Grid>
+          <Grid
+            container
+            style={{
+              display: "flex",
+            }}
+          >
+            <ExerciseTable url="/exercise-page"></ExerciseTable>
+          </Grid>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
+export default PatientPage;
