@@ -7,6 +7,9 @@ const getAll = () => {
 const getById = (id: number) => {
   return http.get<IPatientData>(`/api/patient/${id}`);
 };
+const getTodaysPatients = async () => {
+  return await http.get<Array<IPatientData>>(`/api/session`);
+};
 const create = (data: IPatientData) => {
   return http.post<IPatientData>("/api/patient", data);
 };
@@ -30,5 +33,6 @@ const PatientService = {
   remove,
   removeAll,
   findByName,
+  getTodaysPatients,
 };
 export default PatientService;

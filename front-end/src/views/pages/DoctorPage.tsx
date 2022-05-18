@@ -1,9 +1,13 @@
 import * as React from "react";
+import { useEffect } from "react";
 import { Grid } from "@mui/material";
 
 import NavBar from "../components/NavBar";
 import TodaysAppointments from "../components/TodaysAppointments";
 import NextPatient from "../components/NextPatient";
+
+import IPatientData from "../../types/Patient";
+import PatientDataService from "../../services/PatientService";
 
 interface Props {
   name?: string;
@@ -14,7 +18,117 @@ interface Props {
   date?: string;
 }
 
-const DoctorPage: React.FC<Props> = (props) => {
+//class DoctorPage extends React.Component 
+const DoctorPage: React.FC<Props> = (props) =>{
+  var todaysPatients : IPatientData[] = [];
+  var nextPatient : IPatientData = {
+    patientFirstName: "",
+    patientLastName: "",
+    patientEmail: "",
+    patientTellNo: "",
+    isMan: false,
+    patientDisease: "",
+    sessionAmount: 0,
+    period: 0,
+    sessionHour: "",
+    exercises: [],
+    session: 0,
+    recovery: 0,
+  };
+  useEffect(() => {
+    // declare the async data fetching function
+    const fetchData = async () => {
+      function sleep(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      PatientDataService.getTodaysPatients()
+      .then((response: any) => {
+        todaysPatients = response.data;
+      })
+      .catch((e: Error) => {
+        console.log(e);
+      });
+  
+      // waits for 1000ms
+      await sleep(1000);
+
+
+      nextPatient = todaysPatients[0];
+    console.log(nextPatient);
+    
+      return 'Hello World';
+    };
+  
+    const result = fetchData()
+      // make sure to catch any error
+      .catch(console.error);;
+  
+    // what will be logged to the console?
+    console.log(result);
+    
+  }, []);
+
+  /*
+  nextPatient : IPatientData;
+  todaysPatients: IPatientData[] = [];
+
+  constructor(props: IPatientData) {
+    console.log("constructor - Doctor Page");
+    super(props);
+
+    this.nextPatient = {
+      patientFirstName: "",
+      patientLastName: "",
+      patientEmail: "",
+      patientTellNo: "",
+      isMan: false,
+      patientDisease: "",
+      sessionAmount: 0,
+      period: 0,
+      sessionHour: "",
+      exercises: [],
+      session: 0,
+      recovery: 0,
+    };
+    //this.getTodaysPatients(this.todaysPatients);
+    this.request(this.todaysPatients).then((value: IPatientData[]) => {
+      //console.log(value);
+      this.todaysPatients = value;
+    }).catch((e: Error) => {
+      console.log(e);
+    });
+    console.log(this.todaysPatients);
+  }
+
+  request = async (todaysPatients : IPatientData[]): Promise<IPatientData[]> => {
+    const response= await PatientDataService.getTodaysPatients();
+    const payload = response.data;
+    console.log(payload);
+    this.todaysPatients = payload;
+    console.log(this.todaysPatients);
+    this.nextPatient = this.todaysPatients[0];
+    console.log(this.nextPatient);
+    return todaysPatients;
+  };
+
+  getTodaysPatients = async (todaysPatients: Array<IPatientData>) => {
+    await PatientDataService.getTodaysPatients()
+    .then((response: any) => {
+      todaysPatients = response.data;
+      console.log(response.data);
+    })
+    .catch((e: Error) => {
+      console.log(e);
+    });
+  }
+  
+  getNextPatient = (nextPatient: IPatientData) => {
+
+  };
+  */
+
+  //render(){
   return (
     <div>
       <NavBar />
@@ -33,12 +147,12 @@ const DoctorPage: React.FC<Props> = (props) => {
         >
           <Grid container item xs={11.8} sm={5.8}>
             <NextPatient
-              name={props.name}
-              progress={props.progress}
-              reqSession={props.reqSession}
-              session={props.session}
-              type={props.type}
-              date={props.date}
+              name={"props.name"}
+              progress={30}
+              reqSession={nextPatient.sessionAmount}
+              session={1}
+              type={"props.type"}
+              date={"props.date"}
             />
           </Grid>
           <Grid xs={0.0} sm={0.2} />
@@ -58,15 +172,7 @@ const DoctorPage: React.FC<Props> = (props) => {
       </div>
     </div>
   );
-};
-
-DoctorPage.defaultProps = {
-  name: "Adar Bayan",
-  type: "Donuk Omuz",
-  reqSession: 10,
-  session: 3,
-  progress: 60,
-  date: "10 Mayıs 2022",
+        //}
 };
 
 export default DoctorPage;

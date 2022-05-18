@@ -12,9 +12,12 @@ import FormLabel from "@mui/material/FormLabel";
 
 import NavBar from "../components/NavBar";
 
+import axios from "axios";
+
 import "../css/NewPatient.css";
 import IPatientData from "../../types/Patient";
 import PatientDataService from "../../services/PatientService";
+import FlaskService from "../../services/FlaskService";
 
 var exercisesList: string[] = [];
 
@@ -86,6 +89,29 @@ const NewPatient: React.FC = () => {
       ["sessionAmount"]: sessionAmount,
     });
   };
+
+  const test = (event: { preventDefault: () => void }) => {
+    
+    FlaskService.getData().then((response: any) => {
+      console.log(response.data);
+    }).catch((e: Error) => {
+      console.log(e);
+    });
+    /*
+    axios({
+      method:'get',
+      url:'/data',
+      baseURL: '127.0.0.1:5000/',
+     })
+     .then(response => {
+      console.log(response.data);
+        window.location.reload();
+     })
+     .catch(error => {
+         console.log(error);
+     });
+     */
+  }
 
   const savePatient = (event: { preventDefault: () => void }) => {
     event.preventDefault();
@@ -369,7 +395,7 @@ const NewPatient: React.FC = () => {
                 alignSelf: "center",
               }}
               variant="contained"
-              onClick={savePatient}
+              onClick={test}
             >
               Yeni Kayıt
             </Button>
