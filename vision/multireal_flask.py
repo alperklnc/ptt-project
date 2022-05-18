@@ -1,12 +1,13 @@
 import math
+import Image
+
 import cv2
 import numpy as np
 from time import time
 import mediapipe as mp
 import sys
-from flask import Flask,render_template,Response
+from flask import Flask, render_template, Response
 from matplotlib import pyplot as plt
-import Image
 
 mp_pose = mp.solutions.pose
 mp_pose2 = mp.solutions.pose
@@ -14,9 +15,10 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 video = cv2.VideoCapture(0)
 video2 = cv2.VideoCapture(1)
-app=Flask(__name__)
+app = Flask(__name__)
 axes_x = [0, 210]
 axes_y = [0, 0]
+
 
 def detectPose(image, pose, display=True):
     # Initializing mediapipe pose class.
@@ -41,15 +43,15 @@ def detectPose(image, pose, display=True):
             output_image,
             results.pose_landmarks,
             mp_pose.POSE_CONNECTIONS,
-            mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2),
-            mp_drawing.DrawingSpec(color=(245,66,230), thickness=15, circle_radius=10))
+            mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=2, circle_radius=2),
+            mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=15, circle_radius=10))
         # Iterate over the detected landmarks.
         for landmark in results.pose_landmarks.landmark:
             # Append the landmark into the list.
             landmarks.append((int(landmark.x * width), int(landmark.y * height),
                               (landmark.z * width)))
     # Return the output image and the found landmarks.
-    return output_image, landmarks,results.pose_landmarks
+    return output_image, landmarks, results.pose_landmarks
 
 
 def calculateAngle2D(landmark1, landmark2, landmark3):
@@ -290,28 +292,26 @@ def Exer8(landmarks1, landmarks2):
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back);
     return angle3D, hip_angle
 
-def rotate(origin, point):
-    angle=45
-    ox, oy = origin
+
+def rotate( point):
+    angle = 45
+    ox, oy = 0,0
     px, py = point
     qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
     qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
     return qx, qy
 
+
 def set_axes():
     for i in range(2):
         point = [axes_x[i], axes_y[i]]
-        axes_x[i], axes_y[i] = rotate([0, 0], point)
+        axes_x[i], axes_y[i] = rotate( point)
 
 
-    
- 
 @app.route('/')
-
-
 @app.route('/video')
 def video():
-    return Response(helper(),mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(helper(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 def helper():
@@ -329,17 +329,18 @@ def helper():
     print("\tweek side is ", side)
     print("\texercise number is " + str(exercise))
     # Setup Pose function for video.
-    pose_video = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.2,min_tracking_confidence=0.2)  # , model_complexity=1)
+    pose_video = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.2,
+                              min_tracking_confidence=0.2)  # , model_complexity=1)
 
     # Setup Pose function for video2.
-    pose_video2 = mp_pose2.Pose(static_image_mode=False, min_detection_confidence=0.2,min_tracking_confidence=0.2)  # , model_complexity=1)
+    pose_video2 = mp_pose2.Pose(static_image_mode=False, min_detection_confidence=0.2,
+                                min_tracking_confidence=0.2)  # , model_complexity=1)
 
     # Initialize the VideoCapture object to read from the webcam.
     # video is external camera (Side)
     # video2 is front camera
     video = cv2.VideoCapture(0)
     video2 = cv2.VideoCapture(1)
-
 
     # Create named window for resizing purposes
     cv2.namedWindow('Pose Detection', cv2.WINDOW_NORMAL)
@@ -360,10 +361,12 @@ def helper():
         total_max.append(-5)
         total_hip.append(-5)
     count = 0
+    lastx=-5
+    lasty=-5
 
     # Iterate until the video is accessed successfully.
     while video.isOpened() and video2.isOpened():
-  
+
         # Read a frames.
         ok, frame = video.read()
         ok2, frame2 = video2.read()
@@ -384,13 +387,13 @@ def helper():
         # Resize the frames while keeping the aspect ratio.
         frame = cv2.resize(frame, (int(frame_width * (640 / frame_height)), 640))
         frame2 = cv2.resize(frame2, (int(frame2_width * (640 / frame2_height)), 640))
-        image1=frame2
+        image1 = frame2
         frame2.flags.writeable = False
         image = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)
 
         # Perform Pose landmarks detection.
-        frame, landmarks,result_land = detectPose(frame, pose_video, display=False)
-        frame2, landmarks2 ,result_land2= detectPose(image, pose_video2, display=False)
+        frame, landmarks, result_land = detectPose(frame, pose_video, display=False)
+        frame2, landmarks2, result_land2 = detectPose(image, pose_video2, display=False)
 
         ##### Calculate angle
         # shoulder, hip = Selector(1,landmarks,landmarks2)
@@ -417,28 +420,28 @@ def helper():
             if angle3D > local_max and angle3D > 20:
                 local_max = angle3D
                 # this list should returned
-                total_max[count] = int(local_max)
-                total_hip[count] = hip_angle - 180
+                lastx= int(local_max)
+                lasty = hip_angle - 180
                 print("shoulder angle " + str(angle3D))
-                
+
             plt.close("all")
-            lastx, lasty = rotate([0, 0], [total_max[count], total_hip[count]])
-            plt.plot(total_max[:,count-1], total_hip[:,count-1], 'o', 'b')
+            lastx, lasty = rotate( [lastx, lasty])
+            plt.plot(total_max[:, count - 1], total_hip[:, count - 1], 'o', 'b')
             plt.plot([lastx], [lasty], 'g^')
             plt.plot(axes_x, axes_y, linestyle='-', color='k')
             plt.xlim(0, 110)
             plt.ylim(0, 180)
             plt.show(block=False)
             plt.savefig('testplot.png')
-            graphIMage = Image.open('testplot.png').save('testplot.jpg','JPEG')
-            
+            graphIMage = Image.open('testplot.png').save('testplot.jpg', 'JPEG')
+
             if angle3D < 35 and local_max > 45:
                 local_max = 0
-                total_max[count]=lastx
-                total_hip[count]=lasty
+                total_max[count] = lastx
+                total_hip[count] = lasty
                 print("hip angle " + str(hip_angle))
                 count += 1
-        
+
         # 10 repetation is done
         if count == 10:
             print("Ten exercise finished")
@@ -469,37 +472,43 @@ def helper():
             print(total_hip)
             # Break the loop.
             break
-        success, image = ok2, frame2 
-        
+        success, image = ok2, frame2
 
         # To improve performance, optionally we mark the image as not writeable to
         # pass by reference.
-        
 
         # Draw the pose annotation on the image.
         image.flags.writeable = True
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-        
-        #Skeleton
 
-        skeleton = image-image1
+        # Skeleton
+
+        skeleton = image - image1
         white_skeleton = np.array(skeleton)
-        white_skeleton = np.where(white_skeleton>0,255,white_skeleton)
-        ret,buffer=cv2.imencode('.jpg',white_skeleton)
-        flask_output=buffer.tobytes()
+        white_skeleton = np.where(white_skeleton > 0, 255, white_skeleton)
 
-        yield(b'--frame\r\n'
-                        b'Content-Type: image/jpeg\r\n\r\n' + flask_output + b'\r\n')
+        ret, buffer = cv2.imencode('.jpg', white_skeleton)
+        flask_output = buffer.tobytes()
+
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + flask_output + b'\r\n')
+
+        ret, buffer = cv2.imencode('.jpg', graphIMage)
+        flask_graph = buffer.tobytes()
+
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + flask_graph + b'\r\n')
 
     # Release the VideoCapture object.
     video.release()
     # Close the windows.
     cv2.destroyAllWindows()
+
+
 # ---------------------------------------------#
 
 def main():
     app.run(debug=True)
-    
-    
+
 
 main()
