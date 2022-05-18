@@ -10,7 +10,7 @@ app.config['UPLOAD_FOLDER'] = picFolder
 
 @app.route("/")
 def index():
-    pic1 = os.path.join(app.config['UPLOAD_FOLDER'], 'sample.jpg')
+    pic1 = os.path.join(app.config['UPLOAD_FOLDER'], 'b.png')
     return render_template("index.html", user_image=pic1)   
 
 
