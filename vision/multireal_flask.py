@@ -6,6 +6,7 @@ import mediapipe as mp
 import sys
 from flask import Flask,render_template,Response
 from matplotlib import pyplot as plt
+import Image
 
 mp_pose = mp.solutions.pose
 mp_pose2 = mp.solutions.pose
