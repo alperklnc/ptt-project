@@ -1,6 +1,7 @@
 import math
 
 from matplotlib import pyplot as plt
+from numpy import size
 
 
 def rotate(origin, point, angle):
@@ -18,20 +19,24 @@ def rotate(origin, point, angle):
 
 
 def main():
-    omuz = [120, 130, 140, 150]
-    bel = [0, 5, -2, -10]
+    number_of_rep = 5
+    number_of_axes =2
+    omuz = [120, 130, 140, 150,96]
+    bel = [0, 5, -2, -10,6]
     axes_x = [0,210]
     axes_y = [0,0]
-    for i in range(4):
+    for i in range(number_of_rep):
         point = [omuz[i], bel[i]]
         omuz[i], bel[i] = rotate([0, 0], point, 45)
-    for i in range(2):
+    for i in range(number_of_axes):
         point = [axes_x[i], axes_y[i]]
         axes_x[i], axes_y[i] = rotate([0, 0], point, 45)
-    lastx,lasty=rotate([0, 0], [120,5], 45)
-    plt.plot(omuz, bel, 'o', 'b')
-    plt.plot([lastx], [lasty], 'g^')
-    plt.plot(axes_x,axes_y, linestyle='-', color='k')
+    current_point_x,current_point_y=rotate([0, 0], [120,5], 45)
+    plt.plot(omuz, bel, 'o', 'b',markersize= 8)
+    current_point_x_list = [current_point_x]
+    current_point_y_list = [current_point_y]
+    plt.plot(current_point_x_list,current_point_y_list, 'r^',markersize = 8)
+    plt.plot(axes_x,axes_y, linestyle='-', marker='^', color='k',markersize=6)
     plt.xlim(0,110)
     plt.ylim(0,180)
     plt.show()
