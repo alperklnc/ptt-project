@@ -1,9 +1,10 @@
+from distutils.log import debug
 import math
 from urllib import request
-
+from flask_sock import Sock
 import cv2
 import numpy as np
-from time import time
+from time import sleep, time
 import mediapipe as mp
 import sys
 from flask import Flask, render_template, Response
@@ -17,18 +18,34 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 video = cv2.VideoCapture(0)
 video2 = cv2.VideoCapture(1)
-total_max = []
-total_hip = []
+#total_max = []
+#total_hip = []
+adar_hash={"max":[],"hip":[]}
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'fener1453'
 socketio=SocketIO(app,cors_allowed_origins="*")
+a = 0
+sock = Sock(app)
+@sock.route('/echo')
+def echo(sock):
+    global a
+    a=1
+    while True:
+        a+=1
+        sleep(0.5)
+        total_max=adar_hash["max"]
+        total_hip=adar_hash["hip"]
+        hmp={"total_max":total_max,"total_hip":total_hip}
+        sock.send(hmp)
+"""
 
 @socketio.on("message")
 def sendArray():
     expected_len=1
-    while len(total_max)>expected_len:
+    while 1:
+        sleep(0.5)
         hmp={"total_max":total_max,"total_hip":total_hip}
-        send(hmp)
+        send(hmp,broadcast=True)"""
 axes_x = [0, 210]
 axes_y = [0, 0]
 
@@ -307,12 +324,17 @@ def set_axes():
         axes_x[i], axes_y[i] = rotate( point)
 
 @app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/video')
 def video():
+    print("hhfhj")
     return Response(helper(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 def helper():
-    thread = socketio.start_background_task(target=sendArray)
+    #thread = socketio.start_background_task(target=sendArray)
     """
     Taking input inside
     side = input("Enter week side of patient! (RIGHT or LEFT)\n")
@@ -353,12 +375,13 @@ def helper():
     time1 = 0
     angle_list = []
     local_max = 0
-
     ret_shoul=[]
     ret_hip=[]
     for i in range(10):
-        total_max.append(-5)
-        total_hip.append(-5)
+        adar_hash["max"].append(-5)
+        adar_hash["hip"].append(-5)
+        #total_max.append(-5)
+        #total_hip.append(-5)
         ret_hip.append(-5)
         ret_shoul.append(-5)
     count = 0
@@ -431,6 +454,8 @@ def helper():
 
             plt.close("all")
             lastx, lasty = rotate( [lastx, lasty])
+            total_max=adar_hash["max"]
+            total_hip=adar_hash["hip"]
             plt.plot(total_max, total_hip, 'o', 'b')
             plt.plot([lastx], [lasty], 'g^')
             plt.plot(axes_x, axes_y, linestyle='-', color='k')
@@ -443,8 +468,12 @@ def helper():
             #"""
             if angle3D < 35 and local_max > 45:
                 local_max = 0
-                total_max[count] = lastx
-                total_hip[count] = lasty
+                adar_hash["max"][count]=lastx
+                adar_hash["hip"][count]=lasty
+            
+                
+                #total_max[count] = lastx
+                #total_hip[count] = lasty
                 ret_shoul[count] = NRLX
                 ret_hip[count]= NRLY
                 #print("hip angle " + str(hip_angle))
@@ -462,8 +491,9 @@ def helper():
             r = requests.put('http://physio-env.eba-u4ctwpu4.eu-central-1.elasticbeanstalk.com/api/exercise/74', json={"shoulder": ret_shoul, "hip": ret_hip})
             print(r.status_code)
             #"""
+            sys.exit()
             # Break the loop.
-            break
+            #break
         # Update the previous frame time to this frame time.
         # As this frame will become previous frame in next iteration.
         time1 = time2
@@ -511,13 +541,15 @@ def helper():
     video.release()
     # Close the windows.
     cv2.destroyAllWindows()
+    
+
 
 
 # ---------------------------------------------#
 
 def main():
     app.run(debug=True)
-    socketio.run(app,host="127.0.0.1",port=3000)
+    #socketio.run(app,debug=True)
 
 
 main()
