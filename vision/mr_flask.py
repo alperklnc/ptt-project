@@ -1,15 +1,16 @@
 import math
 from urllib import request
-
+import os
 import cv2
 import numpy as np
 from time import time
 import mediapipe as mp
 import sys
-from flask import Flask, render_template, Response
+from flask import Response,Flask,request
 from matplotlib import pyplot as plt
 import requests
-
+from threading import Thread
+from flask_cors import CORS, cross_origin
 mp_pose = mp.solutions.pose
 mp_pose2 = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
@@ -17,6 +18,7 @@ mp_drawing_styles = mp.solutions.drawing_styles
 video = cv2.VideoCapture(0)
 video2 = cv2.VideoCapture(1)
 app = Flask(__name__)
+CORS(app, support_credentials=True)
 axes_x = [0, 210]
 axes_y = [0, 0]
 
@@ -309,23 +311,26 @@ def set_axes():
         axes_x[i], axes_y[i] = rotate( point)
 
 
-@app.route('/')
+@app.route('/video')
 def video():
     return Response(helper(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 def helper():
     """
+    side = sys.argv[1]
+    exercise = int(sys.argv[2])
     Taking input inside
     side = input("Enter week side of patient! (RIGHT or LEFT)\n")
     print("\tweek side is ", side)
     exercise = int(input("Enter exercise number of patient!(1-4)\n"))
     print("\texercise number is " + str(exercise))
     """
-    set_axes()
-    side = sys.argv[1]
-    exercise = int(sys.argv[2])
 
+    set_axes()
+
+    side = os.environ.get("WEAK","LEFT")
+    exercise = os.environ.get("EXT",1)
     print("\tweek side is ", side)
     print("\texercise number is " + str(exercise))
     # Setup Pose function for video.
@@ -462,7 +467,10 @@ def helper():
             print(ret_hip)
 
             json={"shoulder": ret_shoul, "hip": ret_hip}
-            r = requests.put('http://physio-env.eba-u4ctwpu4.eu-central-1.elasticbeanstalk.com/api/exercise/74', json={"shoulder": ret_shoul, "hip": ret_hip})
+            current_eid=os.environ.get("EID",0)
+            print(current_eid)
+            url_str="http://physio-env.eba-u4ctwpu4.eu-central-1.elasticbeanstalk.com/api/exercise/{}".format(current_eid)
+            r = requests.put(url=url_str, json={"shoulder": ret_shoul, "hip": ret_hip})
             print(r.status_code)
             #"""
             # Break the loop.
@@ -515,7 +523,17 @@ def helper():
     # Close the windows.
     cv2.destroyAllWindows()
 
+@app.route("/data", methods=["GET","POST"])
+@cross_origin(supports_credentials=True)
+def getdata():
+    ex_id = request.json['id']
+    weak = request.json['weak']
+    ex_type = request.json['type']
 
+    os.environ["EID"]=ex_id
+    os.environ["WEAK"]=weak
+    os.environ["EXT"]=ex_type
+    return ""
 # ---------------------------------------------#
 
 def main():
