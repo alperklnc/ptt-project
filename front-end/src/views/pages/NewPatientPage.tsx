@@ -12,12 +12,12 @@ import FormLabel from "@mui/material/FormLabel";
 
 import NavBar from "../components/NavBar";
 
-import axios from "axios";
-
 import "../css/NewPatient.css";
-import IPatientData from "../../types/Patient";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import {IPatientData} from "../../types/Patient";
 import PatientDataService from "../../services/PatientService";
-import FlaskService from "../../services/FlaskService";
+
 
 var exercisesList: string[] = [];
 
@@ -40,6 +40,7 @@ const NewPatient: React.FC = () => {
     patientDisease: "",
     sessionAmount: 0,
     period: 0,
+    weak: "",
     sessionHour: "",
     exercises: [],
     //session: 0,
@@ -80,38 +81,26 @@ const NewPatient: React.FC = () => {
       }
     }
 
+    var weak_ ="";
+    if(target.name === "weak"){
+      if(target.value === "Sol"){
+        weak_ = "LEFT";
+      } else if(target.value === "Sağ"){
+        weak_ = "RIGHT";
+      }
+    }
+
     setPatient({
       ...patient,
       ["isMan"]: isMan,
       ["exercises"]: exercisesList,
+      ["weak"]: weak_,
       [name]: value,
       ["period"]: period,
       ["sessionAmount"]: sessionAmount,
+      
     });
   };
-
-  const test = (event: { preventDefault: () => void }) => {
-    
-    FlaskService.getData().then((response: any) => {
-      console.log(response.data);
-    }).catch((e: Error) => {
-      console.log(e);
-    });
-    /*
-    axios({
-      method:'get',
-      url:'/data',
-      baseURL: '127.0.0.1:5000/',
-     })
-     .then(response => {
-      console.log(response.data);
-        window.location.reload();
-     })
-     .catch(error => {
-         console.log(error);
-     });
-     */
-  }
 
   const savePatient = (event: { preventDefault: () => void }) => {
     event.preventDefault();
@@ -125,6 +114,7 @@ const NewPatient: React.FC = () => {
       patientDisease: patient.patientDisease,
       sessionAmount: patient.sessionAmount,
       period: patient.period,
+      weak: patient.weak,
       sessionHour: patient.sessionHour,
       exercises: patient.exercises,
       //session: patient.session,
@@ -144,6 +134,7 @@ const NewPatient: React.FC = () => {
           patientDisease: patient.patientDisease,
           sessionAmount: patient.sessionAmount,
           period: patient.period,
+          weak: patient.weak,
           sessionHour: patient.sessionHour,
           exercises: patient.exercises,
           //session: patient.session,
@@ -155,11 +146,6 @@ const NewPatient: React.FC = () => {
       .catch((e: Error) => {
         console.log(e);
       });
-  };
-
-  const newPatient = () => {
-    setPatient(initialPatientState);
-    setSubmitted(false);
   };
 
   return (
@@ -296,13 +282,21 @@ const NewPatient: React.FC = () => {
                   onChange={handleInputChange}
                 />
                 <TextField
+                  label="Zayıf Taraf"
+                  variant="standard"
+                  name="weak"
+                  value={patient.weak}
+                  onChange={handleInputChange}
+                />
+
+                <TextField
                   label="Gerekli Seans Sayısı"
                   variant="standard"
                   name="sessionAmount"
                   value={patient.sessionAmount}
                   onChange={handleInputChange}
                 />
-
+                
                 <TextField
                   label="Seans Sıklığı"
                   variant="standard"
@@ -395,7 +389,7 @@ const NewPatient: React.FC = () => {
                 alignSelf: "center",
               }}
               variant="contained"
-              onClick={test}
+              onClick={savePatient}
             >
               Yeni Kayıt
             </Button>

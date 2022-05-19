@@ -1,4 +1,4 @@
-export default interface IPatientData {
+export interface IPatientData {
   id?: number,
   patientFirstName: string,
   patientLastName: string,
@@ -8,6 +8,7 @@ export default interface IPatientData {
   patientDisease: string,
   sessionAmount: number,
   period: number,
+  weak: string,
   sessionHour: string,
   exercises: Array<String>,
   session?: number,

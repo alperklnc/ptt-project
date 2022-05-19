@@ -1,5 +1,5 @@
 import http from "../http-common";
-import IPatientData from "../types/Patient";
+import {IPatientData} from "../types/Patient";
 
 const getAll = () => {
   return http.get<Array<IPatientData>>("/api/patient");

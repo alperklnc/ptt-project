@@ -9,6 +9,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
+import FlaskService from "../../services/FlaskService";
+
 interface Props {
   url: string;
 }
@@ -32,10 +34,10 @@ function createData(
 }
 
 const rows = [
-  createData("Egzersiz 1: Sarkaç", 110, 120, 9.09, 150, 80),
-  createData("Egzersiz 2: Makara", 110, 100, -9.09, 170, 58.8),
-  createData("Egzersiz 3: Tırmanma", 50, 55, 10, 110, 50),
-  createData("Egzersiz 4: Germe", 70, 90, 28.5, 120, 75),
+  createData("Makara Ön", 110, 120, 9.09, 150, 80),
+  createData("Makara Yan", 110, 100, -9.09, 170, 58.8),
+  createData("Sopa Ön", 50, 55, 10, 110, 50),
+  createData("Sopa Yan", 70, 90, 28.5, 120, 75),
 ];
 
 const StyledTableHeaderCell = styled(TableCell)(({ theme }) => ({
@@ -51,7 +53,37 @@ const StyledTableHeaderCell = styled(TableCell)(({ theme }) => ({
 const ExerciseTable: React.FC<Props> = (props) => {
   const navigate = useNavigate();
 
-  const onClick = () => navigate(props.url);
+  const sendExerciseInfo = (data : any) => {
+    console.log("Data wanted to sent")
+    console.log(data);
+    FlaskService.sendExerciseInfo(data)
+    .then((response: any) => {
+      console.log(response.data);
+    })
+    .catch((e: Error) => {
+      console.log(e);
+    });
+  }
+
+  const startExercise = (type: any) => {
+    var exerciseType = 0;
+    if(type === "Makara Ön"){
+      exerciseType = 1;
+    } else if (type === "Makara Yan"){
+      exerciseType = 2;
+    } else if (type === "Sopa Ön"){
+      exerciseType = 3;
+    } else if (type === "Sopa Yan"){
+      exerciseType = 4;
+    }
+    var exerciseInfo = {
+      id: "275",
+      weak: "LEFT",
+      type: exerciseType,
+    }
+
+    sendExerciseInfo(exerciseInfo);
+  }
 
   return (
     <TableContainer component={Paper}>
@@ -85,7 +117,7 @@ const ExerciseTable: React.FC<Props> = (props) => {
               <TableCell
                 component="th"
                 scope="row"
-                onClick={onClick}
+                onClick={() => startExercise(row.type)}
                 style={{ cursor: "pointer" }}
               >
                 {row.type}

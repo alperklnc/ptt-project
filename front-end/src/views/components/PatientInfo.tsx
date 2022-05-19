@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/style-sheet.css";
 
-import IPatientData from "../../types/Patient";
+import {IPatientData} from "../../types/Patient";
 import PatientDataService from "../../services/PatientService";
 
 interface IProps {

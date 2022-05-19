@@ -6,7 +6,7 @@ import NavBar from "../components/NavBar";
 import PatientInfo from "../components/PatientInfo";
 import ExerciseTable from "../components/ExerciseTable";
 
-import IPatientData from "../../types/Patient";
+import {IPatientData} from "../../types/Patient";
 import PatientDataService from "../../services/PatientService";
 
 interface IProps {
@@ -23,6 +23,7 @@ class PatientPage extends React.Component<IProps> {
     patientDisease: "",
     sessionAmount: 0,
     period: 0,
+    weak: "",
     sessionHour: "",
     exercises: [],
     session: 0,
@@ -50,6 +51,7 @@ class PatientPage extends React.Component<IProps> {
           patientDisease: response.data.patientDisease,
           sessionAmount: response.data.sessionAmount,
           period: response.data.period,
+          weak: response.data.weak,
           sessionHour: response.data.sessionHour,
           exercises: response.data.exercises,
         };
@@ -72,6 +74,7 @@ class PatientPage extends React.Component<IProps> {
       patientDisease: data.patientDisease,
       sessionAmount: data.sessionAmount,
       period: data.period,
+      weak: data.weak,
       sessionHour: data.sessionHour,
       exercises: data.exercises,
     };

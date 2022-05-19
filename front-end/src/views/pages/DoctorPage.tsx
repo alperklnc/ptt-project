@@ -6,8 +6,10 @@ import NavBar from "../components/NavBar";
 import TodaysAppointments from "../components/TodaysAppointments";
 import NextPatient from "../components/NextPatient";
 
-import IPatientData from "../../types/Patient";
+import {IPatientData} from "../../types/Patient";
 import PatientDataService from "../../services/PatientService";
+
+import useStarshipsService from '../../types/useService';
 
 interface Props {
   name?: string;
@@ -20,6 +22,8 @@ interface Props {
 
 //class DoctorPage extends React.Component 
 const DoctorPage: React.FC<Props> = (props) =>{
+
+  /*
   var todaysPatients : IPatientData[] = [];
   var nextPatient : IPatientData = {
     patientFirstName: "",
@@ -69,7 +73,7 @@ const DoctorPage: React.FC<Props> = (props) =>{
     
   }, []);
 
-  /*
+  
   nextPatient : IPatientData;
   todaysPatients: IPatientData[] = [];
 
@@ -127,6 +131,7 @@ const DoctorPage: React.FC<Props> = (props) =>{
 
   };
   */
+  const service = useStarshipsService();
 
   //render(){
   return (
@@ -146,14 +151,15 @@ const DoctorPage: React.FC<Props> = (props) =>{
           }}
         >
           <Grid container item xs={11.8} sm={5.8}>
-            <NextPatient
+          <NextPatient
               name={"props.name"}
               progress={30}
-              reqSession={nextPatient.sessionAmount}
+              reqSession={10}
               session={1}
               type={"props.type"}
               date={"props.date"}
             />
+
           </Grid>
           <Grid xs={0.0} sm={0.2} />
           <Grid container item xs={11.8} sm={5.8}>

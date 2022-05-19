@@ -9,6 +9,9 @@ import ExerciseInfo from "../components/ExerciseInfo";
 import HeaderContainer from "../components/HeaderContainer";
 import MyChart from "../components/MyChart";
 
+import chart from '../../dummyGraph.jpeg';
+import pose from '../../pose.jpeg';
+
 export default function ExercisePage() {
   return (
     <div>
@@ -35,6 +38,7 @@ export default function ExercisePage() {
           >
             <HeaderContainer title="Grafik" />
             <MyChart />
+            
           </Grid>
           <Grid xs={0.0} sm={0.2} />
 
@@ -46,17 +50,17 @@ export default function ExercisePage() {
             sm={5.8}
             direction="column"
           >
-            <Grid item>
-              <HeaderContainer title="Pose" />
-            </Grid>
-            <Grid item>
+
+            <HeaderContainer title="İskelet" />
+
+            <div>              
               <iframe
                 src="http://127.0.0.1:5000/"
                 width="100%"
-                height="400%"
+                height="280%"
                 id="pose"
               ></iframe>
-            </Grid>
+            </div>
           </Grid>
         </Grid>
       </div>
