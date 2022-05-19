@@ -462,7 +462,7 @@ def helper():
             print(ret_hip)
 
             json={"shoulder": ret_shoul, "hip": ret_hip}
-            r = requests.put('http://physio-env.eba-u4ctwpu4.eu-central-1.elasticbeanstalk.com/api/exercise/74', json={"shoulder": ret_max, "hip": ret_hip})
+            r = requests.put('http://physio-env.eba-u4ctwpu4.eu-central-1.elasticbeanstalk.com/api/exercise/74', json={"shoulder": ret_shoul, "hip": ret_hip})
             print(r.status_code)
             #"""
             # Break the loop.
