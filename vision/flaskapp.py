@@ -20,7 +20,7 @@ video = cv2.VideoCapture(0)
 video2 = cv2.VideoCapture(1)
 #total_max = []
 #total_hip = []
-adar_hash={"max":[],"hip":[]}
+output_hash={"max":[],"hip":[]}
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'fener1453'
 socketio=SocketIO(app,cors_allowed_origins="*")
@@ -33,8 +33,8 @@ def echo(sock):
     while True:
         a+=1
         sleep(0.5)
-        total_max=adar_hash["max"]
-        total_hip=adar_hash["hip"]
+        total_max=output_hash["max"]
+        total_hip=output_hash["hip"]
         hmp={"total_max":total_max,"total_hip":total_hip}
         sock.send(hmp)
 """
@@ -378,8 +378,8 @@ def helper():
     ret_shoul=[]
     ret_hip=[]
     for i in range(10):
-        adar_hash["max"].append(-5)
-        adar_hash["hip"].append(-5)
+        output_hash["max"].append(-5)
+        output_hash["hip"].append(-5)
         #total_max.append(-5)
         #total_hip.append(-5)
         ret_hip.append(-5)
@@ -454,8 +454,8 @@ def helper():
 
             plt.close("all")
             lastx, lasty = rotate( [lastx, lasty])
-            total_max=adar_hash["max"]
-            total_hip=adar_hash["hip"]
+            total_max=output_hash["max"]
+            total_hip=output_hash["hip"]
             plt.plot(total_max, total_hip, 'o', 'b')
             plt.plot([lastx], [lasty], 'g^')
             plt.plot(axes_x, axes_y, linestyle='-', color='k')
@@ -468,8 +468,8 @@ def helper():
             #"""
             if angle3D < 35 and local_max > 45:
                 local_max = 0
-                adar_hash["max"][count]=lastx
-                adar_hash["hip"][count]=lasty
+                output_hash["max"][count]=lastx
+                output_hash["hip"][count]=lasty
             
                 
                 #total_max[count] = lastx
