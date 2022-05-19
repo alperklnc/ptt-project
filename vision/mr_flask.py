@@ -1,4 +1,6 @@
 import math
+from urllib import request
+
 import cv2
 import numpy as np
 from time import time
@@ -355,12 +357,18 @@ def helper():
     local_max = 0
     total_max = []
     total_hip = []
+    ret_shoul=[]
+    ret_hip=[]
     for i in range(10):
         total_max.append(-5)
         total_hip.append(-5)
+        ret_hip.append(-5)
+        ret_shoul.append(-5)
     count = 0
     lastx=-5
     lasty=-5
+    NRLX=0
+    NRLY=0
 
     # Iterate until the video is accessed successfully.
     while video.isOpened() and video2.isOpened():
@@ -420,9 +428,10 @@ def helper():
                 # this list should returned
                 lastx = int(local_max)
                 lasty = int(hip_angle) - 180
-                print("shoulder angle " + str(angle3D))
+                NRLX, NRLY = int(lastx), int(lasty)
+                #print("shoulder angle " + str(angle3D))
 
-            """
+
             plt.close("all")
             lastx, lasty = rotate( [lastx, lasty])
             plt.plot(total_max, total_hip, 'o', 'b')
@@ -431,25 +440,31 @@ def helper():
             plt.xlim(0, 110)
             plt.ylim(0, 180)
             plt.show(block=False)
-            
+            """
             plt.savefig('testplot.png')
             graphIMage = Image.open('testplot.png').save('testplot.jpg', 'JPEG')
             #"""
             if angle3D < 35 and local_max > 45:
                 local_max = 0
-                total_max[count] = int(lastx)
-                total_hip[count] = int(lasty)
-                print("hip angle " + str(hip_angle))
+                total_max[count] = lastx
+                total_hip[count] = lasty
+                ret_shoul[count] = NRLX
+                ret_hip[count]= NRLY
+                #print("hip angle " + str(hip_angle))
                 count += 1
 
         # 10 repetation is done
         if count == 10:
             print("Ten exercise finished")
             print("total arm angle")
-            print(total_max)
+            print(ret_shoul)
             print("hip angles")
-            print(total_hip)
+            print(ret_hip)
 
+            json={"shoulder": ret_shoul, "hip": ret_hip}
+            r = requests.put('http://physio-env.eba-u4ctwpu4.eu-central-1.elasticbeanstalk.com/api/exercise/74', json={"shoulder": ret_max, "hip": ret_hip})
+            print(r.status_code)
+            #"""
             # Break the loop.
             break
         # Update the previous frame time to this frame time.
