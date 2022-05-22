@@ -12,6 +12,8 @@ import PatientDataService from "../../services/PatientService";
 
 interface Props {
   patientId: number;
+  width?: string;
+  hasTop?: boolean;
 }
 
 const PatientInfo: React.FC<Props> = (props) => {
@@ -55,6 +57,14 @@ const PatientInfo: React.FC<Props> = (props) => {
 
   return (
     <div>
+      {props.hasTop == true && (
+        <Box
+          style={{
+            backgroundColor: "#4EC6C7",
+            minHeight: "10px",
+          }}
+        ></Box>
+      )}
       <Grid
         container
         item
@@ -63,7 +73,7 @@ const PatientInfo: React.FC<Props> = (props) => {
         style={{
           display: "flex",
           backgroundColor: "#4EC6C7",
-          width: "100vw",
+          width: props.width,
           height: "5vh",
           alignItems: "center",
           justifyContent: "center",

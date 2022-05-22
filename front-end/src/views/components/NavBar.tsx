@@ -101,7 +101,7 @@ const NavBar: React.FC<Props> = (props) => {
     window.location.href = "/doctor-page";
   };
   const handlePatientsClick = () => {
-    window.location.href = "https://www.kuh.ku.edu.tr/";
+    window.location.href = "/patients";
   };
   const handleNewPatientClick = () => {
     window.location.href = "/new-patient";

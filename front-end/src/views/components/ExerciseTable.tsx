@@ -56,12 +56,6 @@ const ExerciseTable: React.FC<IProps> = (props) => {
   var rows: IExerciseData[] = [];
   const [exercises, setExercises] = useState(rows);
 
-  var _exerciseId: number = -1;
-  const [exerciseId, setExerciseId] = useState(_exerciseId);
-
-  var _weakSide: string = "";
-  const [weakSide, setWeakSide] = useState(_weakSide);
-
   useEffect(() => {
     createRows();
   }, []);
