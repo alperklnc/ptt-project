@@ -1,5 +1,4 @@
 import * as React from "react";
-import Iframe from "react-iframe";
 import { Grid } from "@mui/material";
 
 import "../css/style-sheet.css";
@@ -8,9 +7,6 @@ import NavBar from "../components/NavBar";
 import ExerciseInfo from "../components/ExerciseInfo";
 import HeaderContainer from "../components/HeaderContainer";
 import MyChart from "../components/MyChart";
-
-import chart from '../../dummyGraph.jpeg';
-import pose from '../../pose.jpeg';
 
 export default function ExercisePage() {
   return (
@@ -38,9 +34,8 @@ export default function ExercisePage() {
           >
             <HeaderContainer title="Grafik" />
             <MyChart />
-            
           </Grid>
-          <Grid xs={0.0} sm={0.2} />
+          <Grid item xs={0.0} sm={0.2} />
 
           <Grid
             className="box-shadow"
@@ -50,10 +45,9 @@ export default function ExercisePage() {
             sm={5.8}
             direction="column"
           >
-
             <HeaderContainer title="İskelet" />
 
-            <div>              
+            <div>
               <iframe
                 src="http://127.0.0.1:5000/"
                 width="100%"

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect, ChangeEvent, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Grid } from "@mui/material";
 
@@ -9,13 +9,8 @@ import ExerciseTable from "../components/ExerciseTable";
 
 import { IPatientData } from "../../types/Patient";
 import PatientDataService from "../../services/PatientService";
-import { useParams } from "react-router-dom";
 
-interface IProps {
-  data?: IPatientData;
-}
-
-const PatientPage: React.FC<IProps> = (props) => {
+const PatientPage: React.FC = () => {
   const location = useLocation();
   const patientId = location.state as number;
 

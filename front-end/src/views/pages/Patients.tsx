@@ -49,7 +49,6 @@ const Patients: React.FC = () => {
           }}
         >
           {todaysPatients.map((item) => {
-            console.log(item);
             return (
               <div
                 style={{
