@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useState, useEffect, ChangeEvent, Suspense } from "react";
+import { useLocation } from "react-router-dom";
 import { Grid } from "@mui/material";
 
 import NavBar from "../components/NavBar";
@@ -8,52 +9,60 @@ import ExerciseTable from "../components/ExerciseTable";
 
 import { IPatientData } from "../../types/Patient";
 import PatientDataService from "../../services/PatientService";
+import { useParams } from "react-router-dom";
 
 interface IProps {
   data?: IPatientData;
 }
 
 const PatientPage: React.FC<IProps> = (props) => {
+  const location = useLocation();
+  const patientId = location.state as number;
+
   var _sessionId: number = -1;
 
-  const [sessionId, setSessionId] = useState(_sessionId);
+  var [sessionId, setSessionId] = useState(_sessionId);
 
   useEffect(() => {
-    PatientDataService.getSession(717)
+    getSessionId(patientId);
+  }, []);
+
+  function getSessionId(patientId: number) {
+    PatientDataService.getSession(patientId)
       .then((response) => {
         setSessionId(response.data[0].id);
       })
       .catch((e: Error) => {
         console.log(e);
       });
-  }, []);
+    return "";
+  }
 
-  if (_sessionId === null || _sessionId != -1) {
+  if (sessionId === null || sessionId == -1) {
     return <h2>Loading posts...</h2>;
-  } else {
-    return (
-      <div>
-        <NavBar />
-        <PatientInfo patientId={717} />
-        <div
+  }
+  return (
+    <div>
+      <NavBar />
+      <PatientInfo patientId={patientId} />
+      <div
+        style={{
+          padding: "3.5vw",
+          paddingLeft: "3.5vw",
+          paddingRight: "3.5vw",
+        }}
+      >
+        <Grid
+          container
           style={{
-            padding: "3.5vw",
-            paddingLeft: "3.5vw",
-            paddingRight: "3.5vw",
+            display: "flex",
           }}
         >
-          <Grid
-            container
-            style={{
-              display: "flex",
-            }}
-          >
-            <p>{sessionId}</p>
-            <ExerciseTable sessionId={sessionId}></ExerciseTable>
-          </Grid>
-        </div>
+          <div>{getSessionId(patientId)}</div>
+          <ExerciseTable sessionId={sessionId}></ExerciseTable>
+        </Grid>
       </div>
-    );
-  }
+    </div>
+  );
 };
 export default PatientPage;

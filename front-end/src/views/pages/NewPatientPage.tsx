@@ -31,7 +31,7 @@ function remove(array: string[], element: string) {
 
 const NewPatient: React.FC = () => {
   const initialPatientState = {
-    patientId: -1,
+    id: -1,
     patientFirstName: "",
     patientLastName: "",
     patientEmail: "",
@@ -105,7 +105,7 @@ const NewPatient: React.FC = () => {
     event.preventDefault();
 
     var data = {
-      patientId: patient.patientId,
+      id: patient.id,
       patientFirstName: patient.patientFirstName,
       patientLastName: patient.patientLastName,
       patientEmail: patient.patientEmail,
@@ -126,7 +126,7 @@ const NewPatient: React.FC = () => {
     PatientDataService.create(data)
       .then((response: any) => {
         setPatient({
-          patientId: patient.patientId,
+          id: patient.id,
           patientFirstName: patient.patientFirstName,
           patientLastName: patient.patientLastName,
           patientEmail: patient.patientEmail,

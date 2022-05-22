@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "react-router-dom";
 import { Grid, Button } from "@mui/material";
 import { Avatar } from "@mui/material";
 import { ProgressBar } from "react-bootstrap";
@@ -14,12 +15,9 @@ import { ISessionData } from "../../types/Session";
 interface Props {
   patientData: IPatientData;
   sessionInfo: ISessionData;
-  session?: number;
 }
 
 const NextPatient: React.FC<Props> = (props) => {
-  const startSession = () => (window.location.href = "/patient-page");
-
   return (
     <div className="box-shadow">
       <HeaderContainer title="Sıradaki Hasta" />
@@ -32,7 +30,7 @@ const NextPatient: React.FC<Props> = (props) => {
             {props.patientData.patientDisease}
           </Typography>
           <Typography className="NextPatient-Text">
-            {props.session}/{props.patientData.sessionAmount}
+            {props.patientData.id}/{props.patientData.sessionAmount}
           </Typography>
           <Typography className="NextPatient-Text">Toplam İyileşme</Typography>
 
@@ -78,13 +76,13 @@ const NextPatient: React.FC<Props> = (props) => {
         </Grid>
       </Grid>
       <Grid container justifyContent="center">
-        <Button
+        <Link
+          to="/patient-page"
+          state={props.patientData.id}
           className="NextPatient-Button"
-          variant="contained"
-          onClick={startSession}
         >
           Seansı Başlat
-        </Button>
+        </Link>
       </Grid>
     </div>
   );

@@ -16,7 +16,7 @@ interface Props {
 
 const PatientInfo: React.FC<Props> = (props) => {
   var patientData: IPatientData = {
-    patientId: -1,
+    id: -1,
     patientFirstName: "",
     patientLastName: "",
     patientEmail: "",
@@ -35,6 +35,10 @@ const PatientInfo: React.FC<Props> = (props) => {
   const [patientInfo, setPatientInfo] = useState(patientData);
 
   useEffect(() => {
+    setPatient();
+  }, []);
+
+  function setPatient() {
     PatientDataService.getById(props.patientId)
       .then((response) => {
         setPatientInfo(response.data);
@@ -42,7 +46,8 @@ const PatientInfo: React.FC<Props> = (props) => {
       .catch((e: Error) => {
         console.log(e);
       });
-  }, []);
+    return "";
+  }
 
   if (patientInfo === null) {
     return <h2>Loading posts...</h2>;
@@ -65,6 +70,7 @@ const PatientInfo: React.FC<Props> = (props) => {
           justifyItems: "center",
         }}
       >
+        <div>{setPatient()}</div>
         <Grid item xs={3}>
           <Typography className="PatientInfo-Text">
             {patientInfo.patientFirstName + " " + patientInfo.patientLastName}

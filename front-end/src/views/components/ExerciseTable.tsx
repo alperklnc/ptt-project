@@ -12,12 +12,15 @@ import Paper from "@mui/material/Paper";
 
 import FlaskService from "../../services/FlaskService";
 import PatientDataService from "../../services/PatientService";
+import { IExerciseData } from "../../types/Exercise";
 
 interface IProps {
   sessionId: number;
 }
 
 function createData(
+  exerciseId: number,
+  weakSide: string,
   type: string,
   prevAngle: number,
   currentAngle: number,
@@ -26,6 +29,8 @@ function createData(
   totalReocary: number
 ) {
   return {
+    exerciseId,
+    weakSide,
     type,
     prevAngle,
     currentAngle,
@@ -34,13 +39,6 @@ function createData(
     totalReocary,
   };
 }
-
-const rows = [
-  createData("Makara Ön", 110, 120, 9.09, 150, 80),
-  createData("Makara Yan", 110, 100, -9.09, 170, 58.8),
-  createData("Sopa Ön", 50, 55, 10, 110, 50),
-  createData("Sopa Yan", 70, 90, 28.5, 120, 75),
-];
 
 const StyledTableHeaderCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -55,20 +53,43 @@ const StyledTableHeaderCell = styled(TableCell)(({ theme }) => ({
 const ExerciseTable: React.FC<IProps> = (props) => {
   const navigate = useNavigate();
 
-  var exerciseData: [] = [];
+  var rows: IExerciseData[] = [];
+  const [exercises, setExercises] = useState(rows);
 
-  const [exercises, setExercises] = useState(exerciseData);
+  var _exerciseId: number = -1;
+  const [exerciseId, setExerciseId] = useState(_exerciseId);
+
+  var _weakSide: string = "";
+  const [weakSide, setWeakSide] = useState(_weakSide);
 
   useEffect(() => {
+    createRows();
+  }, []);
+
+  function createRows() {
+    rows = [];
     PatientDataService.getExerciseBySessionId(props.sessionId)
       .then((response) => {
-        setExercises(response.data);
-        console.log(response.data);
+        for (let index = 0; index < response.data.length; index++) {
+          var row = createData(
+            response.data[index].id,
+            response.data[index].weak,
+            response.data[index].name,
+            110,
+            120,
+            9.09,
+            150,
+            80
+          );
+          rows.push(row);
+        }
+        setExercises(rows);
       })
       .catch((e: Error) => {
         console.log(e);
       });
-  }, exerciseData);
+    return "";
+  }
 
   const sendExerciseInfo = (data: any) => {
     console.log("Data wanted to sent");
@@ -82,7 +103,9 @@ const ExerciseTable: React.FC<IProps> = (props) => {
       });
   };
 
-  const startExercise = (type: any) => {
+  const startExercise = (data: IExerciseData) => {
+    var type = data.type;
+
     var exerciseType = 0;
     if (type === "Makara Ön") {
       exerciseType = 1;
@@ -93,62 +116,79 @@ const ExerciseTable: React.FC<IProps> = (props) => {
     } else if (type === "Sopa Yan") {
       exerciseType = 4;
     }
+
+    var _weakSide = "";
+    if (data.weakSide == "SOL") {
+      _weakSide = "LEFT";
+    } else if (data.weakSide == "SAĞ") {
+      _weakSide = "RIGHT";
+    }
     var exerciseInfo = {
-      id: "275",
-      weak: "LEFT",
+      id: data.exerciseId,
+      weak: _weakSide,
       type: exerciseType,
     };
 
     sendExerciseInfo(exerciseInfo);
   };
 
+  if (exercises === null) {
+    return <h2>Loading exercises...</h2>;
+  }
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-        <TableHead>
-          <TableRow>
-            <StyledTableHeaderCell>Egzersizler</StyledTableHeaderCell>
-            <StyledTableHeaderCell align="center">
-              2. seans
-            </StyledTableHeaderCell>
-            <StyledTableHeaderCell align="center">
-              3. Seans
-            </StyledTableHeaderCell>
-            <StyledTableHeaderCell align="center">
-              İlerleme (%)
-            </StyledTableHeaderCell>
-            <StyledTableHeaderCell align="center">
-              Optimum Açı
-            </StyledTableHeaderCell>
-            <StyledTableHeaderCell align="center">
-              Toplam İyileşme (%)
-            </StyledTableHeaderCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.type}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell
-                component="th"
-                scope="row"
-                onClick={() => startExercise(row.type)}
-                style={{ cursor: "pointer" }}
-              >
-                {row.type}
-              </TableCell>
-              <TableCell align="center">{row.prevAngle}</TableCell>
-              <TableCell align="center">{row.currentAngle}</TableCell>
-              <TableCell align="center">{row.progression}</TableCell>
-              <TableCell align="center">{row.optimalAngle}</TableCell>
-              <TableCell align="center">{row.totalReocary}</TableCell>
+    <div
+      style={{
+        width: "100%",
+        alignItems: "center",
+      }}
+    >
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+          <TableHead>
+            <TableRow>
+              <StyledTableHeaderCell>Egzersizler</StyledTableHeaderCell>
+              <StyledTableHeaderCell align="center">
+                2. seans
+              </StyledTableHeaderCell>
+              <StyledTableHeaderCell align="center">
+                3. Seans
+              </StyledTableHeaderCell>
+              <StyledTableHeaderCell align="center">
+                İlerleme (%)
+              </StyledTableHeaderCell>
+              <StyledTableHeaderCell align="center">
+                Optimum Açı
+              </StyledTableHeaderCell>
+              <StyledTableHeaderCell align="center">
+                Toplam İyileşme (%)
+              </StyledTableHeaderCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {exercises.map((row) => (
+              <TableRow
+                key={row.type}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell
+                  component="th"
+                  scope="row"
+                  onClick={() => startExercise(row)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {row.type}
+                </TableCell>
+                <TableCell align="center">{row.prevAngle}</TableCell>
+                <TableCell align="center">{row.currentAngle}</TableCell>
+                <TableCell align="center">{row.progression}</TableCell>
+                <TableCell align="center">{row.optimalAngle}</TableCell>
+                <TableCell align="center">{row.totalReocary}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
   );
 };
 

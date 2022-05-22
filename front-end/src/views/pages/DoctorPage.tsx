@@ -22,7 +22,7 @@ const DoctorPage: React.FC = () => {
   };
 
   var nextPatientData: IPatientData = {
-    patientId: -1,
+    id: -1,
     patientFirstName: "",
     patientLastName: "",
     patientEmail: "",
@@ -107,11 +107,9 @@ const DoctorPage: React.FC = () => {
         >
           <Grid container item xs={11.8} sm={5.8}>
             <div>{setNextPatient(todaysSessions[0].pt_id)}</div>
-            <div>{}</div>
             <NextPatient
               patientData={nextPatientInfo}
               sessionInfo={nextSession}
-              session={1}
             />
           </Grid>
           <Grid item xs={0.0} sm={0.2} />
