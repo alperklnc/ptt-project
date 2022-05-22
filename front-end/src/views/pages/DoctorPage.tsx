@@ -131,7 +131,7 @@ const DoctorPage: React.FC<Props> = (props) => {
               date={nextSession.date + " - " + nextSession.time}
             />
           </Grid>
-          <Grid xs={0.0} sm={0.2} />
+          <Grid item xs={0.0} sm={0.2} />
           <Grid container item xs={11.8} sm={5.8}>
             <TodaysAppointments
               patientName1={getPatientName(0, todaysSessions[0].pt_id)}
