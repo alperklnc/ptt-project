@@ -100,9 +100,6 @@ const NavBar: React.FC<Props> = (props) => {
   const handleHomePageClick = () => {
     window.location.href = "/doctor-page";
   };
-  const handleAppointmentsClick = () => {
-    window.location.href = "https://www.kuh.ku.edu.tr/";
-  };
   const handlePatientsClick = () => {
     window.location.href = "https://www.kuh.ku.edu.tr/";
   };
@@ -232,13 +229,6 @@ const NavBar: React.FC<Props> = (props) => {
               onClick={handleHomePageClick}
             >
               Ana Sayfa
-            </StyledIconButton>
-            <StyledIconButton
-              size="small"
-              color="inherit"
-              onClick={handleAppointmentsClick}
-            >
-              Randevular
             </StyledIconButton>
             <StyledIconButton
               size="large"
