@@ -8,14 +8,13 @@ import AvatarImage from "../../patient1.jpg";
 import "../css/style-sheet.css";
 
 import HeaderContainer from "./HeaderContainer";
+import { IPatientData } from "../../types/Patient";
+import { ISessionData } from "../../types/Session";
 
 interface Props {
-  name?: string;
-  progress?: number;
-  reqSession?: number;
+  patientData: IPatientData;
+  sessionInfo: ISessionData;
   session?: number;
-  type?: string;
-  date?: string;
 }
 
 const NextPatient: React.FC<Props> = (props) => {
@@ -26,17 +25,21 @@ const NextPatient: React.FC<Props> = (props) => {
       <HeaderContainer title="Sıradaki Hasta" />
       <Grid container direction="row" height="40vh">
         <Grid container item sm={8} direction="column" className="Container">
-          <Typography className="NextPatient-Text">{props.date}</Typography>
-          <Typography className="NextPatient-Text">{props.type}</Typography>
           <Typography className="NextPatient-Text">
-            {props.session}/{props.reqSession}
+            {props.sessionInfo.date + " - " + props.sessionInfo.time}
+          </Typography>
+          <Typography className="NextPatient-Text">
+            {props.patientData.patientDisease}
+          </Typography>
+          <Typography className="NextPatient-Text">
+            {props.session}/{props.patientData.sessionAmount}
           </Typography>
           <Typography className="NextPatient-Text">Toplam İyileşme</Typography>
 
           <ProgressBar
             className="progress"
-            now={props.progress}
-            label={`${props.progress}%`}
+            now={props.patientData.recovery}
+            label={`${props.patientData.recovery}%`}
             variant="progress-bg"
             style={{
               width: "22vw",
@@ -66,7 +69,11 @@ const NextPatient: React.FC<Props> = (props) => {
             />
           </div>
           <div style={{ marginBottom: "30px" }}>
-            <Typography className="NextPatient-Name">{props.name}</Typography>
+            <Typography className="NextPatient-Name">
+              {props.patientData.patientFirstName +
+                " " +
+                props.patientData.patientLastName}
+            </Typography>
           </div>
         </Grid>
       </Grid>

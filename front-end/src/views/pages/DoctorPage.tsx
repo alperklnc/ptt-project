@@ -10,17 +10,7 @@ import { IPatientData } from "../../types/Patient";
 import { ISessionData } from "../../types/Session";
 import PatientDataService from "../../services/PatientService";
 
-interface Props {
-  name?: string;
-  type?: string;
-  reqSession?: number;
-  session?: number;
-  progress?: number;
-  date?: string;
-}
-
-//class DoctorPage extends React.Component
-const DoctorPage: React.FC<Props> = (props) => {
+const DoctorPage: React.FC = () => {
   var _todaysSessions: ISessionData[] = [];
   var nextSessionData: ISessionData = {
     id: -1,
@@ -119,16 +109,9 @@ const DoctorPage: React.FC<Props> = (props) => {
             <div>{setNextPatient(todaysSessions[0].pt_id)}</div>
             <div>{}</div>
             <NextPatient
-              name={
-                nextPatientInfo.patientFirstName +
-                " " +
-                nextPatientInfo.patientLastName
-              }
-              progress={30}
-              reqSession={nextPatientInfo.sessionAmount}
+              patientData={nextPatientInfo}
+              sessionInfo={nextSession}
               session={1}
-              type={nextPatientInfo.patientDisease}
-              date={nextSession.date + " - " + nextSession.time}
             />
           </Grid>
           <Grid item xs={0.0} sm={0.2} />
