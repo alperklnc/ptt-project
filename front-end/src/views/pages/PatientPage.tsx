@@ -1,101 +1,40 @@
 import * as React from "react";
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect, ChangeEvent, Suspense } from "react";
 import { Grid } from "@mui/material";
 
 import NavBar from "../components/NavBar";
 import PatientInfo from "../components/PatientInfo";
 import ExerciseTable from "../components/ExerciseTable";
 
-import {IPatientData} from "../../types/Patient";
+import { IPatientData } from "../../types/Patient";
 import PatientDataService from "../../services/PatientService";
 
 interface IProps {
   data?: IPatientData;
 }
 
-class PatientPage extends React.Component<IProps> {
-  initialPatientState = {
-    patientFirstName: "",
-    patientLastName: "",
-    patientEmail: "",
-    patientTellNo: "",
-    isMan: false,
-    patientDisease: "",
-    sessionAmount: 0,
-    period: 0,
-    weak: "",
-    sessionHour: "",
-    exercises: [],
-    session: 0,
-    recovery: 0,
-  };
+const PatientPage: React.FC<IProps> = (props) => {
+  var _sessionId: number = -1;
 
-  patientData: IPatientData;
+  const [sessionId, setSessionId] = useState(_sessionId);
 
-  componentWillMount() {
-    console.log("componentWillMount - Patient Page");
-  }
-  constructor(props: IProps) {
-    console.log("constructor - Patient Page");
-    super(props);
-    this.patientData = this.initialPatientState;
-    PatientDataService.getById(1)
-      .then((response: any) => {
-        console.log(response.data);
-        this.patientData = {
-          patientFirstName: response.data.patientFirstName,
-          patientLastName: response.data.patientLastName,
-          patientEmail: response.data.patientEmail,
-          patientTellNo: response.data.patientTellNo,
-          isMan: response.data.isMan,
-          patientDisease: response.data.patientDisease,
-          sessionAmount: response.data.sessionAmount,
-          period: response.data.period,
-          weak: response.data.weak,
-          sessionHour: response.data.sessionHour,
-          exercises: response.data.exercises,
-        };
+  useEffect(() => {
+    PatientDataService.getSession(717)
+      .then((response) => {
+        setSessionId(response.data[0].id);
       })
       .catch((e: Error) => {
         console.log(e);
       });
-    console.log(this.patientData);
-  }
+  }, []);
 
-  setPatient = (response: any) => {
-    const data = response.data;
-
-    this.patientData = {
-      patientFirstName: data.patientFirstName,
-      patientLastName: data.patientLastName,
-      patientEmail: data.patientEmail,
-      patientTellNo: data.patientTellNo,
-      isMan: data.isMan,
-      patientDisease: data.patientDisease,
-      sessionAmount: data.sessionAmount,
-      period: data.period,
-      weak: data.weak,
-      sessionHour: data.sessionHour,
-      exercises: data.exercises,
-    };
-  };
-
-  getPatientInfo = (id: number) => {
-    PatientDataService.getById(id)
-      .then((response: any) => {
-        console.log(response.data);
-        this.setPatient(response);
-      })
-      .catch((e: Error) => {
-        console.log(e);
-      });
-  };
-
-  render() {
+  if (_sessionId === null || _sessionId != -1) {
+    return <h2>Loading posts...</h2>;
+  } else {
     return (
       <div>
         <NavBar />
-        <PatientInfo />
+        <PatientInfo patientId={717} />
         <div
           style={{
             padding: "3.5vw",
@@ -109,11 +48,12 @@ class PatientPage extends React.Component<IProps> {
               display: "flex",
             }}
           >
-            <ExerciseTable url="/exercise-page"></ExerciseTable>
+            <p>{sessionId}</p>
+            <ExerciseTable sessionId={sessionId}></ExerciseTable>
           </Grid>
         </div>
       </div>
     );
   }
-}
+};
 export default PatientPage;

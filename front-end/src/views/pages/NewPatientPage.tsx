@@ -13,11 +13,10 @@ import FormLabel from "@mui/material/FormLabel";
 import NavBar from "../components/NavBar";
 
 import "../css/NewPatient.css";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 
-import {IPatientData} from "../../types/Patient";
+import { IPatientData } from "../../types/Patient";
 import PatientDataService from "../../services/PatientService";
-
 
 var exercisesList: string[] = [];
 
@@ -32,6 +31,7 @@ function remove(array: string[], element: string) {
 
 const NewPatient: React.FC = () => {
   const initialPatientState = {
+    patientId: -1,
     patientFirstName: "",
     patientLastName: "",
     patientEmail: "",
@@ -81,11 +81,11 @@ const NewPatient: React.FC = () => {
       }
     }
 
-    var weak_ ="";
-    if(target.name === "weak"){
-      if(target.value === "Sol"){
+    var weak_ = "";
+    if (target.name === "weak") {
+      if (target.value === "Sol") {
         weak_ = "LEFT";
-      } else if(target.value === "Sağ"){
+      } else if (target.value === "Sağ") {
         weak_ = "RIGHT";
       }
     }
@@ -98,7 +98,6 @@ const NewPatient: React.FC = () => {
       [name]: value,
       ["period"]: period,
       ["sessionAmount"]: sessionAmount,
-      
     });
   };
 
@@ -106,6 +105,7 @@ const NewPatient: React.FC = () => {
     event.preventDefault();
 
     var data = {
+      patientId: patient.patientId,
       patientFirstName: patient.patientFirstName,
       patientLastName: patient.patientLastName,
       patientEmail: patient.patientEmail,
@@ -126,6 +126,7 @@ const NewPatient: React.FC = () => {
     PatientDataService.create(data)
       .then((response: any) => {
         setPatient({
+          patientId: patient.patientId,
           patientFirstName: patient.patientFirstName,
           patientLastName: patient.patientLastName,
           patientEmail: patient.patientEmail,
@@ -296,7 +297,7 @@ const NewPatient: React.FC = () => {
                   value={patient.sessionAmount}
                   onChange={handleInputChange}
                 />
-                
+
                 <TextField
                   label="Seans Sıklığı"
                   variant="standard"

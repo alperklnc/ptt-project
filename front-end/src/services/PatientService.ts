@@ -1,15 +1,25 @@
 import http from "../http-common";
-import {IPatientData} from "../types/Patient";
+import { IPatientData } from "../types/Patient";
+import { ISessionData } from "../types/Session";
 
 const getAll = () => {
   return http.get<Array<IPatientData>>("/api/patient");
 };
-const getById = (id: number) => {
+const getPatientById = (id: number) => {
   return http.get<IPatientData>(`/api/patient/${id}`);
 };
-const getTodaysPatients = async () => {
-  return await http.get<Array<IPatientData>>(`/api/session`);
+const getTodaysPatients = () => {
+  return http.get<Array<ISessionData>>(`/api/session`);
 };
+
+const getExerciseBySessionId = (sessionId: number) => {
+  return http.get<any>(`/api/exercise/${sessionId}`);
+}
+
+const getSession = (id: number) => {
+  return http.get<any>(`/api/session/${id}`);
+}
+
 const create = (data: IPatientData) => {
   return http.post<IPatientData>("/api/patient", data);
 };
@@ -27,12 +37,14 @@ const findByName = (fname: string) => {
 };
 const PatientService = {
   getAll,
-  getById,
+  getById: getPatientById,
   create,
   update,
   remove,
   removeAll,
   findByName,
   getTodaysPatients,
+  getExerciseBySessionId,
+  getSession,
 };
 export default PatientService;

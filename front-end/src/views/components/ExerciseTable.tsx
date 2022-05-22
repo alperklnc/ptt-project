@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,9 +11,10 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 import FlaskService from "../../services/FlaskService";
+import PatientDataService from "../../services/PatientService";
 
-interface Props {
-  url: string;
+interface IProps {
+  sessionId: number;
 }
 
 function createData(
@@ -50,40 +52,55 @@ const StyledTableHeaderCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-const ExerciseTable: React.FC<Props> = (props) => {
+const ExerciseTable: React.FC<IProps> = (props) => {
   const navigate = useNavigate();
 
-  const sendExerciseInfo = (data : any) => {
-    console.log("Data wanted to sent")
+  var exerciseData: [] = [];
+
+  const [exercises, setExercises] = useState(exerciseData);
+
+  useEffect(() => {
+    PatientDataService.getExerciseBySessionId(props.sessionId)
+      .then((response) => {
+        setExercises(response.data);
+        console.log(response.data);
+      })
+      .catch((e: Error) => {
+        console.log(e);
+      });
+  }, exerciseData);
+
+  const sendExerciseInfo = (data: any) => {
+    console.log("Data wanted to sent");
     console.log(data);
     FlaskService.sendExerciseInfo(data)
-    .then((response: any) => {
-      console.log(response.data);
-    })
-    .catch((e: Error) => {
-      console.log(e);
-    });
-  }
+      .then((response: any) => {
+        console.log(response.data);
+      })
+      .catch((e: Error) => {
+        console.log(e);
+      });
+  };
 
   const startExercise = (type: any) => {
     var exerciseType = 0;
-    if(type === "Makara Ön"){
+    if (type === "Makara Ön") {
       exerciseType = 1;
-    } else if (type === "Makara Yan"){
+    } else if (type === "Makara Yan") {
       exerciseType = 2;
-    } else if (type === "Sopa Ön"){
+    } else if (type === "Sopa Ön") {
       exerciseType = 3;
-    } else if (type === "Sopa Yan"){
+    } else if (type === "Sopa Yan") {
       exerciseType = 4;
     }
     var exerciseInfo = {
       id: "275",
       weak: "LEFT",
       type: exerciseType,
-    }
+    };
 
     sendExerciseInfo(exerciseInfo);
-  }
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -92,7 +109,7 @@ const ExerciseTable: React.FC<Props> = (props) => {
           <TableRow>
             <StyledTableHeaderCell>Egzersizler</StyledTableHeaderCell>
             <StyledTableHeaderCell align="center">
-              2. Seans
+              2. seans
             </StyledTableHeaderCell>
             <StyledTableHeaderCell align="center">
               3. Seans

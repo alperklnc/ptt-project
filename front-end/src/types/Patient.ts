@@ -1,5 +1,5 @@
 export interface IPatientData {
-  id?: number,
+  patientId: number,
   patientFirstName: string,
   patientLastName: string,
   patientEmail: string,
