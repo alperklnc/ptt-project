@@ -1,18 +1,19 @@
 from distutils.log import debug
 import math
-from urllib import request
 from flask_sock import Sock
 import cv2
 import numpy as np
 from time import sleep, time
 import mediapipe as mp
 import sys
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response,request
 from flask_socketio import SocketIO, send
 from matplotlib import pyplot as plt
 import requests
 from flask_cors import CORS, cross_origin
 import os
+import json
+import logging
 
 mp_pose = mp.solutions.pose
 mp_pose2 = mp.solutions.pose
@@ -20,31 +21,37 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 video = cv2.VideoCapture(0)
 video2 = cv2.VideoCapture(1)
-#total_max = []
-#total_hip = []
-output_hash={"max":[],"hip":[]}
+# total_max = []
+# total_hip = []
+input_hash = {"eid":0,"weak":"LEFT","type":1}
+output_hash = {"max": [], "hip": []}
 app = Flask(__name__)
 CORS(app, support_credentials=True)
+logging.getLogger('flask_cors').level = logging.DEBUG
 app.config['SECRET_KEY'] = 'fener1453'
-socketio=SocketIO(app,cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*")
 a = 0
 sock = Sock(app)
+
+
 @sock.route('/echo')
 @cross_origin(supports_credentials=True)
 def echo(sock):
     global a
-    a=1
+    a = 1
     while True:
-        a+=1
+        a += 1
         sleep(0.5)
-        total_max=output_hash["max"]
-        total_hip=output_hash["hip"]
+        total_max = output_hash["max"]
+        total_hip = output_hash["hip"]
         print("total arm angle")
         print(total_max)
         print("hip angles")
         print(total_hip)
-        hmp={"total_max":total_max,"total_hip":total_hip}
+        hmp = {"total_max": total_max, "total_hip": total_hip}
         sock.send(hmp)
+
+
 """
 
 @socketio.on("message")
@@ -56,6 +63,7 @@ def sendArray():
         send(hmp,broadcast=True)"""
 axes_x = [0, 210]
 axes_y = [0, 0]
+
 
 def detectPose(image, pose, display=True):
     # Initializing mediapipe pose class.
@@ -90,6 +98,7 @@ def detectPose(image, pose, display=True):
     # Return the output image and the found landmarks.
     return output_image, landmarks, results.pose_landmarks
 
+
 def calculateAngle2D(landmark1, landmark2, landmark3):
     # Get the required landmarks coordinates.
     x1, y1, _ = landmark1
@@ -103,6 +112,7 @@ def calculateAngle2D(landmark1, landmark2, landmark3):
         angle += 360
     return int(angle)
 
+
 def calculateAngle3D(Angle1, Angle2):
     # make correction
     if 90.5 > Angle1 > 89.5:
@@ -115,6 +125,7 @@ def calculateAngle3D(Angle1, Angle2):
     if Angle1 > 90 and Angle2 > 90:
         angle3D = 180 - angle3D
     return int(angle3D)
+
 
 def Selector(Ex_id, Landmark1, Landmark2, Direction):
     if Direction == 'RIGHT':
@@ -150,6 +161,7 @@ def Selector(Ex_id, Landmark1, Landmark2, Direction):
     else:
         return -180, -180
 
+
 def Exer1(landmarks1, landmarks2):
     shoulder_angle = 0
     hip_angle = 0
@@ -170,6 +182,7 @@ def Exer1(landmarks1, landmarks2):
 
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
     return angle3D, hip_angle
+
 
 def Exer2(landmarks1, landmarks2):
     shoulder_angle = 0
@@ -192,6 +205,7 @@ def Exer2(landmarks1, landmarks2):
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
     return angle3D, hip_angle
 
+
 def Exer3(landmarks1, landmarks2):
     shoulder_angle = 0
     hip_angle = 0
@@ -212,6 +226,7 @@ def Exer3(landmarks1, landmarks2):
 
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
     return angle3D, hip_angle
+
 
 def Exer4(landmarks1, landmarks2):
     shoulder_angle = 0
@@ -234,6 +249,7 @@ def Exer4(landmarks1, landmarks2):
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
     return angle3D, hip_angle
 
+
 def Exer5(landmarks1, landmarks2):
     shoulder_angle = 0
     hip_angle = 0
@@ -254,6 +270,7 @@ def Exer5(landmarks1, landmarks2):
 
     angle3D = calculateAngle3D(360 - shoulder_angle, 360 - shoulder_angle_back)
     return angle3D, hip_angle
+
 
 def Exer6(landmarks1, landmarks2):
     shoulder_angle = 0
@@ -276,6 +293,7 @@ def Exer6(landmarks1, landmarks2):
     angle3D = calculateAngle3D(360 - shoulder_angle, 360 - shoulder_angle_back)
     return angle3D, hip_angle
 
+
 def Exer7(landmarks1, landmarks2):
     shoulder_angle = 0
     hip_angle = 0
@@ -296,6 +314,7 @@ def Exer7(landmarks1, landmarks2):
 
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back);
     return angle3D, hip_angle
+
 
 def Exer8(landmarks1, landmarks2):
     shoulder_angle = 0
@@ -318,23 +337,27 @@ def Exer8(landmarks1, landmarks2):
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back);
     return angle3D, hip_angle
 
-def rotate( point):
+
+def rotate(point):
     angle = 45
-    ox, oy = 0,0
+    ox, oy = 0, 0
     px, py = point
     qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
     qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
     return qx, qy
 
+
 def set_axes():
     for i in range(2):
         point = [axes_x[i], axes_y[i]]
-        axes_x[i], axes_y[i] = rotate( point)
+        axes_x[i], axes_y[i] = rotate(point)
+
 
 @app.route('/')
 @cross_origin(supports_credentials=True)
 def index():
     return render_template('index.html')
+
 
 @app.route('/video')
 @cross_origin(supports_credentials=True)
@@ -344,7 +367,7 @@ def video():
 
 
 def helper():
-    #thread = socketio.start_background_task(target=sendArray)
+    # thread = socketio.start_background_task(target=sendArray)
     """
     Taking input inside
     side = input("Enter week side of patient! (RIGHT or LEFT)\n")
@@ -353,9 +376,10 @@ def helper():
     print("\texercise number is " + str(exercise))
     """
     set_axes()
-    side = os.environ.get("WEAK","LEFT")
-    exercise = os.environ.get("EXT",1)
-    
+
+    side=input_hash["weak"]
+    exercise=input_hash["type"]
+
     print("\tweek side is ", side)
     print("\texercise number is " + str(exercise))
     # Setup Pose function for video.
@@ -385,20 +409,20 @@ def helper():
     time1 = 0
     angle_list = []
     local_max = 0
-    ret_shoul=[]
-    ret_hip=[]
+    ret_shoul = []
+    ret_hip = []
     for i in range(10):
         output_hash["max"].append(-5)
         output_hash["hip"].append(-5)
-        #total_max.append(-5)
-        #total_hip.append(-5)
+        # total_max.append(-5)
+        # total_hip.append(-5)
         ret_hip.append(-5)
         ret_shoul.append(-5)
     count = 0
-    lastx=-5
-    lasty=-5
-    NRLX=0
-    NRLY=0
+    lastx = -5
+    lasty = -5
+    NRLX = 0
+    NRLY = 0
 
     # Iterate until the video is accessed successfully.
     while video.isOpened() and video2.isOpened():
@@ -459,22 +483,25 @@ def helper():
                 lastx = int(local_max)
                 lasty = int(hip_angle) - 180
                 NRLX, NRLY = int(lastx), int(lasty)
-                output_hash["max"][count]=int(lastx)
-                output_hash["hip"][count]=int(lasty)
-                #print("shoulder angle " + str(angle3D))
+                output_hash["max"][count] = int(lastx)
+                output_hash["hip"][count] = int(lasty)
+                # print("shoulder angle " + str(angle3D))
+
+            #plt.close("all")
+            lastx, lasty = rotate( [lastx, lasty])
 
 
-            plt.close("all")
-            #lastx, lasty = rotate( [lastx, lasty])
-            total_max=output_hash["max"]
-            total_hip=output_hash["hip"]
+            total_max = output_hash["max"]
+            total_hip = output_hash["hip"]
+
+            """"
             plt.plot(total_max, total_hip, 'o', 'b')
             plt.plot([lastx], [lasty], 'g^')
             plt.plot(axes_x, axes_y, linestyle='-', color='k')
             plt.xlim(0, 110)
             plt.ylim(0, 180)
             plt.show(block=False)
-            """
+            
             plt.savefig('testplot.png')
             graphIMage = Image.open('testplot.png').save('testplot.jpg', 'JPEG')
             #"""
@@ -483,13 +510,12 @@ def helper():
 
                 """output_hash["max"][count]=lastx
                 output_hash["hip"][count]=lasty"""
-            
-                
-                #total_max[count] = lastx
-                #total_hip[count] = lasty
+
+                # total_max[count] = lastx
+                # total_hip[count] = lasty
                 ret_shoul[count] = NRLX
-                ret_hip[count]= NRLY
-                #print("hip angle " + str(hip_angle))
+                ret_hip[count] = NRLY
+                # print("hip angle " + str(hip_angle))
                 count += 1
 
         # 10 repetation is done
@@ -499,14 +525,15 @@ def helper():
             print(ret_shoul)
             print("hip angles")
             print(ret_hip)
-
-            json={"shoulder": ret_shoul, "hip": ret_hip}
-            r = requests.put('http://physio-env.eba-u4ctwpu4.eu-central-1.elasticbeanstalk.com/api/exercise/74', json={"shoulder": ret_shoul, "hip": ret_hip})
+            ex_id=input_hash["eid"]
+            json_str = {"shoulder": ret_shoul, "hip": ret_hip}
+            url_str='http://physio-env.eba-u4ctwpu4.eu-central-1.elasticbeanstalk.com/api/exercise/{}'.format(ex_id)
+            r = requests.put(url=url_str,json=json_str)
             print(r.status_code)
-            #"""
+            # """
             sys.exit()
             # Break the loop.
-            #break
+            # break
         # Update the previous frame time to this frame time.
         # As this frame will become previous frame in next iteration.
         time1 = time2
@@ -549,31 +576,35 @@ def helper():
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + flask_output + b'\r\n')
 
-
     # Release the VideoCapture object.
     video.release()
     # Close the windows.
     cv2.destroyAllWindows()
 
 
-@app.route("/data", methods=["GET","POST"])
-@cross_origin(supports_credentials=True)
+@app.route("/data", methods=["GET", "POST"])
+@cross_origin(supports_credentials=True,allow_headers='*')
 def getdata():
+
     ex_id = request.json['id']
     weak = request.json['weak']
     ex_type = request.json['type']
+    print(ex_id)
+    print(weak)
+    print(ex_type)
 
-    os.environ["EID"]=ex_id
-    os.environ["WEAK"]=weak
-    os.environ["EXT"]=ex_type
-    return ""    
+    input_hash["eid"]=ex_id
+    input_hash["weak"]=weak
+    input_hash["type"]=ex_type
+
+    return ""
 
 
 # ---------------------------------------------#
 
 def main():
     app.run(debug=True)
-    #socketio.run(app,debug=True)
+    # socketio.run(app,debug=True)
 
 
 main()
