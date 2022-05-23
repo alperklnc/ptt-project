@@ -9,8 +9,8 @@ const get = (name: string) => {
   return http.get<ILoginData>(`/doctor/${name}`);
 };
 
-const authenticate = (data: ILoginData) => {
-  return http.post<ILoginData>("/login", data);
+const authenticate = (data: FormData) => {
+  return http.post<FormData>("/login", data);
 };
 
 const LoginService = {
