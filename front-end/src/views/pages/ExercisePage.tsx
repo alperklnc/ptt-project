@@ -1,5 +1,4 @@
 import * as React from "react";
-import Iframe from "react-iframe";
 import { Grid } from "@mui/material";
 
 import "../css/style-sheet.css";
@@ -36,7 +35,7 @@ export default function ExercisePage() {
             <HeaderContainer title="Grafik" />
             <MyChart />
           </Grid>
-          <Grid xs={0.0} sm={0.2} />
+          <Grid item xs={0.0} sm={0.2} />
 
           <Grid
             className="box-shadow"
@@ -46,17 +45,16 @@ export default function ExercisePage() {
             sm={5.8}
             direction="column"
           >
-            <Grid item>
-              <HeaderContainer title="Pose" />
-            </Grid>
-            <Grid item>
+            <HeaderContainer title="İskelet" />
+
+            <div>
               <iframe
                 src="http://127.0.0.1:5000/"
                 width="100%"
-                height="400%"
+                height="280%"
                 id="pose"
               ></iframe>
-            </Grid>
+            </div>
           </Grid>
         </Grid>
       </div>

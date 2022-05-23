@@ -7,11 +7,6 @@ import "../css/Login.css";
 import ILoginData from "../../types/Login";
 import LoginDataService from "../../services/LoginService";
 
-interface Props {
-  username: string;
-  password: string;
-}
-
 const Login: React.FC = () => {
   const navigate = useNavigate();
 

@@ -13,10 +13,11 @@ import FormLabel from "@mui/material/FormLabel";
 import NavBar from "../components/NavBar";
 
 import "../css/NewPatient.css";
-import IPatientData from "../../types/Patient";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+import { IPatientData } from "../../types/Patient";
 import PatientDataService from "../../services/PatientService";
 
-var weekDaysList: string[] = [];
 var exercisesList: string[] = [];
 
 function remove(array: string[], element: string) {
@@ -30,20 +31,26 @@ function remove(array: string[], element: string) {
 
 const NewPatient: React.FC = () => {
   const initialPatientState = {
+    id: -1,
     patientFirstName: "",
     patientLastName: "",
     patientEmail: "",
     patientTellNo: "",
     isMan: false,
     patientDisease: "",
-    reqSession: "",
-    frequency: "",
+    sessionAmount: 0,
+    period: 0,
+    weak: "",
+    sessionHour: "",
     exercises: [],
-    session: 0,
-    recovery: 0,
+    //session: 0,
+    //recovery: 0,
   };
 
+  
   const [patient, setPatient] = useState<IPatientData>(initialPatientState);
+  const [weakSide, setWeakSide] = useState<string>("SOL");
+  const [disease, setDisease] = useState<string>("Donuk Omuz");
   const [submitted, setSubmitted] = useState<boolean>(false);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -51,19 +58,28 @@ const NewPatient: React.FC = () => {
     const name = target.name;
     const value = target.type === "checkbox" ? target.checked : target.value;
 
+    var sessionAmount = patient.sessionAmount ? patient.sessionAmount : 0;
+    if (target.name === "sessionAmount") {
+      sessionAmount = target.value ? parseInt(target.value) : 0;
+    }
+
+    var period = patient.period ? patient.period : 0;
+    if (target.name === "period") {
+      period = target.value ? parseInt(target.value) : 0;
+    }
+
     var isMan = false;
 
     if (target.type === "radio") {
-      console.log((event.target as HTMLInputElement).value);
       isMan = (event.target as HTMLInputElement).value === "male";
     }
 
     if (target.type === "checkbox") {
-      if (target.id === "day") {
+      if (target.id === "exercise") {
         if (target.checked) {
-          weekDaysList.push(target.name);
+          exercisesList.push(target.name);
         } else {
-          remove(weekDaysList, target.name);
+          remove(exercisesList, target.name);
         }
       }
     }
@@ -73,6 +89,8 @@ const NewPatient: React.FC = () => {
       ["isMan"]: isMan,
       ["exercises"]: exercisesList,
       [name]: value,
+      ["period"]: period,
+      ["sessionAmount"]: sessionAmount,
     });
   };
 
@@ -80,47 +98,32 @@ const NewPatient: React.FC = () => {
     event.preventDefault();
 
     var data = {
+      id: patient.id,
       patientFirstName: patient.patientFirstName,
       patientLastName: patient.patientLastName,
       patientEmail: patient.patientEmail,
       patientTellNo: patient.patientTellNo,
       isMan: patient.isMan,
-      patientDisease: patient.patientDisease,
-      reqSession: patient.reqSession,
-      frequency: patient.frequency,
+      patientDisease: disease,
+      sessionAmount: patient.sessionAmount,
+      period: patient.period,
+      weak: weakSide,
+      sessionHour: patient.sessionHour,
       exercises: patient.exercises,
-      session: patient.session,
-      recovery: patient.recovery,
+      //session: patient.session,
+      //recovery: patient.recovery,
     };
+    
+    console.log(data);
 
     PatientDataService.create(data)
       .then((response: any) => {
-        console.log(data);
-
-        setPatient({
-          patientFirstName: patient.patientFirstName,
-          patientLastName: patient.patientLastName,
-          patientEmail: patient.patientEmail,
-          patientTellNo: patient.patientTellNo,
-          isMan: patient.isMan,
-          patientDisease: patient.patientDisease,
-          reqSession: patient.reqSession,
-          frequency: patient.frequency,
-          exercises: patient.exercises,
-          session: patient.session,
-          recovery: patient.recovery,
-        });
         setSubmitted(true);
-        console.log(response.data);
+        console.log(response.data)
       })
       .catch((e: Error) => {
         console.log(e);
       });
-  };
-
-  const newPatient = () => {
-    setPatient(initialPatientState);
-    setSubmitted(false);
   };
 
   return (
@@ -137,7 +140,7 @@ const NewPatient: React.FC = () => {
         <Grid className="box-shadow">
           <Typography
             style={{
-              fontSize: "1.3vw",
+              fontSize: "1.5vw",
               padding: "2vw 4vw 0vw",
             }}
           >
@@ -168,7 +171,7 @@ const NewPatient: React.FC = () => {
               >
                 <Typography
                   style={{
-                    fontSize: "1vw",
+                    fontSize: "1.3vw",
                   }}
                 >
                   Kişisel Bilgiler
@@ -192,6 +195,7 @@ const NewPatient: React.FC = () => {
                   label="Mail"
                   variant="standard"
                   name="patientEmail"
+                  placeholder="email@email.com"
                   value={patient.patientEmail}
                   onChange={handleInputChange}
                 />
@@ -242,32 +246,74 @@ const NewPatient: React.FC = () => {
               >
                 <Typography
                   style={{
-                    fontSize: "1vw",
+                    fontSize: "1.3vw",
                   }}
                 >
                   Seans Bilgileri
                 </Typography>
                 <Divider />
-                <TextField
-                  label="Hastalık Tipi"
-                  variant="standard"
-                  name="patientDisease"
-                  value={patient.patientDisease}
-                  onChange={handleInputChange}
-                />
+                <div style={{
+                    paddingBottom: "10px"
+                  }}>
+                  <Typography
+                  style={{
+                    fontSize: "1vw",
+                    paddingTop: "10px"
+                  }}
+                >
+                  Hastalık Tipi
+                </Typography>
+                
+                <select id="disease" name="patientDisease"
+                  value={disease} 
+                  onChange={(e) => setDisease(e.target.value)}
+                  >
+                  <option value="Donuk Omuz">Donuk Omuz</option>
+                </select>
+                </div>
+                <div style={{
+                    paddingBottom: "10px"
+                  }}>
+                  <Typography
+                  style={{
+                    fontSize: "1vw",
+                    paddingTop: "10px"
+                  }}
+                >
+                  Zayıf Taraf
+                </Typography>
+                
+                <select id="weakSide" name="weak"
+                  value={weakSide} 
+                  onChange={(e) => setWeakSide(e.target.value)}
+                  >
+                  <option value="SOL">Sol</option>
+                  <option value="SAĞ">Sağ</option>
+                </select>
+                </div>
+
                 <TextField
                   label="Gerekli Seans Sayısı"
                   variant="standard"
-                  name="reqSession"
-                  value={patient.reqSession}
+                  name="sessionAmount"
+                  value={patient.sessionAmount}
                   onChange={handleInputChange}
+                  
                 />
 
                 <TextField
                   label="Seans Sıklığı"
                   variant="standard"
-                  name="frequency"
-                  value={patient.frequency}
+                  name="period"
+                  value={patient.period}
+                  onChange={handleInputChange}
+                />
+                <TextField
+                  label="Seans Saati"
+                  variant="standard"
+                  name="sessionHour"
+                  placeholder="14:30"
+                  value={patient.sessionHour}
                   onChange={handleInputChange}
                 />
 
