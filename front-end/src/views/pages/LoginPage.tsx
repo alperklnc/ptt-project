@@ -25,20 +25,13 @@ const Login: React.FC = () => {
 
   const login = (event: { preventDefault: () => void }) => {
     event.preventDefault();
-
-    var data = {
-      username: loginData.username,
-      password: loginData.password,
-    };
-
-    console.log(data);
-    navigate("/doctor-page");
+    const data = new FormData();  
+    data.append("username", loginData.username);
+    data.append("password", loginData.password);
 
     LoginDataService.authenticate(data)
       .then((response: any) => {
-        console.log("then");
-        console.log(response.data);
-        // if(response) navigate("/doctor-page");
+        if(response.data.status === 200) navigate("/doctor-page");
       })
       .catch((e: Error) => {
         console.log("error");
