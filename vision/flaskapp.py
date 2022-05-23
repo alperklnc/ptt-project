@@ -35,6 +35,10 @@ def echo(sock):
         sleep(0.5)
         total_max=output_hash["max"]
         total_hip=output_hash["hip"]
+        print("total arm angle")
+        print(total_max)
+        print("hip angles")
+        print(total_hip)
         hmp={"total_max":total_max,"total_hip":total_hip}
         sock.send(hmp)
 """
@@ -449,11 +453,13 @@ def helper():
                 lastx = int(local_max)
                 lasty = int(hip_angle) - 180
                 NRLX, NRLY = int(lastx), int(lasty)
+                output_hash["max"][count]=int(lastx)
+                output_hash["hip"][count]=int(lasty)
                 #print("shoulder angle " + str(angle3D))
 
 
             plt.close("all")
-            lastx, lasty = rotate( [lastx, lasty])
+            #lastx, lasty = rotate( [lastx, lasty])
             total_max=output_hash["max"]
             total_hip=output_hash["hip"]
             plt.plot(total_max, total_hip, 'o', 'b')
@@ -468,8 +474,9 @@ def helper():
             #"""
             if angle3D < 35 and local_max > 45:
                 local_max = 0
-                output_hash["max"][count]=lastx
-                output_hash["hip"][count]=lasty
+
+                """output_hash["max"][count]=lastx
+                output_hash["hip"][count]=lasty"""
             
                 
                 #total_max[count] = lastx
