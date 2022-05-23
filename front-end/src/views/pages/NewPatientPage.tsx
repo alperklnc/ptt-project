@@ -47,7 +47,10 @@ const NewPatient: React.FC = () => {
     //recovery: 0,
   };
 
+  
   const [patient, setPatient] = useState<IPatientData>(initialPatientState);
+  const [weakSide, setWeakSide] = useState<string>("SOL");
+  const [disease, setDisease] = useState<string>("Donuk Omuz");
   const [submitted, setSubmitted] = useState<boolean>(false);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -81,20 +84,10 @@ const NewPatient: React.FC = () => {
       }
     }
 
-    var weak_ = "";
-    if (target.name === "weak") {
-      if (target.value === "Sol") {
-        weak_ = "LEFT";
-      } else if (target.value === "Sağ") {
-        weak_ = "RIGHT";
-      }
-    }
-
     setPatient({
       ...patient,
       ["isMan"]: isMan,
       ["exercises"]: exercisesList,
-      ["weak"]: weak_,
       [name]: value,
       ["period"]: period,
       ["sessionAmount"]: sessionAmount,
@@ -104,6 +97,7 @@ const NewPatient: React.FC = () => {
   const savePatient = (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
+    console.log(weakSide);
     var data = {
       id: patient.id,
       patientFirstName: patient.patientFirstName,
@@ -111,18 +105,19 @@ const NewPatient: React.FC = () => {
       patientEmail: patient.patientEmail,
       patientTellNo: patient.patientTellNo,
       isMan: patient.isMan,
-      patientDisease: patient.patientDisease,
+      patientDisease: disease,
       sessionAmount: patient.sessionAmount,
       period: patient.period,
-      weak: patient.weak,
+      weak: weakSide,
       sessionHour: patient.sessionHour,
       exercises: patient.exercises,
       //session: patient.session,
       //recovery: patient.recovery,
     };
 
+    
     console.log(data);
-
+    /*
     PatientDataService.create(data)
       .then((response: any) => {
         setPatient({
@@ -147,6 +142,7 @@ const NewPatient: React.FC = () => {
       .catch((e: Error) => {
         console.log(e);
       });
+      */
   };
 
   return (
@@ -163,7 +159,7 @@ const NewPatient: React.FC = () => {
         <Grid className="box-shadow">
           <Typography
             style={{
-              fontSize: "1.3vw",
+              fontSize: "1.5vw",
               padding: "2vw 4vw 0vw",
             }}
           >
@@ -194,7 +190,7 @@ const NewPatient: React.FC = () => {
               >
                 <Typography
                   style={{
-                    fontSize: "1vw",
+                    fontSize: "1.3vw",
                   }}
                 >
                   Kişisel Bilgiler
@@ -269,26 +265,51 @@ const NewPatient: React.FC = () => {
               >
                 <Typography
                   style={{
-                    fontSize: "1vw",
+                    fontSize: "1.3vw",
                   }}
                 >
                   Seans Bilgileri
                 </Typography>
                 <Divider />
-                <TextField
-                  label="Hastalık Tipi"
-                  variant="standard"
-                  name="patientDisease"
-                  value={patient.patientDisease}
-                  onChange={handleInputChange}
-                />
-                <TextField
-                  label="Zayıf Taraf"
-                  variant="standard"
-                  name="weak"
-                  value={patient.weak}
-                  onChange={handleInputChange}
-                />
+                <div style={{
+                    paddingBottom: "10px"
+                  }}>
+                  <Typography
+                  style={{
+                    fontSize: "1vw",
+                    paddingTop: "10px"
+                  }}
+                >
+                  Hastalık Tipi
+                </Typography>
+                
+                <select id="disease" name="patientDisease"
+                  value={disease} 
+                  onChange={(e) => setDisease(e.target.value)}
+                  >
+                  <option value="Donuk Omuz">Donuk Omuz</option>
+                </select>
+                </div>
+                <div style={{
+                    paddingBottom: "10px"
+                  }}>
+                  <Typography
+                  style={{
+                    fontSize: "1vw",
+                    paddingTop: "10px"
+                  }}
+                >
+                  Zayıf Taraf
+                </Typography>
+                
+                <select id="weakSide" name="weak"
+                  value={weakSide} 
+                  onChange={(e) => setWeakSide(e.target.value)}
+                  >
+                  <option value="SOL">Sol</option>
+                  <option value="SAĞ">Sağ</option>
+                </select>
+                </div>
 
                 <TextField
                   label="Gerekli Seans Sayısı"
@@ -296,6 +317,7 @@ const NewPatient: React.FC = () => {
                   name="sessionAmount"
                   value={patient.sessionAmount}
                   onChange={handleInputChange}
+                  
                 />
 
                 <TextField

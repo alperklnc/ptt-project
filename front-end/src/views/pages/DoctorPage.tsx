@@ -86,9 +86,7 @@ const DoctorPage: React.FC = () => {
     nextSession === undefined
   ) {
     return <h2>Loading posts...</h2>;
-  } else {
-    //setTodaysPatients();
-  }
+  } 
   return (
     <div>
       <NavBar />
@@ -117,7 +115,7 @@ const DoctorPage: React.FC = () => {
             <TodaysAppointments
               patientName1={getPatientName(0, todaysSessions[0].pt_id)}
               patientName2={getPatientName(1, todaysSessions[1].pt_id)}
-              patientName3={getPatientName(2, todaysSessions[0].pt_id)}
+              patientName3={getPatientName(2, todaysSessions[2].pt_id)}
               patientName4={getPatientName(3, todaysSessions[0].pt_id)}
               patientName5={getPatientName(4, todaysSessions[0].pt_id)}
               patientName6={getPatientName(5, todaysSessions[0].pt_id)}
