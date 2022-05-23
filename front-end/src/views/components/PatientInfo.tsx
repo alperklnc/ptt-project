@@ -30,6 +30,7 @@ const PatientInfo: React.FC<Props> = (props) => {
     weak: "",
     sessionHour: "",
     exercises: [],
+    optimum: 0,
     session: 0,
     recovery: 0,
   };
