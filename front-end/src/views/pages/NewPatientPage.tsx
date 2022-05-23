@@ -97,7 +97,6 @@ const NewPatient: React.FC = () => {
   const savePatient = (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
-    console.log(weakSide);
     var data = {
       id: patient.id,
       patientFirstName: patient.patientFirstName,
@@ -114,35 +113,17 @@ const NewPatient: React.FC = () => {
       //session: patient.session,
       //recovery: patient.recovery,
     };
-
     
     console.log(data);
-    /*
+
     PatientDataService.create(data)
       .then((response: any) => {
-        setPatient({
-          id: patient.id,
-          patientFirstName: patient.patientFirstName,
-          patientLastName: patient.patientLastName,
-          patientEmail: patient.patientEmail,
-          patientTellNo: patient.patientTellNo,
-          isMan: patient.isMan,
-          patientDisease: patient.patientDisease,
-          sessionAmount: patient.sessionAmount,
-          period: patient.period,
-          weak: patient.weak,
-          sessionHour: patient.sessionHour,
-          exercises: patient.exercises,
-          //session: patient.session,
-          //recovery: patient.recovery,
-        });
         setSubmitted(true);
-        console.log(response.data);
+        console.log(response.data)
       })
       .catch((e: Error) => {
         console.log(e);
       });
-      */
   };
 
   return (

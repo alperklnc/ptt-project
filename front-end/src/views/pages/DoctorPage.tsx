@@ -116,7 +116,7 @@ const DoctorPage: React.FC = () => {
               patientName1={getPatientName(0, todaysSessions[0].pt_id)}
               patientName2={getPatientName(1, todaysSessions[1].pt_id)}
               patientName3={getPatientName(2, todaysSessions[2].pt_id)}
-              patientName4={getPatientName(3, todaysSessions[0].pt_id)}
+              patientName4={getPatientName(3, todaysSessions[3].pt_id)}
               patientName5={getPatientName(4, todaysSessions[0].pt_id)}
               patientName6={getPatientName(5, todaysSessions[0].pt_id)}
               patientName7={getPatientName(6, todaysSessions[0].pt_id)}
