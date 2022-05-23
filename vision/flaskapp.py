@@ -11,6 +11,8 @@ from flask import Flask, render_template, Response
 from flask_socketio import SocketIO, send
 from matplotlib import pyplot as plt
 import requests
+from flask_cors import CORS, cross_origin
+import os
 
 mp_pose = mp.solutions.pose
 mp_pose2 = mp.solutions.pose
@@ -22,11 +24,13 @@ video2 = cv2.VideoCapture(1)
 #total_hip = []
 output_hash={"max":[],"hip":[]}
 app = Flask(__name__)
+CORS(app, support_credentials=True)
 app.config['SECRET_KEY'] = 'fener1453'
 socketio=SocketIO(app,cors_allowed_origins="*")
 a = 0
 sock = Sock(app)
 @sock.route('/echo')
+@cross_origin(supports_credentials=True)
 def echo(sock):
     global a
     a=1
@@ -328,10 +332,12 @@ def set_axes():
         axes_x[i], axes_y[i] = rotate( point)
 
 @app.route('/')
+@cross_origin(supports_credentials=True)
 def index():
     return render_template('index.html')
 
 @app.route('/video')
+@cross_origin(supports_credentials=True)
 def video():
     print("hhfhj")
     return Response(helper(), mimetype='multipart/x-mixed-replace; boundary=frame')
@@ -347,9 +353,9 @@ def helper():
     print("\texercise number is " + str(exercise))
     """
     set_axes()
-    side = sys.argv[1]
-    exercise = int(sys.argv[2])
-
+    side = os.environ.get("WEAK","LEFT")
+    exercise = os.environ.get("EXT",1)
+    
     print("\tweek side is ", side)
     print("\texercise number is " + str(exercise))
     # Setup Pose function for video.
@@ -548,8 +554,19 @@ def helper():
     video.release()
     # Close the windows.
     cv2.destroyAllWindows()
-    
 
+
+@app.route("/data", methods=["GET","POST"])
+@cross_origin(supports_credentials=True)
+def getdata():
+    ex_id = request.json['id']
+    weak = request.json['weak']
+    ex_type = request.json['type']
+
+    os.environ["EID"]=ex_id
+    os.environ["WEAK"]=weak
+    os.environ["EXT"]=ex_type
+    return ""    
 
 
 # ---------------------------------------------#
