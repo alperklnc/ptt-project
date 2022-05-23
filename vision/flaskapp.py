@@ -359,11 +359,27 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/pdf')
+@cross_origin(supports_credentials=True)
+def pdffunc():
+    print("hhfhj")
+    return Response(helper(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 @app.route('/video')
 @cross_origin(supports_credentials=True)
 def video():
     print("hhfhj")
     return Response(helper(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/streamdata', methods=["GET","POST"])
+@cross_origin(supports_credentials=True)
+def streamdata():
+    print('I am here')
+    total_max = output_hash["max"]
+    total_hip = output_hash["hip"]
+    hmp = {"total_max": total_max, "total_hip": total_hip}
+    return hmp
 
 
 def helper():
