@@ -11,6 +11,7 @@ export interface IPatientData {
   weak: string,
   sessionHour: string,
   exercises: Array<String>,
+  optimum: number,
   session?: number,
   recovery?: number,
   }

@@ -34,6 +34,7 @@ const DoctorPage: React.FC = () => {
     weak: "",
     sessionHour: "",
     exercises: [],
+    optimum: 0,
     session: 0,
     recovery: 0,
   };

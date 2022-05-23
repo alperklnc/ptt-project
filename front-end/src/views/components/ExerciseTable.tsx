@@ -72,7 +72,7 @@ const ExerciseTable: React.FC<IProps> = (props) => {
             110,
             120,
             9.09,
-            150,
+            response.data[index].optimum,
             80
           );
           rows.push(row);

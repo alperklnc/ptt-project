@@ -43,6 +43,7 @@ const NewPatient: React.FC = () => {
     weak: "",
     sessionHour: "",
     exercises: [],
+    optimum: 0,
     //session: 0,
     //recovery: 0,
   };
@@ -110,6 +111,7 @@ const NewPatient: React.FC = () => {
       weak: weakSide,
       sessionHour: patient.sessionHour,
       exercises: patient.exercises,
+      optimum: patient.optimum,
       //session: patient.session,
       //recovery: patient.recovery,
     };
@@ -277,7 +279,6 @@ const NewPatient: React.FC = () => {
                   <Typography
                   style={{
                     fontSize: "1vw",
-                    paddingTop: "10px"
                   }}
                 >
                   Zayıf Taraf
@@ -314,6 +315,14 @@ const NewPatient: React.FC = () => {
                   name="sessionHour"
                   placeholder="14:30"
                   value={patient.sessionHour}
+                  onChange={handleInputChange}
+                />
+
+                <TextField
+                  label="Optimum Açı"
+                  variant="standard"
+                  name="optimum"
+                  value={patient.optimum}
                   onChange={handleInputChange}
                 />
 
