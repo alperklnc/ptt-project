@@ -55,20 +55,20 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             angle_r = calculate_angle(shoulder_r, elbow_r, wrist_r)
             angle_list = [angle,angle_r]
             # Visualize angle
-            cv2.putText(image, str(angle), 
+            """cv2.putText(image, str(angle), 
                            tuple(np.multiply(elbow, [640, 480]).astype(int)), 
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA
                                 )
             cv2.putText(image, str(angle_r), 
                            tuple(np.multiply(elbow_r, [640, 480]).astype(int)), 
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA
-                                )
+                                )"""
         except:
             pass
         # Render detections
         mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
-                                mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=2), 
-                                mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2) 
+                                mp_drawing.DrawingSpec(color=(245,117,66), thickness=10, circle_radius=2), 
+                                mp_drawing.DrawingSpec(color=(245,66,230), thickness=10, circle_radius=2) 
                                  )               
         
         cv2.imshow('The Puzzles Camera 1', image)
