@@ -86,6 +86,7 @@ const ExerciseTable: React.FC<IProps> = (props) => {
   }
 
   const sendExerciseInfo = (data: any) => {
+    //navigate("/exercise-page");
     console.log("Data wanted to sent");
     console.log(data);
     FlaskService.sendExerciseInfo(data)
