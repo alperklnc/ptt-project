@@ -49,7 +49,7 @@ export default function ExercisePage() {
 
             <div>
               <iframe
-                src="http://127.0.0.1:5000/"
+                src="http://127.0.0.1:5000/video"
                 width="100%"
                 height="280%"
                 id="pose"
