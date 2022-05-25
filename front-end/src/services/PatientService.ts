@@ -11,14 +11,21 @@ const getPatientById = (id: number) => {
 const getTodaysPatients = () => {
   return http.get<Array<ISessionData>>(`/api/session`);
 };
-
 const getExerciseBySessionId = (sessionId: number) => {
   return http.get<any>(`/api/exercise/${sessionId}`);
 }
-
 const getSession = (id: number) => {
   return http.get<any>(`/api/session/${id}`);
 }
+const getCurrentSession = (id: number) => {
+  return http.get<any>(`/api/currentsession/${id}`);
+};
+
+
+const endSession = (id: number) => {
+  return http.post<any>(`/api/completesession/${id}`);
+}
+
 
 const create = (data: IPatientData) => {
   return http.post<IPatientData>("/api/patient", data);
@@ -46,5 +53,7 @@ const PatientService = {
   getTodaysPatients,
   getExerciseBySessionId,
   getSession,
+  getCurrentSession,
+  endSession,
 };
 export default PatientService;
