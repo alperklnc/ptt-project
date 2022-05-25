@@ -61,8 +61,8 @@ export default function ExercisePage() {
             className="box-shadow"
             container
             item
-            xs={11.8}
-            sm={5.8}
+            xs={9.8}
+            sm={4.8}
             direction="column"
           >
             <HeaderContainer title="Grafik" />
@@ -74,17 +74,19 @@ export default function ExercisePage() {
             className="box-shadow"
             container
             item
-            xs={11.8}
-            sm={5.8}
+            xs={13.8}
+            sm={6.8}
             direction="column"
           >
             <HeaderContainer title="İskelet" />
 
-            <div>
+            <div style={{                
+              width:"50vw",
+                height:"60vh"}}>
               <iframe
                 src="http://127.0.0.1:5000/video"
                 width="100%"
-                height="280%"
+                height="100%"
                 id="pose"
               ></iframe>
             </div>

@@ -196,10 +196,12 @@ const ExerciseTable: React.FC<IProps> = (props) => {
       }
     });
     console.log("Data wanted to sent");
+
     console.log(data);
     FlaskService.sendExerciseInfo(data)
       .then((response: any) => {
         console.log(response.data);
+        
       })
       .catch((e: Error) => {
         console.log(e);
