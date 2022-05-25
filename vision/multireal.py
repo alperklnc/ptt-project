@@ -5,9 +5,12 @@ from time import time
 import mediapipe as mp
 import sys
 
+from matplotlib import pyplot as plt
+
 mp_pose = mp.solutions.pose;
 mp_pose2 = mp.solutions.pose;
-
+axes_x = [0, 210]
+axes_y = [0, 0]
 
 def detectPose(image, pose, display=True):
     # Initializing mediapipe pose class.
@@ -277,6 +280,19 @@ def Exer8(landmarks1, landmarks2):
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back);
     return angle3D, hip_angle
 
+def rotate(point):
+    angle = 45
+    ox, oy = 0, 0
+    px, py = point
+    qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
+    qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+    return qx, qy
+
+
+def set_axes():
+    for i in range(2):
+        point = [axes_x[i], axes_y[i]]
+        axes_x[i], axes_y[i] = rotate(point)
 
 # ---------------------------------------------#
 
@@ -364,23 +380,27 @@ def main():
         # Check if the difference between the previous and this frame time > 0 to avoid division by zero.
         if (time2 - time1) > 0:
             # Calculate the number of frames per second.
-            frames_per_second = 1.0 / (time2 - time1)
 
-            # Write the calculated number of frames per second on the frame.
-            cv2.putText(frame, 'FPS: {}'.format(int(frames_per_second)), (10, 30), cv2.FONT_HERSHEY_PLAIN, 2,
-                        (0, 255, 0), 3)
-            # cv2.putText(frame, 'Hip angle: {}'.format(int(hip_angle)), (200, 30), cv2.FONT_HERSHEY_PLAIN, 2,
-            #           (0, 255, 0), 3) '# exercise '+str(exercise)+' '+
-            cv2.putText(frame, side + ' shoulder angle : {}'.format(int(angle3D)), (200, 30), cv2.FONT_HERSHEY_PLAIN, 2,
-                        (0, 255, 0), 3)
             angle_list.append(angle3D)
             # print("total angle  "+str(angle3D))
 
             if angle3D > local_max and angle3D > 20:
                 local_max = angle3D
                 # this list should returned
-                total_max[count] = int(local_max)
-                total_hip[count] = hip_angle
+                a, b = rotate([int(local_max),hip_angle])
+                total_max[count] = a
+                total_hip[count] = b
+
+            if len(total_max)>0:
+                plt.close("all")
+                plt.plot(total_max[0:-1], total_hip[0:-1], 'o', 'b')
+                plt.plot(total_max[-1], total_hip[-1], 'g^')
+                plt.plot(axes_x, axes_y, linestyle='-', color='k')
+                plt.xlim(0, 110)
+                plt.ylim(0, 180)
+                plt.xlabel("omuz acisi")
+                plt.ylabel("bel acısı")
+                plt.show(block=False)
 
             if angle3D < 25 and local_max > 35:
                 local_max = 0
@@ -398,11 +418,7 @@ def main():
             break
         # Update the previous frame time to this frame time.
         # As this frame will become previous frame in next iteration.
-        time1 = time2
 
-        combination = np.hstack((frame, frame2))
-        # Display the frame.
-        cv2.imshow('Pose Detection', combination)
 
         # Wait until a key is pressed.
         # Retreive the ASCII code of the key pressed
