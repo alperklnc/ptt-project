@@ -1,4 +1,3 @@
-#os.system("python3 pdf.py "+str(patient_id))
 from fpdf import FPDF
 import matplotlib.pyplot as plt
 import numpy as np
@@ -22,18 +21,19 @@ class PDF(FPDF):
     def font_normal(self):
         self.set_font('Times', '', 12)
 
-    def header(self):
+    def head(self):
         # Arial bold 15
         self.set_font('Arial', 'B', 15)
         self.set_x(5)
         # Colors of frame, background and text
-        self.set_draw_color(0, 80, 180)
-        self.set_fill_color(230, 230, 0)
-        self.set_text_color(220, 50, 50)
-        # Thickness of frame (1 mm)
+        self.set_draw_color(0,0 , 0)
         self.set_line_width(1)
+        self.set_fill_color(78, 198, 199)
+        self.set_text_color(255, 255, 255)
+        # Thickness of frame (1 mm)
+        #self.set_line_width(1)
         # Title
-        self.cell(200, 9, title, 1, 1, 'C', 1)
+        self.cell(200, 9, title, 0, 1, 'C', 1)
         # Line break
         self.ln(10)
 
@@ -43,72 +43,73 @@ class PDF(FPDF):
         spaceX=5
         Start_x=10
         Start_y=25
-        #hasta adı
+        self.set_text_color(0, 0, 0)
+        # sol üst
         self.font_head()
         self.set_x(Start_x)
         self.set_y(Start_y)
-        self.cell(cellWidth, cellHeight, "Hasta ismi:", "LRT", 0, 'L', 0)
+        self.cell(cellWidth, cellHeight, "Hasta ismi:", 0, 0, 'L', 0)
         self.set_x(Start_x)
         self.set_y(Start_y+cellHeight)
         self.font_normal()
-        self.cell(cellWidth, cellHeight, fname, "LRB", 0, 'L', 0)
+        self.cell(cellWidth, cellHeight, fname, 0, 0, 'L', 0)
 
-        #hastalık
+        # sol alt
         self.font_head()
         self.set_y(Start_y+2*cellHeight)
         self.set_x(Start_x)
-        self.cell(cellWidth, cellHeight, "Hasta Soyismi:", "LRT", 0, 'L', 0)
+        self.cell(cellWidth, cellHeight, "Hastalik :", 0, 0, 'L', 0)
         self.set_y(Start_y + 3*cellHeight)
         self.set_x(Start_x)
         self.font_normal()
-        self.cell(cellWidth, cellHeight, lname, "LRB", 0, 'L', 0)
+        self.cell(cellWidth, cellHeight, ill + "  (" + weak+")", 0, 0, 'L', 0)
 
-        # hasta cinsiyeti
+        # orta üst
         self.font_head()
         self.set_y(Start_y)
         self.set_x(Start_x + cellWidth + spaceX)
-        self.cell(cellWidth, cellHeight, "Cinsiyet :", "LRT", 0, 'L', 0)
+        self.cell(cellWidth, cellHeight, "Hasta Soyismi:", 0, 0, 'L', 0)
         self.set_y(Start_y + cellHeight)
         self.set_x(Start_x + cellWidth + spaceX)
         self.font_normal()
-        self.cell(cellWidth, cellHeight, Gender, "LRB", 0, 'L', 0)
+        self.cell(cellWidth, cellHeight, lname, 0, 0, 'L', 0)
 
-        # başlangıç
+        # orta alt
+        leng = len(Tedavi)
+        div2 = math.ceil(leng / 2)
+        str_ted1 = ", ".join(Tedavi[:div2])
+        str_ted2 = ", ".join(Tedavi[div2:])
         self.font_head()
         self.set_y(Start_y + 2*cellHeight)
         self.set_x(Start_x + cellWidth + spaceX)
-        self.cell(cellWidth, cellHeight, "Hastalik :", "LRT", 0, 'L', 0)
-        self.set_y(Start_y + 3 * cellHeight)
+        self.cell(cellWidth, cellHeight, "Tedavi:", 0, 0, 'L', 0)
+        self.set_y(Start_y + 2 * cellHeight+ cellHeight/2)
         self.set_x(Start_x + cellWidth + spaceX)
         self.font_normal()
-        self.cell(cellWidth, cellHeight, ill+"  "+weak, "LRB", 0, 'L', 0)
+        self.cell(cellWidth, cellHeight, str_ted1, 0, 0, 'L', 0)
+        self.set_y(Start_y + 2 * cellHeight + cellHeight)
+        self.set_x(Start_x + cellWidth + spaceX)
+        self.cell(cellWidth, cellHeight, str_ted2, 0, 0, 'L', 0)
 
-        # hasta Tedavi
-        leng=len(Tedavi)
-        div2=math.ceil(leng/2)
-        str_ted1=", ".join(Tedavi[:div2])
-        str_ted2=", ".join(Tedavi[div2:])
+        # sag üst
+
         self.font_head()
         self.set_y(Start_y)
         self.set_x(Start_x + 2*(cellWidth + spaceX))
-        self.cell(cellWidth, cellHeight, "Tedavi:", "LRT", 0, 'L', 0)
-        self.set_y(Start_y + cellHeight/2)
-        self.set_x(Start_x + 2*(cellWidth + spaceX))
-        self.font_normal()
-        self.cell(cellWidth, cellHeight, str_ted1, "LR", 0, 'L', 0)
+
         self.set_y(Start_y + cellHeight)
         self.set_x(Start_x + 2*(cellWidth + spaceX))
-        self.cell(cellWidth, cellHeight, str_ted2, "LR", 0, 'L', 0)
+        self.font_normal()
 
-        # İlerleme raporu
+        # sag alt
         self.font_head()
         self.set_y(Start_y + 2 * cellHeight)
         self.set_x(Start_x + 2*(cellWidth + spaceX))
-        self.cell(cellWidth, cellHeight, "Total Recovery", "LRT", 0, 'L', 0)
+        self.cell(cellWidth, cellHeight, "Geri Kazanim", 0, 0, 'L', 0)
         self.set_y(Start_y + 3 * cellHeight)
         self.set_x(Start_x + 2*(cellWidth + spaceX))
         self.font_normal()
-        self.cell(cellWidth, cellHeight, "% "+str(glob["recovery_percantage"]), "LRB", 0, 'L', 0)
+        self.cell(cellWidth, cellHeight, "% "+str(glob["recovery_percantage"]), 0, 0, 'L', 0)
 
         #photo
         #self.image("photo.JPG",175,25,30,40)
@@ -122,9 +123,11 @@ class PDF(FPDF):
         # Thickness of frame (1 mm)
         self.set_line_width(0.5)
         # Title
-        self.set_y(215)
-        self.set_x(70)
-        self.cell(70, 9, "ACI Tablo Gösterimi", 1, 0, 'C', 0)
+        #self.set_y()
+        self.set_x(5)
+        self.set_fill_color(78, 198, 199)
+        self.set_text_color(255, 255, 255)
+        self.cell(200, 9, "ROM Tablo Gösterimi", 0, 1, 'C', 1)
         self.set_line_width(0.2)
         # Remember to always put one of these at least once.
         self.font_normal()
@@ -147,9 +150,9 @@ class PDF(FPDF):
             if i == 0:
                 data[0][i] = " [MAX,AVG]"
             else:
-                data[0][i]="Exercise " + str(i)
+                data[0][i]="Egzersiz " + str(i)
         for i in range(1,length_data+1):
-                data[i][0] = "Day" + str(i)
+                data[i][0] = "Gun" + str(i)
 
         for i in range(1,width_data+1):
             for j in range(1, length_data + 1):
@@ -180,15 +183,14 @@ class PDF(FPDF):
 
         # header for new section
         self.font_head()
-        #self.set_draw_color(0, 80, 180)
-        self.set_fill_color(230, 230, 0)
-        self.set_text_color(220, 50, 50)
         # Thickness of frame (1 mm)
         self.set_line_width(0.5)
         # Title
         self.set_y(75)
-        self.set_x(70)
-        self.cell(70, 9, "ACI Grafik Gösterimi", 1, 0, 'C', 0)
+        self.set_x(5)
+        self.set_fill_color(78, 198, 199)
+        self.set_text_color(255, 255, 255)
+        self.cell(200, 9, "ROM Grafik Gösterimi", 0, 1, 'C', 1)
         self.set_line_width(0.2)
 
         #plot the graphs
@@ -200,24 +202,39 @@ class PDF(FPDF):
             plt.plot(day, ex_max[i], 'r-o')
             plt.xlabel('Exercise day')
             plt.ylabel('Angle')
-            plt.xlim(1, len(ex_max[0])+1)
+            plt.xlim(0, len(ex_max[0])+1)
             plt.savefig('plot'+str(i+1)+'.jpg')
             plt.close()
 
+        self.set_text_color(0, 0, 0)
         # plot position
         if length > 0:
             self.image("plot1.JPG", Start_x, Start_y, cellWidth, cellHeight)
+            self.set_y(Start_y)
+            self.set_x(Start_x)
+            self.cell(cellWidth, 8, "Egzersiz 1", 0, 0, 'C', 0)
         if length > 1:
             self.image("plot2.JPG", Start_x+cellWidth+spaceX, Start_y, cellWidth, cellHeight)
+            self.set_y(Start_y)
+            self.set_x(Start_x+cellWidth+spaceX)
+            self.cell(cellWidth, 8, "Egzersiz 2", 0, 0, 'C', 0)
         if length > 2:
             self.image("plot3.JPG", Start_x, Start_y+cellHeight+spaceX/2, cellWidth, cellHeight)
+            self.set_y(Start_y+cellHeight+spaceX/2)
+            self.set_x(Start_x )
+            self.cell(cellWidth, 8, "Egzersiz 3", 0, 0, 'C', 0)
         if length > 3:
             self.image("plot4.JPG", Start_x + cellWidth + spaceX, Start_y+cellHeight+spaceX/2, cellWidth, cellHeight)
+            self.set_y(Start_y + cellHeight + spaceX / 2)
+            self.set_x(Start_x + cellWidth + spaceX)
+            self.cell(cellWidth, 8, "Exercise 4", 0, 0, 'C', 0)
 
     def print_pdf(self,fname,lname,ill,Gender,Tedavi,weak):
         self.add_page()
+        self.head()
         self.patient(fname,lname,ill,Gender,Tedavi,weak)
         self.create_graph()
+        self.add_page()
         self.create_table()
 
 def data_Process(data):
@@ -271,7 +288,7 @@ def cal_recovery(optimal_ang):
 
 def main():
     # take input
-    glob["patient_id"]=sys.argv[1]
+    glob["patient_id"]=2#sys.argv[1]
     patient_id=glob["patient_id"]
     url_str = 'http://physio-env.eba-u4ctwpu4.eu-central-1.elasticbeanstalk.com/api/patient/{}'.format(patient_id)
     r = requests.get(url_str)
