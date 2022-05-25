@@ -45,13 +45,14 @@ const NewPatient: React.FC = () => {
     exercises: [],
     optimum: 0,
     //session: 0,
-    //recovery: 0,
+    recovery: 0,
   };
 
   
   const [patient, setPatient] = useState<IPatientData>(initialPatientState);
   const [weakSide, setWeakSide] = useState<string>("SOL");
   const [disease, setDisease] = useState<string>("Donuk Omuz");
+  const [isMan, setGender] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -73,6 +74,7 @@ const NewPatient: React.FC = () => {
 
     if (target.type === "radio") {
       isMan = (event.target as HTMLInputElement).value === "male";
+      setGender(isMan);
     }
 
     if (target.type === "checkbox") {
@@ -87,7 +89,6 @@ const NewPatient: React.FC = () => {
 
     setPatient({
       ...patient,
-      ["isMan"]: isMan,
       ["exercises"]: exercisesList,
       [name]: value,
       ["period"]: period,
@@ -104,7 +105,7 @@ const NewPatient: React.FC = () => {
       patientLastName: patient.patientLastName,
       patientEmail: patient.patientEmail,
       patientTellNo: patient.patientTellNo,
-      isMan: patient.isMan,
+      isMan: isMan,
       patientDisease: disease,
       sessionAmount: patient.sessionAmount,
       period: patient.period,
@@ -113,7 +114,7 @@ const NewPatient: React.FC = () => {
       exercises: patient.exercises,
       optimum: patient.optimum,
       //session: patient.session,
-      //recovery: patient.recovery,
+      recovery: patient.recovery,
     };
     
     console.log(data);

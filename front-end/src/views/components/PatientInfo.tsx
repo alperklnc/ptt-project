@@ -42,6 +42,7 @@ const PatientInfo: React.FC<Props> = (props) => {
   }, []);
 
   function setPatient() {
+    console.log("set patient");
     PatientDataService.getById(props.patientId)
       .then((response) => {
         setPatientInfo(response.data);
@@ -81,7 +82,6 @@ const PatientInfo: React.FC<Props> = (props) => {
           justifyItems: "center",
         }}
       >
-        <div>{setPatient()}</div>
         <Grid item xs={3}>
           <Typography className="PatientInfo-Text">
             {patientInfo.patientFirstName + " " + patientInfo.patientLastName}
