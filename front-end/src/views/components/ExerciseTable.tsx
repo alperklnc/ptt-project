@@ -28,7 +28,7 @@ function createData(
   weakSide: string,
   type: string,
   prevAngle: string,
-  currentAngle: number,
+  currentAngle: string,
   progression: string,
   optimalAngle: number,
   totalReocary: string
@@ -66,6 +66,9 @@ const ExerciseTable: React.FC<IProps> = (props) => {
   const [currentSessionName, setCurrentSessionName] = useState("0. Seans");
   const [prevSessionName, setPrevSessionName] = useState("---");
 
+  const [currentSessionId, setCurrentSessionId] = useState(0);
+  const [prevSessionId, setPrevSessionId] = useState(0);
+
   var patientData: IPatientData = {
     id: -1,
     patientFirstName: "",
@@ -98,24 +101,20 @@ const ExerciseTable: React.FC<IProps> = (props) => {
     
   }, []);
 
-  function getSessionIds(){
-
-  }
-
   function getCurrentSession(optimum:number){
     PatientDataService.getCurrentSession(props.patientId)
     .then((response) => {
       var currentSession = response.data;
 
-      setCurrentSessionName(`${currentSession + 1}. Seans`)
-      getCurrentSessionInfo(currentSession, optimum);
+      setCurrentSessionName(`${currentSession + 1}. Seans`);
+      getSessionIds(currentSession, optimum);
     })
     .catch((e: Error) => {
       console.log(e);
     });
   }
 
-  function getCurrentSessionInfo(currentSession: number, optimum: number) {
+  function getSessionIds(currentSession:number, optimum: number){
     var isFirst : boolean = false;
 
     if(currentSession == 0){
@@ -124,17 +123,39 @@ const ExerciseTable: React.FC<IProps> = (props) => {
     } else {
       setPrevSessionName(`${currentSession}. Seans`);
     }
-    //isFirst = false; // TODO
 
-    PatientDataService.getExerciseBySessionId(7)
+    PatientDataService.getSession(props.patientId)
     .then((response) => {
-      var currentAngle:number[] = [];
+      var currentId = response.data[currentSession].id;
+      var prevId = -1;
+      setCurrentSessionId(response.data[currentSession].id);
+      if(!isFirst){
+        prevId = response.data[currentSession-1].id;
+        setPrevSessionId(response.data[currentSession-1].id);
+      }
+      getCurrentSessionInfo(currentSession, optimum, isFirst, currentId, prevId);
+    })
+    .catch((e: Error) => {
+      console.log(e);
+    });
+  }
+
+  function getCurrentSessionInfo(currentSession: number, optimum: number, isFirst:boolean, currentId:number, prevId:number) {
+    PatientDataService.getExerciseBySessionId(currentId)
+    .then((response) => {
+      var currentAngle:string[] = [];
       for (let index = 0; index < response.data.length; index++) {
-        currentAngle[index] = Math.max.apply(Math, response.data[index].shoulder_angles);
+        currentAngle[index] = "-";
       }
 
+
+
       if(!isFirst){
-        getPrevSessionInfo(optimum, currentAngle, response.data);
+        for (let index = 0; index < response.data.length; index++) {
+          currentAngle[index] = Math.max.apply(Math, response.data[index].shoulder_angles).toString();
+        }
+        
+        getPrevSessionInfo(optimum, currentAngle, response.data, prevId);
       } else {
         var prevAngle:string[] = [];
         for (let index = 0; index < response.data.length; index++) {
@@ -147,9 +168,10 @@ const ExerciseTable: React.FC<IProps> = (props) => {
       console.log(e);
     });
   }
+  
 
-  function getPrevSessionInfo(optimum: number, currentAngle: number[], currentSessionData:IExerciseData) {
-    PatientDataService.getExerciseBySessionId(1)
+  function getPrevSessionInfo(optimum: number, currentAngle: string[], currentSessionData:IExerciseData,  prevId: number) {
+    PatientDataService.getExerciseBySessionId(prevId)
     .then((response) => {
       var prevAngle:string[] = [];
       for (let index = 0; index < response.data.length; index++) {
@@ -163,14 +185,14 @@ const ExerciseTable: React.FC<IProps> = (props) => {
     });
   }
 
-  function createRows(isFirst:boolean, optimum: number, currentAngle: number[], prevAngle: string[], currentSessionData:any) {
+  function createRows(isFirst:boolean, optimum: number, currentAngle: string[], prevAngle: string[], currentSessionData:any) {
     rows = [];
     for (let index = 0; index < currentSessionData.length; index++) {
       var progression = "-";
       var recovery = "-";
       if(!isFirst){
-        progression = (((currentAngle[index]-parseInt(prevAngle[index]))/parseInt(prevAngle[index]))*100).toFixed(2);
-        recovery = ((currentAngle[index]/optimum)*100).toFixed(2);
+        progression = (((parseInt(currentAngle[index])-parseInt(prevAngle[index]))/parseInt(prevAngle[index]))*100).toFixed(2);
+        recovery = ((parseInt(currentAngle[index])/optimum)*100).toFixed(2);
       }
       var row = createData(
         currentSessionData[index].id,
