@@ -9,7 +9,7 @@ const sendExerciseInfo = (data: any) => {
 }
 
 const endExercise = (data: any) => {
-    return http.post<any>("/finish", data);
+    return http.post<any>("/finished", data);
 }
 
 const FlaskService = {

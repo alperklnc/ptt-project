@@ -24,6 +24,15 @@ export default function ExercisePage() {
 
     setSubmitted(true);
     console.log(state.patientId);
+    FlaskService.endExercise(state.exerciseData)
+    .then((response: any) => {
+      console.log(response.data);
+      setSubmitted(true);
+    })
+    .catch((e: Error) => {
+      console.log(e);
+    });
+    
     setTimeout(function() {
       navigate("/patient-page", {
         state: {
@@ -32,14 +41,7 @@ export default function ExercisePage() {
       });
     }, 1000);
     
-    FlaskService.endExercise(state.exerciseData)
-      .then((response: any) => {
-        console.log(response.data);
-        setSubmitted(true);
-      })
-      .catch((e: Error) => {
-        console.log(e);
-      });
+  
   };
 
   return (
