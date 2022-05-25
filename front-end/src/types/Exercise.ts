@@ -3,7 +3,7 @@ export interface IExerciseData{
     weakSide: string,
     type: string,
     prevAngle: string,
-    currentAngle: number,
+    currentAngle: string,
     progression: string,
     optimalAngle: number,
     totalReocary: string

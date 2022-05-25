@@ -14,11 +14,11 @@ const getTodaysPatients = () => {
 const getExerciseBySessionId = (sessionId: number) => {
   return http.get<any>(`/api/exercise/${sessionId}`);
 }
-const getSession = (id: number) => {
-  return http.get<any>(`/api/session/${id}`);
+const getSession = (patientId: number) => {
+  return http.get<any>(`/api/session/${patientId}`);
 }
-const getCurrentSession = (id: number) => {
-  return http.get<any>(`/api/currentsession/${id}`);
+const getCurrentSession = (patientId: number) => {
+  return http.get<any>(`/api/currentsession/${patientId}`);
 };
 
 
