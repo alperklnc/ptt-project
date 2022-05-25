@@ -145,16 +145,14 @@ const ExerciseTable: React.FC<IProps> = (props) => {
     .then((response) => {
       var currentAngle:string[] = [];
       for (let index = 0; index < response.data.length; index++) {
-        currentAngle[index] = "-";
+        var max = 0;
+        if(response.data[index].shoulder_angles.length != 0){
+          max = Math.max.apply(Math, response.data[index].shoulder_angles);
+        }
+        currentAngle[index] = max.toString();
       }
 
-
-
       if(!isFirst){
-        for (let index = 0; index < response.data.length; index++) {
-          currentAngle[index] = Math.max.apply(Math, response.data[index].shoulder_angles).toString();
-        }
-        
         getPrevSessionInfo(optimum, currentAngle, response.data, prevId);
       } else {
         var prevAngle:string[] = [];
@@ -188,17 +186,28 @@ const ExerciseTable: React.FC<IProps> = (props) => {
   function createRows(isFirst:boolean, optimum: number, currentAngle: string[], prevAngle: string[], currentSessionData:any) {
     rows = [];
     for (let index = 0; index < currentSessionData.length; index++) {
+      var _currentAngle = parseInt(currentAngle[index]);
+      var _prevAngle = parseInt(prevAngle[index]);
+      
       var progression = "-";
       var recovery = "-";
-      if(!isFirst){
-        progression = (((parseInt(currentAngle[index])-parseInt(prevAngle[index]))/parseInt(prevAngle[index]))*100).toFixed(2);
-        recovery = ((parseInt(currentAngle[index])/optimum)*100).toFixed(2);
+      if(isFirst){
+        if(_currentAngle == 0){
+          recovery = "-";
+          currentAngle[index] = "-";
+        } else {
+          recovery = ((_currentAngle/optimum)*100).toFixed(2);
+        }
+      } else {
+        progression = (((_currentAngle-_prevAngle)/_prevAngle)*100).toFixed(2);
+        recovery = ((_currentAngle/optimum)*100).toFixed(2);
       }
+
       var row = createData(
         currentSessionData[index].id,
         currentSessionData[index].weak,
         currentSessionData[index].name,
-        prevAngle[index].toString(),
+        prevAngle[index],
         currentAngle[index],
         progression,
         optimum,
@@ -217,13 +226,13 @@ const ExerciseTable: React.FC<IProps> = (props) => {
         patientId: props.patientId,
       }
     });
-    console.log("Data wanted to sent");
 
+    console.log("Data wanted to sent");
     console.log(data);
+
     FlaskService.sendExerciseInfo(data)
       .then((response: any) => {
         console.log(response.data);
-        
       })
       .catch((e: Error) => {
         console.log(e);
