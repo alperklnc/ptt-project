@@ -16,16 +16,11 @@ import json
 import logging
 from PIL import Image
 
-
 mp_pose = mp.solutions.pose
 mp_pose2 = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
-video = cv2.VideoCapture(1)
-video2 = cv2.VideoCapture(0)
-# total_max = []
-# total_hip = []
-input_hash = {"eid":0,"weak":"LEFT","type":1}
+input_hash = {"eid":0,"weak":"LEFT","type":1,"isFinished":False,"pid":2}
 output_hash = {"max": [], "hip": []}
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -34,9 +29,11 @@ app.config['SECRET_KEY'] = 'fener1453'
 socketio = SocketIO(app, cors_allowed_origins="*")
 a = 0
 sock = Sock(app)
+axes_x = [0.0, 110.32]
+axes_y = [0.0, 178.69]
 
 
-@sock.route('/echo')
+"""@sock.route('/echo')
 @cross_origin(supports_credentials=True)
 def echo(sock):
     global a
@@ -51,21 +48,7 @@ def echo(sock):
         print("hip angles")
         print(total_hip)
         hmp = {"total_max": total_max, "total_hip": total_hip}
-        sock.send(hmp)
-
-
-"""
-
-@socketio.on("message")
-def sendArray():
-    expected_len=1
-    while 1:
-        sleep(0.5)
-        hmp={"total_max":total_max,"total_hip":total_hip}
-        send(hmp,broadcast=True)"""
-axes_x = [0, 210]
-axes_y = [0, 0]
-
+        sock.send(hmp)"""
 
 def detectPose(image, pose, display=True):
     # Initializing mediapipe pose class.
@@ -121,7 +104,6 @@ def calculateAngle3D(Angle1, Angle2):
         Angle1 = 89
     if 90.5 > Angle2 > 89.5:
         Angle2 = 89
-
     inside = math.tan(math.radians(Angle1)) ** 2 + math.tan(math.radians(Angle2)) ** 2
     angle3D = math.degrees(math.atan(math.sqrt(inside)))
     if Angle1 > 90 and Angle2 > 90:
@@ -168,7 +150,6 @@ def Exer1(landmarks1, landmarks2):
     shoulder_angle = 0
     hip_angle = 0
     shoulder_angle_back = 0
-
     if landmarks1:
         shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.RIGHT_HIP.value],
                                           landmarks1[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
@@ -176,7 +157,6 @@ def Exer1(landmarks1, landmarks2):
         hip_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
                                      landmarks1[mp_pose.PoseLandmark.RIGHT_HIP.value],
                                      landmarks1[mp_pose.PoseLandmark.RIGHT_KNEE.value])
-
     if landmarks2:
         shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.RIGHT_HIP.value],
                                                landmarks2[mp_pose2.PoseLandmark.RIGHT_SHOULDER.value],
@@ -190,12 +170,10 @@ def Exer2(landmarks1, landmarks2):
     shoulder_angle = 0
     hip_angle = 0
     shoulder_angle_back = 0
-
     if landmarks1:
         shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.RIGHT_HIP.value],
                                           landmarks1[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
                                           landmarks1[mp_pose.PoseLandmark.RIGHT_ELBOW.value])
-
     if landmarks2:
         shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.RIGHT_HIP.value],
                                                landmarks2[mp_pose2.PoseLandmark.RIGHT_SHOULDER.value],
@@ -203,7 +181,6 @@ def Exer2(landmarks1, landmarks2):
         hip_angle = calculateAngle2D(landmarks2[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
                                      landmarks2[mp_pose.PoseLandmark.RIGHT_HIP.value],
                                      landmarks2[mp_pose.PoseLandmark.RIGHT_KNEE.value])
-
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
     return angle3D, hip_angle
 
@@ -212,7 +189,6 @@ def Exer3(landmarks1, landmarks2):
     shoulder_angle = 0
     hip_angle = 0
     shoulder_angle_back = 0
-
     if landmarks1:
         shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.RIGHT_HIP.value],
                                           landmarks1[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
@@ -220,12 +196,10 @@ def Exer3(landmarks1, landmarks2):
         hip_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
                                      landmarks1[mp_pose.PoseLandmark.RIGHT_HIP.value],
                                      landmarks1[mp_pose.PoseLandmark.RIGHT_KNEE.value])
-
     if landmarks2:
         shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.RIGHT_HIP.value],
                                                landmarks2[mp_pose2.PoseLandmark.RIGHT_SHOULDER.value],
                                                landmarks2[mp_pose2.PoseLandmark.RIGHT_ELBOW.value])
-
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
     return angle3D, hip_angle
 
@@ -234,12 +208,10 @@ def Exer4(landmarks1, landmarks2):
     shoulder_angle = 0
     hip_angle = 0
     shoulder_angle_back = 0
-
     if landmarks1:
         shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.RIGHT_HIP.value],
                                           landmarks1[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
                                           landmarks1[mp_pose.PoseLandmark.RIGHT_ELBOW.value])
-
     if landmarks2:
         shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.RIGHT_HIP.value],
                                                landmarks2[mp_pose2.PoseLandmark.RIGHT_SHOULDER.value],
@@ -247,7 +219,6 @@ def Exer4(landmarks1, landmarks2):
         hip_angle = calculateAngle2D(landmarks2[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
                                      landmarks2[mp_pose.PoseLandmark.RIGHT_HIP.value],
                                      landmarks2[mp_pose.PoseLandmark.RIGHT_KNEE.value])
-
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
     return angle3D, hip_angle
 
@@ -256,7 +227,6 @@ def Exer5(landmarks1, landmarks2):
     shoulder_angle = 0
     hip_angle = 0
     shoulder_angle_back = 0
-
     if landmarks1:
         shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.LEFT_HIP.value],
                                           landmarks1[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
@@ -264,12 +234,10 @@ def Exer5(landmarks1, landmarks2):
         hip_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
                                      landmarks1[mp_pose.PoseLandmark.LEFT_HIP.value],
                                      landmarks1[mp_pose.PoseLandmark.LEFT_KNEE.value])
-
     if landmarks2:
         shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.LEFT_HIP.value],
                                                landmarks2[mp_pose2.PoseLandmark.LEFT_SHOULDER.value],
                                                landmarks2[mp_pose2.PoseLandmark.LEFT_ELBOW.value])
-
     angle3D = calculateAngle3D(360 - shoulder_angle, 360 - shoulder_angle_back)
     return angle3D, hip_angle
 
@@ -278,12 +246,10 @@ def Exer6(landmarks1, landmarks2):
     shoulder_angle = 0
     hip_angle = 0
     shoulder_angle_back = 0
-
     if landmarks1:
         shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.LEFT_HIP.value],
                                           landmarks1[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
                                           landmarks1[mp_pose.PoseLandmark.LEFT_ELBOW.value])
-
     if landmarks2:
         shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.LEFT_HIP.value],
                                                landmarks2[mp_pose2.PoseLandmark.LEFT_SHOULDER.value],
@@ -291,7 +257,6 @@ def Exer6(landmarks1, landmarks2):
         hip_angle = calculateAngle2D(landmarks2[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
                                      landmarks2[mp_pose.PoseLandmark.LEFT_HIP.value],
                                      landmarks2[mp_pose.PoseLandmark.LEFT_KNEE.value])
-
     angle3D = calculateAngle3D(360 - shoulder_angle, 360 - shoulder_angle_back)
     return angle3D, hip_angle
 
@@ -300,7 +265,6 @@ def Exer7(landmarks1, landmarks2):
     shoulder_angle = 0
     hip_angle = 0
     shoulder_angle_back = 0
-
     if landmarks1:
         shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.LEFT_HIP.value],
                                           landmarks1[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
@@ -308,13 +272,11 @@ def Exer7(landmarks1, landmarks2):
         hip_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
                                      landmarks1[mp_pose.PoseLandmark.LEFT_HIP.value],
                                      landmarks1[mp_pose.PoseLandmark.LEFT_KNEE.value])
-
     if landmarks2:
         shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.LEFT_HIP.value],
                                                landmarks2[mp_pose2.PoseLandmark.LEFT_SHOULDER.value],
                                                landmarks2[mp_pose2.PoseLandmark.LEFT_ELBOW.value])
-
-    angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back);
+    angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
     return angle3D, hip_angle
 
 
@@ -322,12 +284,10 @@ def Exer8(landmarks1, landmarks2):
     shoulder_angle = 0
     hip_angle = 0
     shoulder_angle_back = 0
-
     if landmarks1:
         shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.LEFT_HIP.value],
                                           landmarks1[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
                                           landmarks1[mp_pose.PoseLandmark.LEFT_ELBOW.value])
-
     if landmarks2:
         shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.LEFT_HIP.value],
                                                landmarks2[mp_pose2.PoseLandmark.LEFT_SHOULDER.value],
@@ -335,8 +295,7 @@ def Exer8(landmarks1, landmarks2):
         hip_angle = calculateAngle2D(landmarks2[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
                                      landmarks2[mp_pose.PoseLandmark.LEFT_HIP.value],
                                      landmarks2[mp_pose.PoseLandmark.LEFT_KNEE.value])
-
-    angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back);
+    angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
     return angle3D, hip_angle
 
 
@@ -349,16 +308,12 @@ def rotate(point):
     return qx, qy
 
 
-def set_axes():
-    for i in range(2):
-        point = [axes_x[i], axes_y[i]]
-        axes_x[i], axes_y[i] = rotate(point)
 
 def save_plot():
     total_max = output_hash["max"]
     total_hip = output_hash["hip"]
-    total_max = [s for s in total_max if s != -5 ]
-    total_hip = [s for s in total_hip if s != -5 ]
+    total_max = [s for s in total_max if s != -511 ]
+    total_hip = [s for s in total_hip if s != -511 ]
     if len(total_max)>0:
         lastx =total_max[-1]
         lasty = total_hip[-1]
@@ -366,20 +321,13 @@ def save_plot():
         total_hip = total_hip[0:-1]
         plt.plot(total_max, total_hip, 'o', 'b')
         plt.plot([lastx], [lasty], 'g^')
-        
+    
     plt.plot(axes_x, axes_y, linestyle='-', color='k')
     plt.xlim(0, 110)
     plt.ylim(0, 180)
     plt.show(block=False)
     plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot1.png')
     plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot2.png')
-    #graphIMage = Image.open('testplot.png')
-    #graphIMage = graphIMage.convert('RGB').save('testplot.jpg', 'JPEG')
-    """ret, buffer = cv2.imencode('.jpg', graphIMage)
-    graph_output = buffer.tobytes()
-
-    yield (b'--frame\r\n'
-            b'Content-Type: image/jpeg\r\n\r\n' + graph_output + b'\r\n')"""
     plt.close()
 
 def set_graph():
@@ -388,25 +336,16 @@ def set_graph():
     plt.ylim(0, 180)
     plt.show(block=False)
     plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot1.png')
+    plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot2.png')
     plt.close()
-
-@app.route('/')
-@cross_origin(supports_credentials=True)
-def index():
-    return render_template('index.html')
-
-
-"""@app.route('/graph')
-@cross_origin(supports_credentials=True)
-def graph():
-    return Response(save_plot(), mimetype='multipart/x-mixed-replace; boundary=frame')"""
 
 
 @app.route('/pdf')
 @cross_origin(supports_credentials=True)
 def pdffunc():
+    #input_hash["pid"]== request.json['pid']
     print("pdf will created")
-    patient_id=2
+    patient_id=input_hash["pid"]
     os.system("python3 pdf.py " + str(patient_id))
     print("pdf is ready")
     return str(3)
@@ -414,23 +353,22 @@ def pdffunc():
 @app.route('/video')
 @cross_origin(supports_credentials=True)
 def video():
-    print("hhfhj")
+    print("I am in the video")
+    
+    output_hash ["max"]= []
+    output_hash["hip"]= []
     return Response(helper(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-@app.route('/streamdata', methods=["GET","POST"])
+"""@app.route('/finished', methods=["GET","POST"])
 @cross_origin(supports_credentials=True)
-def streamdata():
-    print('I am here')
-    total_max = output_hash["max"]
-    total_hip = output_hash["hip"]
-    hmp = {"total_max": total_max, "total_hip": total_hip}
-    return hmp
-
+def finish():
+    print('exit')
+    input_hash['isFinished'] = True
+    return"""
 
 def helper():
     
-    set_axes()
     set_graph()
 
     side=input_hash["weak"]
@@ -467,13 +405,13 @@ def helper():
     ret_shoul = []
     ret_hip = []
     for i in range(10):
-        output_hash["max"].append(-5)
-        output_hash["hip"].append(-5)
-        ret_hip.append(-5)
-        ret_shoul.append(-5)
+        output_hash["max"].append(-511)
+        output_hash["hip"].append(-511)
+        ret_hip.append(-511)
+        ret_shoul.append(-511)
     count = 0
-    lastx = -5
-    lasty = -5
+    lastx = -511
+    lasty = -511
     NRLX = 0
     NRLY = 0
 
@@ -484,14 +422,10 @@ def helper():
         ok, frame = video.read()
         ok2, frame2 = video2.read()
 
-        # Check if frame is not read properly.
-        if not ok:
-            # Break the loop.
-            break
 
         # Flip the frame horizontally for natural (selfie-view) visualization.
-        # frame = cv2.flip(frame, 1)
-        # frame2 = cv2.flip(frame2, 1)
+        #frame = cv2.flip(frame, 1)
+        #frame2 = cv2.flip(frame2, 1)
 
         # Get the width and height of the frames
         frame_height, frame_width, _ = frame.shape
@@ -538,29 +472,26 @@ def helper():
             save_plot()
             if angle3D < 35 and local_max > 45:
                 local_max = 0
-
-                """output_hash["max"][count]=lastx
-                output_hash["hip"][count]=lasty"""
-                # total_max[count] = lastx
-                # total_hip[count] = lasty
                 ret_shoul[count] = NRLX
                 ret_hip[count] = NRLY
-                # print("hip angle " + str(hip_angle))
                 count += 1
 
         # 10 repetation is done
-        if count == 10:
+        if count == 10 or input_hash['isFinished']:
             print("Ten exercise finished")
             print("total arm angle")
             print(ret_shoul)
             print("hip angles")
             print(ret_hip)
+            ret_shoul = [s for s in ret_shoul if s != -511 ]
+            ret_hip = [s for s in ret_hip if s != -511 ]
             ex_id=input_hash["eid"]
             json_str = {"shoulder": ret_shoul, "hip": ret_hip}
             url_str='http://physio-env.eba-u4ctwpu4.eu-central-1.elasticbeanstalk.com/api/exercise/{}'.format(ex_id)
             r = requests.put(url=url_str,json=json_str)
             print(r.status_code)
-            # """
+            
+            input_hash['isFinished'] = False
             sys.exit()
             # Break the loop.
             # break
@@ -568,19 +499,6 @@ def helper():
         # As this frame will become previous frame in next iteration.
         time1 = time2
 
-        # Wait until a key is pressed.
-        # Retreive the ASCII code of the key pressed
-        k = cv2.waitKey(1) & 0xFF
-
-        # Check if 'ESC' is pressed.
-
-        if k == 27:
-            print("total arm angle")
-            print(total_max)
-            print("hip angles")
-            print(total_hip)
-            # Break the loop.
-            break
         success, image = ok2, frame2
 
         # To improve performance, optionally we mark the image as not writeable to
@@ -611,7 +529,7 @@ def helper():
 @app.route("/data", methods=["GET", "POST"])
 @cross_origin(supports_credentials=True,allow_headers='*')
 def getdata():
-
+    
     ex_id = request.json['id']
     weak = request.json['weak']
     ex_type = request.json['type']
