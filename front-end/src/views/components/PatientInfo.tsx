@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -17,6 +18,8 @@ interface Props {
 }
 
 const PatientInfo: React.FC<Props> = (props) => {
+  const navigate = useNavigate();
+
   var patientData: IPatientData = {
     id: -1,
     patientFirstName: "",
@@ -35,14 +38,15 @@ const PatientInfo: React.FC<Props> = (props) => {
     recovery: 0,
   };
 
-  const [patientInfo, setPatientInfo] = useState(patientData);
+  const [patientInfo, setPatientInfo] = useState<IPatientData>(patientData);
+  const [currentSession, setCurrentSession] = useState<number>(0);
 
   useEffect(() => {
     setPatient();
+    getCurrentSession();
   }, []);
 
   function setPatient() {
-    console.log("set patient");
     PatientDataService.getById(props.patientId)
       .then((response) => {
         setPatientInfo(response.data);
@@ -52,6 +56,26 @@ const PatientInfo: React.FC<Props> = (props) => {
       });
     return "";
   }
+
+  function getCurrentSession(){
+    PatientDataService.getCurrentSession(props.patientId)
+    .then((response) => {
+      setCurrentSession(response.data + 1);
+    })
+    .catch((e: Error) => {
+      console.log(e);
+    });
+  }
+
+  const startExercise = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+
+    navigate("/patient-page", {
+      state: {
+        patientId: patientInfo.id,
+      }
+    });
+  };
 
   if (patientInfo === null) {
     return <h2>Loading posts...</h2>;
@@ -81,6 +105,7 @@ const PatientInfo: React.FC<Props> = (props) => {
           justifyContent: "center",
           justifyItems: "center",
         }}
+        onClick={startExercise}
       >
         <Grid item xs={3}>
           <Typography className="PatientInfo-Text">
@@ -94,7 +119,7 @@ const PatientInfo: React.FC<Props> = (props) => {
         </Grid>
         <Grid item xs={3}>
           <Typography className="PatientInfo-Text">
-            Seans 3/{patientInfo.sessionAmount}
+            Seans {currentSession}/{patientInfo.sessionAmount}
           </Typography>
         </Grid>
         <Grid item xs={3}>

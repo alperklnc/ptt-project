@@ -47,6 +47,8 @@ const DoctorPage: React.FC = () => {
   const [nextPatientInfo, setNextPatientInfo] = useState(nextPatientData);
   const [todaysPatients, setTodaysPatients] = useState(_todaysPatients);
 
+  const [currentSession, setCurrentSession] = useState<number>(0);
+
   useEffect(() => {
     PatientDataService.getTodaysPatients()
       .then((response) => {
@@ -58,15 +60,33 @@ const DoctorPage: React.FC = () => {
       });
   }, []);
 
+  var once = 0;
   function setNextPatient(pt_id: number) {
-    PatientDataService.getById(pt_id)
+    if(once == 0) {
+      once = once + 1;
+      PatientDataService.getById(pt_id)
       .then((response) => {
         setNextPatientInfo(response.data);
+        getCurrentSession(pt_id);
       })
       .catch((e: Error) => {
         console.log(e);
       });
+      
+      return "";
+    }
+
     return "";
+  }
+
+  function getCurrentSession(id:number) {
+    PatientDataService.getCurrentSession(id)
+    .then((response) => {
+      setCurrentSession(response.data + 1);
+    })
+    .catch((e: Error) => {
+      console.log(e);
+    });
   }
 
   function getPatientName(index: number, pt_id: number) {
@@ -109,6 +129,7 @@ const DoctorPage: React.FC = () => {
             <NextPatient
               patientData={nextPatientInfo}
               sessionInfo={nextSession}
+              session={currentSession}
             />
           </Grid>
           <Grid item xs={0.0} sm={0.2} />

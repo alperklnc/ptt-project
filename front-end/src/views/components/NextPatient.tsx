@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Grid } from "@mui/material";
 import { Avatar } from "@mui/material";
 import { Button, ProgressBar } from "react-bootstrap";
@@ -9,12 +10,14 @@ import AvatarImage from "../../patient1.jpg";
 import "../css/style-sheet.css";
 
 import HeaderContainer from "./HeaderContainer";
+import PatientDataService from "../../services/PatientService";
 import { IPatientData } from "../../types/Patient";
 import { ISessionData } from "../../types/Session";
 
 interface Props {
   patientData: IPatientData;
   sessionInfo: ISessionData;
+  session: number;
 }
 
 const NextPatient: React.FC<Props> = (props) => {
@@ -30,7 +33,6 @@ const NextPatient: React.FC<Props> = (props) => {
     });
   };
 
-
   return (
     <div className="box-shadow">
       <HeaderContainer title="Sıradaki Hasta" />
@@ -43,7 +45,7 @@ const NextPatient: React.FC<Props> = (props) => {
             {props.patientData.patientDisease}
           </Typography>
           <Typography className="NextPatient-Text">
-            {props.patientData.id}/{props.patientData.sessionAmount}
+            {props.session}/{props.patientData.sessionAmount}
           </Typography>
           <Typography className="NextPatient-Text">Toplam İyileşme</Typography>
 
@@ -93,7 +95,7 @@ const NextPatient: React.FC<Props> = (props) => {
             className="NextPatient-Button"
             onClick={startExercise}
             >
-              Seansı Başlattt
+              Seansı Başlat
         </Button>
       </Grid>
     </div>
