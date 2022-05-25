@@ -2,9 +2,9 @@ export interface IExerciseData{
     exerciseId: number,
     weakSide: string,
     type: string,
-    prevAngle: number,
+    prevAngle: string,
     currentAngle: number,
-    progression: number,
+    progression: string,
     optimalAngle: number,
-    totalReocary: number
+    totalReocary: string
 }

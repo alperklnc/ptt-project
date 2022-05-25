@@ -13,20 +13,25 @@ import Paper from "@mui/material/Paper";
 import FlaskService from "../../services/FlaskService";
 import PatientDataService from "../../services/PatientService";
 import { IExerciseData } from "../../types/Exercise";
+import { ISessionData } from "../../types/Session";
+import { IPatientData } from "../../types/Patient";
+import { AxiosResponse } from "axios";
 
 interface IProps {
+  patientId: number;
   sessionId: number;
+  sessionData: ISessionData;
 }
 
 function createData(
   exerciseId: number,
   weakSide: string,
   type: string,
-  prevAngle: number,
+  prevAngle: string,
   currentAngle: number,
-  progression: number,
+  progression: string,
   optimalAngle: number,
-  totalReocary: number
+  totalReocary: string
 ) {
   return {
     exerciseId,
@@ -56,37 +61,132 @@ const ExerciseTable: React.FC<IProps> = (props) => {
   var rows: IExerciseData[] = [];
   const [exercises, setExercises] = useState(rows);
 
+  const [optimum, setOptimum] = useState(0);
+
+  const [currentSessionName, setCurrentSessionName] = useState("0. Seans");
+  const [prevSessionName, setPrevSessionName] = useState("---");
+
+  var patientData: IPatientData = {
+    id: -1,
+    patientFirstName: "",
+    patientLastName: "",
+    patientEmail: "",
+    patientTellNo: "",
+    isMan: false,
+    patientDisease: "",
+    sessionAmount: 0,
+    period: 0,
+    weak: "",
+    sessionHour: "",
+    exercises: [],
+    optimum: 0,
+    session: 0,
+    recovery: 0,
+  };
+
+  const [patientInfo, setPatientInfo] = useState(patientData);
+
   useEffect(() => {
-    createRows();
+    PatientDataService.getById(props.patientId)
+    .then((response) => {
+      setOptimum(response.data.optimum);
+      getCurrentSession(response.data.optimum);
+    })
+    .catch((e: Error) => {
+      console.log(e);
+    });
+    
   }, []);
 
-  function createRows() {
-    rows = [];
-    PatientDataService.getExerciseBySessionId(props.sessionId)
-      .then((response) => {
-        for (let index = 0; index < response.data.length; index++) {
-          var row = createData(
-            response.data[index].id,
-            response.data[index].weak,
-            response.data[index].name,
-            110,
-            120,
-            9.09,
-            response.data[index].optimum,
-            80
-          );
-          rows.push(row);
-        }
-        setExercises(rows);
-      })
-      .catch((e: Error) => {
-        console.log(e);
-      });
-    return "";
+  function getCurrentSession(optimum:number){
+    PatientDataService.getCurrentSession(props.patientId)
+    .then((response) => {
+      var currentSession = response.data;
+
+      setCurrentSessionName(`${currentSession + 1}. Seans`)
+      getCurrentSessionInfo(currentSession, optimum);
+    })
+    .catch((e: Error) => {
+      console.log(e);
+    });
   }
 
+  function getCurrentSessionInfo(currentSession: number, optimum: number) {
+    var isFirst : boolean = false;
+
+    if(currentSession == 0){
+      isFirst = true;
+      setPrevSessionName("-");
+    } else {
+      setPrevSessionName(`${currentSession}. Seans`);
+    }
+    isFirst = false; // TODO
+
+    PatientDataService.getExerciseBySessionId(7)
+    .then((response) => {
+      var currentAngle:number[] = [];
+      for (let index = 0; index < response.data.length; index++) {
+        currentAngle[index] = Math.max.apply(Math, response.data[index].shoulder_angles);
+      }
+
+      if(!isFirst){
+        getPrevSessionInfo(optimum, currentAngle, response.data);
+      } else {
+        var prevAngle:string[] = [];
+        for (let index = 0; index < response.data.length; index++) {
+          prevAngle[index] = "-";
+        }
+        createRows(isFirst, optimum, currentAngle, prevAngle, response.data);
+      }
+    })
+    .catch((e: Error) => {
+      console.log(e);
+    });
+  }
+
+  function getPrevSessionInfo(optimum: number, currentAngle: number[], currentSessionData:IExerciseData) {
+    PatientDataService.getExerciseBySessionId(1)
+    .then((response) => {
+      var prevAngle:string[] = [];
+      for (let index = 0; index < response.data.length; index++) {
+        prevAngle[index] = Math.max.apply(Math, response.data[index].shoulder_angles).toString();
+      }
+
+      createRows(false, optimum, currentAngle, prevAngle, currentSessionData);
+    })
+    .catch((e: Error) => {
+      console.log(e);
+    });
+  }
+
+  function createRows(isFirst:boolean, optimum: number, currentAngle: number[], prevAngle: string[], currentSessionData:any) {
+    rows = [];
+    for (let index = 0; index < currentSessionData.length; index++) {
+      var progression = "-";
+      var recovery = "-";
+      if(!isFirst){
+        progression = (((currentAngle[index]-parseInt(prevAngle[index]))/parseInt(prevAngle[index]))*100).toFixed(2);
+        recovery = ((currentAngle[index]/optimum)*100).toFixed(2);
+      }
+      console.log(index);
+      var row = createData(
+        currentSessionData[index].id,
+        currentSessionData[index].weak,
+        currentSessionData[index].name,
+        prevAngle[index].toString(),
+        currentAngle[index],
+        progression,
+        optimum,
+        recovery
+      );
+      rows.push(row);
+    }
+    
+    setExercises(rows);
+  };
+
   const sendExerciseInfo = (data: any) => {
-    //navigate("/exercise-page");
+    navigate("/exercise-page");
     console.log("Data wanted to sent");
     console.log(data);
     FlaskService.sendExerciseInfo(data)
@@ -143,10 +243,10 @@ const ExerciseTable: React.FC<IProps> = (props) => {
             <TableRow>
               <StyledTableHeaderCell>Egzersizler</StyledTableHeaderCell>
               <StyledTableHeaderCell align="center">
-                2. seans
+                {prevSessionName}
               </StyledTableHeaderCell>
               <StyledTableHeaderCell align="center">
-                3. Seans
+                {currentSessionName}
               </StyledTableHeaderCell>
               <StyledTableHeaderCell align="center">
                 İlerleme (%)

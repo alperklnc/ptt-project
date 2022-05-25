@@ -8,6 +8,7 @@ import PatientInfo from "../components/PatientInfo";
 import ExerciseTable from "../components/ExerciseTable";
 
 import { IPatientData } from "../../types/Patient";
+import { ISessionData } from "../../types/Session";
 import PatientDataService from "../../services/PatientService";
 
 const PatientPage: React.FC = () => {
@@ -15,7 +16,16 @@ const PatientPage: React.FC = () => {
   const patientId = location.state as number;
 
   var _sessionId: number = -1;
+  var _sessionData: ISessionData = {
+    id: -1,
+    time: "",
+    date: "",
+    comment: "",
+    pt_id: -1,
+    _completed: false,
+  }
 
+  var [sessionData, setSessionData] = useState<ISessionData>(_sessionData);
   var [sessionId, setSessionId] = useState(_sessionId);
 
   useEffect(() => {
@@ -25,6 +35,7 @@ const PatientPage: React.FC = () => {
   function getSessionId(patientId: number) {
     PatientDataService.getSession(patientId)
       .then((response) => {
+        setSessionData(response.data);
         setSessionId(response.data[0].id);
       })
       .catch((e: Error) => {
@@ -53,8 +64,8 @@ const PatientPage: React.FC = () => {
             display: "flex",
           }}
         >
-          <div>{getSessionId(patientId)}</div>
-          <ExerciseTable sessionId={sessionId}></ExerciseTable>
+          <ExerciseTable patientId={patientId} 
+          sessionData={sessionData} sessionId={sessionId}></ExerciseTable>
         </Grid>
       </div>
     </div>
