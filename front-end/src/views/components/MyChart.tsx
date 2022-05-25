@@ -10,7 +10,8 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import graph from '../../graph.jpeg';
+import graph1 from '../../testplot1.png';
+import graph2 from '../../testplot2.png';
 
 ChartJS.register(
   CategoryScale,
@@ -74,7 +75,14 @@ export const data = {
 export default function App() {
   function getImage() {
     console.log("get image");
-    return <img src={graph} />
+    if(graph1) {
+      console.log("image 1")
+      return <img src={graph1} />
+    } else {
+      console.log("not image 1")
+      return <img src={graph2} />
+    }
+
   }
 
   return (<div>
