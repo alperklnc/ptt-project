@@ -20,6 +20,13 @@ const getSession = (id: number) => {
 const getCurrentSession = (id: number) => {
   return http.get<any>(`/api/currentsession/${id}`);
 };
+
+
+const endSession = (id: number) => {
+  return http.post<any>(`/api/completesession/${id}`);
+}
+
+
 const create = (data: IPatientData) => {
   return http.post<IPatientData>("/api/patient", data);
 };
@@ -47,5 +54,6 @@ const PatientService = {
   getExerciseBySessionId,
   getSession,
   getCurrentSession,
+  endSession,
 };
 export default PatientService;

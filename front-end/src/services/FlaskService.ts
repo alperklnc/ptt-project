@@ -8,8 +8,13 @@ const sendExerciseInfo = (data: any) => {
     return http.post<any>("/data", data);
 }
 
+const endExercise = (data: any) => {
+    return http.post<any>("/finish", data);
+}
+
 const FlaskService = {
     getData,
     sendExerciseInfo,
+    endExercise,
 };
 export default FlaskService;

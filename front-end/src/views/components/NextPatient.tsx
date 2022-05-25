@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Grid } from "@mui/material";
 import { Avatar } from "@mui/material";
-import { ProgressBar } from "react-bootstrap";
+import { Button, ProgressBar } from "react-bootstrap";
 import Typography from "@mui/material/Typography";
 import AvatarImage from "../../patient1.jpg";
 
@@ -18,6 +18,19 @@ interface Props {
 }
 
 const NextPatient: React.FC<Props> = (props) => {
+  const navigate = useNavigate();
+
+  const startExercise = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+
+    navigate("/patient-page", {
+      state: {
+        patientId: props.patientData.id,
+      }
+    });
+  };
+
+
   return (
     <div className="box-shadow">
       <HeaderContainer title="Sıradaki Hasta" />
@@ -76,13 +89,12 @@ const NextPatient: React.FC<Props> = (props) => {
         </Grid>
       </Grid>
       <Grid container justifyContent="center">
-        <Link
-          to="/patient-page"
-          state={props.patientData.id}
-          className="NextPatient-Button"
-        >
-          Seansı Başlat
-        </Link>
+        <Button 
+            className="NextPatient-Button"
+            onClick={startExercise}
+            >
+              Seansı Başlattt
+        </Button>
       </Grid>
     </div>
   );

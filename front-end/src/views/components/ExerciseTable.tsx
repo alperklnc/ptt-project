@@ -20,7 +20,7 @@ import { AxiosResponse } from "axios";
 interface IProps {
   patientId: number;
   sessionId: number;
-  sessionData: ISessionData;
+  sessionData: ISessionData[];
 }
 
 function createData(
@@ -98,6 +98,10 @@ const ExerciseTable: React.FC<IProps> = (props) => {
     
   }, []);
 
+  function getSessionIds(){
+
+  }
+
   function getCurrentSession(optimum:number){
     PatientDataService.getCurrentSession(props.patientId)
     .then((response) => {
@@ -120,7 +124,7 @@ const ExerciseTable: React.FC<IProps> = (props) => {
     } else {
       setPrevSessionName(`${currentSession}. Seans`);
     }
-    isFirst = false; // TODO
+    //isFirst = false; // TODO
 
     PatientDataService.getExerciseBySessionId(7)
     .then((response) => {
@@ -168,7 +172,6 @@ const ExerciseTable: React.FC<IProps> = (props) => {
         progression = (((currentAngle[index]-parseInt(prevAngle[index]))/parseInt(prevAngle[index]))*100).toFixed(2);
         recovery = ((currentAngle[index]/optimum)*100).toFixed(2);
       }
-      console.log(index);
       var row = createData(
         currentSessionData[index].id,
         currentSessionData[index].weak,
@@ -186,7 +189,12 @@ const ExerciseTable: React.FC<IProps> = (props) => {
   };
 
   const sendExerciseInfo = (data: any) => {
-    navigate("/exercise-page");
+    navigate("/exercise-page", {
+      state: {
+        exerciseData: data,
+        patientId: props.patientId,
+      }
+    });
     console.log("Data wanted to sent");
     console.log(data);
     FlaskService.sendExerciseInfo(data)
