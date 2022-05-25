@@ -429,14 +429,7 @@ def streamdata():
 
 
 def helper():
-    # thread = socketio.start_background_task(target=sendArray)
-    """
-    Taking input inside
-    side = input("Enter week side of patient! (RIGHT or LEFT)\n")
-    print("\tweek side is ", side)
-    exercise = int(input("Enter exercise number of patient!(1-4)\n"))
-    print("\texercise number is " + str(exercise))
-    """
+    
     set_axes()
     set_graph()
 
@@ -470,15 +463,12 @@ def helper():
 
     # Initialize a variable to store the time of the previous frame.
     time1 = 0
-    angle_list = []
     local_max = 0
     ret_shoul = []
     ret_hip = []
     for i in range(10):
         output_hash["max"].append(-5)
         output_hash["hip"].append(-5)
-        # total_max.append(-5)
-        # total_hip.append(-5)
         ret_hip.append(-5)
         ret_shoul.append(-5)
     count = 0
@@ -527,19 +517,7 @@ def helper():
 
         # Check if the difference between the previous and this frame time > 0 to avoid division by zero.
         if (time2 - time1) > 0:
-            # Calculate the number of frames per second.
-            frames_per_second = 1.0 / (time2 - time1)
-
-            # Write the calculated number of frames per second on the frame.
-            cv2.putText(frame, 'FPS: {}'.format(int(frames_per_second)), (10, 30), cv2.FONT_HERSHEY_PLAIN, 2,
-                        (0, 255, 0), 3)
-            # cv2.putText(frame, 'Hip angle: {}'.format(int(hip_angle)), (200, 30), cv2.FONT_HERSHEY_PLAIN, 2,
-            #           (0, 255, 0), 3) '# exercise '+str(exercise)+' '+
-            cv2.putText(frame, side + ' shoulder angle : {}'.format(int(angle3D)), (200, 30), cv2.FONT_HERSHEY_PLAIN, 2,
-                        (0, 255, 0), 3)
-            angle_list.append(angle3D)
-            # print("total angle  "+str(angle3D))
-
+            
             if angle3D > local_max and angle3D > 20:
                 local_max = angle3D
                 # this list should returned
@@ -589,10 +567,6 @@ def helper():
         # Update the previous frame time to this frame time.
         # As this frame will become previous frame in next iteration.
         time1 = time2
-
-        combination = np.hstack((frame, frame2))
-        # Display the frame.
-        cv2.imshow('Pose Detection', combination)
 
         # Wait until a key is pressed.
         # Retreive the ASCII code of the key pressed
@@ -656,7 +630,7 @@ def getdata():
 
 def main():
     app.run(debug=True)
-    # socketio.run(app,debug=True)
+
 
 
 main()

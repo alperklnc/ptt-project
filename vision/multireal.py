@@ -387,7 +387,7 @@ def main():
             if angle3D > local_max and angle3D > 20:
                 local_max = angle3D
                 # this list should returned
-                a, b = rotate([int(local_max),hip_angle])
+                a, b = rotate([int(local_max),hip_angle-180])
                 total_max[count] = a
                 total_hip[count] = b
 
