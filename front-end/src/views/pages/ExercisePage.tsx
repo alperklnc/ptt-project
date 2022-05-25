@@ -20,19 +20,19 @@ export default function ExercisePage() {
 
   const endExercise = (event: { preventDefault: () => void }) => {
     event.preventDefault();
-    console.log(state.exerciseData);
+    var finishData = state.exerciseData;
+    finishData.isFinished = true;
+    console.log(finishData);
 
     setSubmitted(true);
-    console.log(state.patientId);
-    FlaskService.endExercise(state.exerciseData)
+    FlaskService.endExercise(finishData)
     .then((response: any) => {
-      console.log(response.data);
       setSubmitted(true);
     })
     .catch((e: Error) => {
       console.log(e);
     });
-    
+
     setTimeout(function() {
       navigate("/patient-page", {
         state: {

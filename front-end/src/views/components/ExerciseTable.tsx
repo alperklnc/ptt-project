@@ -254,6 +254,7 @@ const ExerciseTable: React.FC<IProps> = (props) => {
       id: data.exerciseId,
       weak: _weakSide,
       type: exerciseType,
+      isFinished: false,
     };
 
     sendExerciseInfo(exerciseInfo);
