@@ -10,6 +10,8 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import graph1 from '../../testplot1.png';
+import graph2 from '../../testplot2.png';
 
 ChartJS.register(
   CategoryScale,
@@ -71,47 +73,20 @@ export const data = {
 };
 
 export default function App() {
-  const [bids, setBids] = useState([0]);
+  function getImage() {
+    console.log("get image");
+    if(graph1) {
+      console.log("image 1")
+      return <img src={graph1} />
+    } else {
+      console.log("not image 1")
+      return <img src={graph2} />
+    }
 
-  useEffect(
-    () => {
-      const apiCall = {
-        event: "bts:subscribe",
-        data: { channel: "order_book_btcusd" },
-      };
-
-      const ws = new WebSocket("wss://ws.bitstamp.net");
-      
-      ws.onopen = (event) => {
-        ws.send(JSON.stringify(apiCall));
-      };
-    
-      ws.onmessage = function (event) {
-        const json = JSON.parse(event.data);
-        try {
-          if ((json.event = "data")) {
-            setBids(json.data.bids.slice(0, 5));
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      };
-      
-    },
-    []
-  );
-  //map the first 5 bids
-  const firstBids = bids.map((item) => {
-    return (
-      <div>
-        <p> {item}</p>
-      </div>
-    );
-  });
+  }
 
   return (<div>
-    {firstBids}
-    <Line options={options} data={data} />
+    {getImage()}
     
     </div>);
-}
+  }
