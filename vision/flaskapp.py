@@ -21,8 +21,8 @@ mp_pose = mp.solutions.pose
 mp_pose2 = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
-video = cv2.VideoCapture(0)
-video2 = cv2.VideoCapture(1)
+video = cv2.VideoCapture(1)
+video2 = cv2.VideoCapture(0)
 # total_max = []
 # total_hip = []
 input_hash = {"eid":0,"weak":"LEFT","type":1}
@@ -409,7 +409,7 @@ def pdffunc():
     patient_id=2
     os.system("python3 pdf.py " + str(patient_id))
     print("pdf is ready")
-    return Response(helper(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return str(3)
 
 @app.route('/video')
 @cross_origin(supports_credentials=True)
