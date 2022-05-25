@@ -23,7 +23,7 @@ const ExerciseInfo: React.FC<Props> = (props) => {
           display: "flex",
           backgroundColor: "#4EC6C7",
           width: "100vw",
-          height: "5vh",
+          height: "3vh",
           alignItems: "center",
           justifyContent: "center",
           justifyItems: "center",
