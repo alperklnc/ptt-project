@@ -14,6 +14,8 @@ from flask_cors import CORS, cross_origin
 import os
 import json
 import logging
+from PIL import Image
+
 
 mp_pose = mp.solutions.pose
 mp_pose2 = mp.solutions.pose
@@ -29,7 +31,6 @@ app = Flask(__name__)
 CORS(app, support_credentials=True)
 logging.getLogger('flask_cors').level = logging.DEBUG
 app.config['SECRET_KEY'] = 'fener1453'
-axes_x[i], axes_y[i] = [0, 0], [0, 0]
 socketio = SocketIO(app, cors_allowed_origins="*")
 a = 0
 sock = Sock(app)
@@ -354,25 +355,51 @@ def set_axes():
         axes_x[i], axes_y[i] = rotate(point)
 
 def save_plot():
-    total_max = output_hash["max"][0:-1]
-    total_hip = output_hash["hip"][0:-1]
-    lastx =output_hash["max"][-1]
-    lasty = output_hash["hip"][-1]
-    plt.plot(total_max, total_hip, 'o', 'b')
-    plt.plot([lastx], [lasty], 'g^')
+    total_max = output_hash["max"]
+    total_hip = output_hash["hip"]
+    total_max = [s for s in total_max if s != -5 ]
+    total_hip = [s for s in total_hip if s != -5 ]
+    if len(total_max)>0:
+        lastx =total_max[-1]
+        lasty = total_hip[-1]
+        total_max =total_max[0:-1]
+        total_hip = total_hip[0:-1]
+        plt.plot(total_max, total_hip, 'o', 'b')
+        plt.plot([lastx], [lasty], 'g^')
+        
     plt.plot(axes_x, axes_y, linestyle='-', color='k')
     plt.xlim(0, 110)
     plt.ylim(0, 180)
     plt.show(block=False)
-    plt.savefig('testplot.png')
-    #graphIMage = Image.open('testplot.png').save('testplot.jpg', 'JPEG')
+    plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot1.png')
+    plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot2.png')
+    #graphIMage = Image.open('testplot.png')
+    #graphIMage = graphIMage.convert('RGB').save('testplot.jpg', 'JPEG')
+    """ret, buffer = cv2.imencode('.jpg', graphIMage)
+    graph_output = buffer.tobytes()
+
+    yield (b'--frame\r\n'
+            b'Content-Type: image/jpeg\r\n\r\n' + graph_output + b'\r\n')"""
     plt.close()
 
+def set_graph():
+    plt.plot(axes_x, axes_y, linestyle='-', color='k')
+    plt.xlim(0, 110)
+    plt.ylim(0, 180)
+    plt.show(block=False)
+    plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot1.png')
+    plt.close()
 
 @app.route('/')
 @cross_origin(supports_credentials=True)
 def index():
     return render_template('index.html')
+
+
+"""@app.route('/graph')
+@cross_origin(supports_credentials=True)
+def graph():
+    return Response(save_plot(), mimetype='multipart/x-mixed-replace; boundary=frame')"""
 
 
 @app.route('/pdf')
@@ -411,6 +438,7 @@ def helper():
     print("\texercise number is " + str(exercise))
     """
     set_axes()
+    set_graph()
 
     side=input_hash["weak"]
     exercise=input_hash["type"]
@@ -518,8 +546,10 @@ def helper():
                 lastx = int(local_max)
                 lasty = int(hip_angle) - 180
                 NRLX, NRLY = int(lastx), int(lasty)
-                output_hash["max"][count] = int(lastx)
-                output_hash["hip"][count] = int(lasty)
+                [a ,b] = rotate([lastx, lasty])
+                output_hash["max"][count] = a
+                output_hash["hip"][count] = b
+                
                 # print("shoulder angle " + str(angle3D))
 
             lastx, lasty = rotate( [lastx, lasty])
@@ -527,7 +557,7 @@ def helper():
             total_max = output_hash["max"]
             total_hip = output_hash["hip"]
             # Figure saved here
-            save_fig()
+            save_plot()
             if angle3D < 35 and local_max > 45:
                 local_max = 0
 
