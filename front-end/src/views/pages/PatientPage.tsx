@@ -23,14 +23,16 @@ const PatientPage: React.FC = () => {
   var [sessionId, setSessionId] = useState(-1);
 
   useEffect(() => {
-    getSessionId(patientId);
+    getCurrentSession();
   }, []);
 
-  function getSessionId(patientId: number) {
+  const [currentSession, setCurrentSession] = useState(-1);
+
+  function getSessionId(patientId: number, currentSession:number) {
     PatientDataService.getSession(patientId)
       .then((response) => {
         setSessionData(response.data);
-        setSessionId(response.data[0].id);
+        setSessionId(response.data[currentSession].id);
       })
       .catch((e: Error) => {
         console.log(e);
@@ -38,10 +40,23 @@ const PatientPage: React.FC = () => {
     return "";
   };
 
+  function getCurrentSession(){
+    PatientDataService.getCurrentSession(patientId)
+    .then((response) => {
+      var currentSession = response.data;
+      console.log(currentSession);
+      getSessionId(patientId, currentSession);
+    })
+    .catch((e: Error) => {
+      console.log(e);
+    });
+  }
+
   const endSession = (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
-    console.log(sessionId);
+    console.log(`Session ${sessionId} is finished`);
+
     PatientDataService.endSession(sessionId)
     .then((response) => {
       console.log(response);
