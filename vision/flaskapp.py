@@ -29,6 +29,7 @@ app = Flask(__name__)
 CORS(app, support_credentials=True)
 logging.getLogger('flask_cors').level = logging.DEBUG
 app.config['SECRET_KEY'] = 'fener1453'
+axes_x[i], axes_y[i] = [0, 0], [0, 0]
 socketio = SocketIO(app, cors_allowed_origins="*")
 a = 0
 sock = Sock(app)
@@ -352,6 +353,21 @@ def set_axes():
         point = [axes_x[i], axes_y[i]]
         axes_x[i], axes_y[i] = rotate(point)
 
+def save_plot():
+    total_max = output_hash["max"][0:-1]
+    total_hip = output_hash["hip"][0:-1]
+    lastx =output_hash["max"][-1]
+    lasty = output_hash["hip"][-1]
+    plt.plot(total_max, total_hip, 'o', 'b')
+    plt.plot([lastx], [lasty], 'g^')
+    plt.plot(axes_x, axes_y, linestyle='-', color='k')
+    plt.xlim(0, 110)
+    plt.ylim(0, 180)
+    plt.show(block=False)
+    plt.savefig('testplot.png')
+    #graphIMage = Image.open('testplot.png').save('testplot.jpg', 'JPEG')
+    plt.close()
+
 
 @app.route('/')
 @cross_origin(supports_credentials=True)
@@ -362,7 +378,10 @@ def index():
 @app.route('/pdf')
 @cross_origin(supports_credentials=True)
 def pdffunc():
-    print("hhfhj")
+    print("pdf will created")
+    patient_id=2
+    os.system("python3 pdf.py " + str(patient_id))
+    print("pdf is ready")
     return Response(helper(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/video')
@@ -503,30 +522,17 @@ def helper():
                 output_hash["hip"][count] = int(lasty)
                 # print("shoulder angle " + str(angle3D))
 
-            #plt.close("all")
             lastx, lasty = rotate( [lastx, lasty])
-
 
             total_max = output_hash["max"]
             total_hip = output_hash["hip"]
-
-            """"
-            plt.plot(total_max, total_hip, 'o', 'b')
-            plt.plot([lastx], [lasty], 'g^')
-            plt.plot(axes_x, axes_y, linestyle='-', color='k')
-            plt.xlim(0, 110)
-            plt.ylim(0, 180)
-            plt.show(block=False)
-            
-            plt.savefig('testplot.png')
-            graphIMage = Image.open('testplot.png').save('testplot.jpg', 'JPEG')
-            #"""
+            # Figure saved here
+            save_fig()
             if angle3D < 35 and local_max > 45:
                 local_max = 0
 
                 """output_hash["max"][count]=lastx
                 output_hash["hip"][count]=lasty"""
-
                 # total_max[count] = lastx
                 # total_hip[count] = lasty
                 ret_shoul[count] = NRLX
