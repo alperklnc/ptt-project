@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { ISessionData } from "../../types/Session";
@@ -11,7 +12,7 @@ interface PatientHolderProps {
 }
 
 const PatientHolder: React.FC<PatientHolderProps> = (props) => {
-  const onClick = () => (window.location.href = "http://github.com");
+  const navigate = useNavigate();
 
   var _patientData: IPatientData = {
     id: -1,
@@ -42,8 +43,19 @@ const PatientHolder: React.FC<PatientHolderProps> = (props) => {
     });
   }, []);
 
+  const startExercise = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    console.log(patientData.id);
+
+    navigate("/patient-page", {
+      state: {
+        patientId: patientData.id,
+      }
+    });
+  };
+
   return (
-    <div onClick={onClick}>
+    <div onClick={startExercise}>
       <button
         style={{
           display: "flex",
