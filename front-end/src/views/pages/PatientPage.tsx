@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, TextField } from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -29,7 +29,8 @@ const PatientPage: React.FC = () => {
   var [sessionData, setSessionData] = useState<ISessionData[]>([]);
   var [sessionId, setSessionId] = useState(-1);
   var [hasZero, setHasZero] = useState<boolean>(false);
-  const [open, setOpen] = React.useState(false);
+  const [openAlert, setOpenAlert] = React.useState(false);
+  const [openComment, setOpenComment] = React.useState(false);
 
   useEffect(() => {
     getCurrentSession();
@@ -64,18 +65,9 @@ const PatientPage: React.FC = () => {
     event.preventDefault();
 
     if(hasZero){
-      setOpen(true);
+      setOpenAlert(true);
     } else {
-      console.log(`Session ${sessionId} is finished`);
-
-      PatientDataService.endSession(sessionId)
-      .then((response) => {
-        console.log(response);
-        navigate('/doctor-page');
-      })
-      .catch((e: Error) => {
-        console.log(e);
-      });
+      setOpenComment(true);
     }
   };
 
@@ -89,8 +81,22 @@ const PatientPage: React.FC = () => {
     }
   }
 
-  const closeDialog = () => {
-    setOpen(false);
+  const closeAlert = () => {
+    setOpenAlert(false);
+  };
+
+  const closeComment = () => {
+    setOpenComment(false);
+
+    console.log(`Session ${sessionId} is finished`);
+    PatientDataService.endSession(sessionId)
+    .then((response) => {
+      console.log(response);
+      navigate('/doctor-page');
+    })
+    .catch((e: Error) => {
+      console.log(e);
+    });
   };
 
 
@@ -136,8 +142,8 @@ const PatientPage: React.FC = () => {
           </div>
         </Grid>
         <Dialog
-        open={open}
-        onClose={closeDialog}
+        open={openAlert}
+        onClose={closeAlert}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -150,7 +156,29 @@ const PatientPage: React.FC = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={closeDialog}>Tamam</Button>
+          <Button onClick={closeAlert}>Tamam</Button>
+        </DialogActions>
+      </Dialog>
+
+
+      <Dialog open={openComment} onClose={closeComment}>
+        <DialogTitle>Acı Ölçümü</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Lütfen seans sırasında hissetiğiniz maximum açı eşiğini giriniz (1-10 arasında).
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Acı Değeri"
+            type="number"
+            fullWidth
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeComment}>Gönder</Button>
         </DialogActions>
       </Dialog>
       </div>
