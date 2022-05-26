@@ -30,6 +30,7 @@ const PatientPage: React.FC = () => {
   var [sessionId, setSessionId] = useState(-1);
   var [hasZero, setHasZero] = useState<boolean>(false);
   const [openAlert, setOpenAlert] = React.useState(false);
+  const [openPDFAlert, setOpenPDFAlert] = React.useState(false);
   const [openComment, setOpenComment] = React.useState(false);
 
   useEffect(() => {
@@ -72,7 +73,11 @@ const PatientPage: React.FC = () => {
   };
 
   function openPDF () {
-    window.open(pdf);
+    if(hasZero){
+      setOpenPDFAlert(true);
+    } else {
+      window.open(pdf);
+    }
   }
 
   const updateData = (_hasZero: boolean):void => {
@@ -84,6 +89,10 @@ const PatientPage: React.FC = () => {
   const closeAlert = () => {
     setOpenAlert(false);
   };
+
+  const closePDFAlert = () => {
+    setOpenPDFAlert(false);
+  }
 
   const closeComment = () => {
     setOpenComment(false);
@@ -157,6 +166,25 @@ const PatientPage: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={closeAlert}>Tamam</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openPDFAlert}
+        onClose={closePDFAlert}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Seans Tamamlanmadı!"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Tüm egzersizler tamamlanmadan Hasta Gelişim Raporu oluşturamazsınız. Lütfen mevcut seanstaki değerlerin 0 olmadığına emin olun.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closePDFAlert}>Tamam</Button>
         </DialogActions>
       </Dialog>
 
