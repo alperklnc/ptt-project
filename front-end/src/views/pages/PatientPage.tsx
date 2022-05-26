@@ -2,6 +2,12 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button, Grid } from "@mui/material";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
 import pdf from "../../Sample.pdf";
 
 import NavBar from "../components/NavBar";
@@ -22,6 +28,8 @@ const PatientPage: React.FC = () => {
 
   var [sessionData, setSessionData] = useState<ISessionData[]>([]);
   var [sessionId, setSessionId] = useState(-1);
+  var [hasZero, setHasZero] = useState<boolean>(false);
+  const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
     getCurrentSession();
@@ -55,21 +63,36 @@ const PatientPage: React.FC = () => {
   const endSession = (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
-    console.log(`Session ${sessionId} is finished`);
+    if(hasZero){
+      setOpen(true);
+    } else {
+      console.log(`Session ${sessionId} is finished`);
 
-    PatientDataService.endSession(sessionId)
-    .then((response) => {
-      console.log(response);
-      navigate('/doctor-page');
-    })
-    .catch((e: Error) => {
-      console.log(e);
-    });
+      PatientDataService.endSession(sessionId)
+      .then((response) => {
+        console.log(response);
+        navigate('/doctor-page');
+      })
+      .catch((e: Error) => {
+        console.log(e);
+      });
+    }
   };
 
   function openPDF () {
     window.open(pdf);
   }
+
+  const updateData = (_hasZero: boolean):void => {
+    if(_hasZero){
+      setHasZero(true);
+    }
+  }
+
+  const closeDialog = () => {
+    setOpen(false);
+  };
+
 
   if (sessionId === null || sessionId == -1) {
     return <h2>Loading patient page...</h2>;
@@ -91,8 +114,11 @@ const PatientPage: React.FC = () => {
             display: "flex",
           }}
         >
-          <ExerciseTable patientId={patientId} 
-          sessionData={sessionData} sessionId={sessionId}></ExerciseTable>
+          <ExerciseTable
+          updateData={updateData}
+          patientId={patientId} 
+          sessionData={sessionData} 
+          sessionId={sessionId}></ExerciseTable>
         </Grid>
         <Grid container direction="column" alignItems="center" style={{paddingTop:"40px"}}>
           <div>
@@ -109,6 +135,24 @@ const PatientPage: React.FC = () => {
             </a>
           </div>
         </Grid>
+        <Dialog
+        open={open}
+        onClose={closeDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Seans Tamamlanmadı!"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Tüm egzersizler tamamlanmadan seansı bitiremezsiniz. Lütfen mevcut seanstaki değerlerin 0 olmadığına emin olun.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDialog}>Tamam</Button>
+        </DialogActions>
+      </Dialog>
       </div>
     </div>
   );

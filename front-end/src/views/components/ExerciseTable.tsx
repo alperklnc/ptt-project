@@ -21,6 +21,7 @@ interface IProps {
   patientId: number;
   sessionId: number;
   sessionData: ISessionData[];
+  updateData: (arg: boolean) => void;
 }
 
 function createData(
@@ -188,6 +189,10 @@ const ExerciseTable: React.FC<IProps> = (props) => {
     for (let index = 0; index < currentSessionData.length; index++) {
       var _currentAngle = parseInt(currentAngle[index]);
       var _prevAngle = parseInt(prevAngle[index]);
+
+      if(_currentAngle == 0){
+        props.updateData(true);
+      }
       
       var progression = "-";
       var recovery = "-";
