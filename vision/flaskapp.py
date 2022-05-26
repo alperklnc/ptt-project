@@ -484,9 +484,12 @@ def pose_estimation():
 
         # Skeleton
 
+
         skeleton = image_2 - image
         white_skeleton = np.array(skeleton)
         white_skeleton = np.where(white_skeleton > 0, 255, white_skeleton)
+
+        white_skeleton = cv2.flip(white_skeleton, 1)
 
         ret, buffer = cv2.imencode('.jpg', white_skeleton)
         flask_output = buffer.tobytes()
