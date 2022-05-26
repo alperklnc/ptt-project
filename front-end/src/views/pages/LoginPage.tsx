@@ -2,6 +2,11 @@ import React, { useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Grid, TextField, InputAdornment } from "@mui/material";
 import { AccountCircle, LockRounded } from "@mui/icons-material";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 import "../css/Login.css";
 import ILoginData from "../../types/Login";
@@ -17,6 +22,12 @@ const Login: React.FC = () => {
 
   const [loginData, setLoginData] = useState<ILoginData>(initialLoginData);
 
+  const [openAlert, setOpenAlert] = React.useState(false);
+
+  const closeAlert = () => {
+    setOpenAlert(false);
+  };
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
@@ -31,7 +42,11 @@ const Login: React.FC = () => {
 
     LoginDataService.authenticate(data)
       .then((response: any) => {
-        if(response.data.status === 200) navigate("/doctor-page");
+        if(response.data.status === 200) { 
+          navigate("/doctor-page") 
+        } else {
+          setOpenAlert(true);
+        }
       })
       .catch((e: Error) => {
         console.log("error");
@@ -118,6 +133,24 @@ const Login: React.FC = () => {
           <div />
         </Grid>
       </Grid>
+      <Dialog
+        open={openAlert}
+        onClose={closeAlert}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Hatalı Kullanıcı Bilgileri!"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Yanlış kullanıcı adı ya da şifre. Lütfen bilgilerinizi tekrar kontrol edin.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeAlert}>Tamam</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
