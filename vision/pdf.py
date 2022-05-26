@@ -277,10 +277,13 @@ def cal_recovery(optimal_ang):
     for i in range(length):
         rec_last.append(max(ex_max[i]))
     current_rec = int(sum(rec_last) / len(rec_last))
-    start_rec = int(sum(rec_ini) / len(rec_ini))
-    recovery_percantage=glob["recovery_percantage"]
     patient_id=glob["patient_id"]
-    recovery_percantage = int((current_rec-start_rec)/(optimal_ang-start_rec)*100)
+    recovery_percantage = int((current_rec)/(optimal_ang)*100)
+    if recovery_percantage > 100:
+        recovery_percantage = 100
+    if recovery_percantage < 0:
+        recovery_percantage = 0
+
     print(recovery_percantage)
     url_str = 'http://physio-env.eba-u4ctwpu4.eu-central-1.elasticbeanstalk.com/api/patient/{}/{}'.format(patient_id,recovery_percantage)
     r = requests.put(url_str)
