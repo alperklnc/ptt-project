@@ -81,13 +81,13 @@ const TodaysAppointments: React.FC<Props> = (props) => {
           sessionData={props.sessions[4]}
         ></PatientHolder>
         <PatientHolder
-          sessionData={props.sessions[0]}
+          sessionData={props.sessions[5]}
         ></PatientHolder>
         <PatientHolder
-          sessionData={props.sessions[0]}
+          sessionData={props.sessions[6]}
         ></PatientHolder>
         <PatientHolder
-          sessionData={props.sessions[0]}
+          sessionData={props.sessions[7]}
         ></PatientHolder>
       </Grid>
     </div>

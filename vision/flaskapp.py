@@ -145,13 +145,14 @@ def Exer1(landmarks1, landmarks2):
         shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.RIGHT_HIP.value],
                                           landmarks1[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
                                           landmarks1[mp_pose.PoseLandmark.RIGHT_ELBOW.value])
-        hip_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
-                                     landmarks1[mp_pose.PoseLandmark.RIGHT_HIP.value],
-                                     landmarks1[mp_pose.PoseLandmark.RIGHT_KNEE.value])
+        
     if landmarks2:
         shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.RIGHT_HIP.value],
                                                landmarks2[mp_pose2.PoseLandmark.RIGHT_SHOULDER.value],
                                                landmarks2[mp_pose2.PoseLandmark.RIGHT_ELBOW.value])
+        hip_angle = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.RIGHT_SHOULDER.value],
+                                     landmarks2[mp_pose2.PoseLandmark.RIGHT_HIP.value],
+                                     landmarks2[mp_pose2.PoseLandmark.RIGHT_KNEE.value])
 
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
     return angle3D, hip_angle
@@ -165,18 +166,37 @@ def Exer2(landmarks1, landmarks2):
         shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.RIGHT_HIP.value],
                                           landmarks1[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
                                           landmarks1[mp_pose.PoseLandmark.RIGHT_ELBOW.value])
+        hip_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
+                                     landmarks1[mp_pose.PoseLandmark.RIGHT_HIP.value],
+                                     landmarks1[mp_pose.PoseLandmark.RIGHT_KNEE.value])
     if landmarks2:
         shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.RIGHT_HIP.value],
                                                landmarks2[mp_pose2.PoseLandmark.RIGHT_SHOULDER.value],
                                                landmarks2[mp_pose2.PoseLandmark.RIGHT_ELBOW.value])
-        hip_angle = calculateAngle2D(landmarks2[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
-                                     landmarks2[mp_pose.PoseLandmark.RIGHT_HIP.value],
-                                     landmarks2[mp_pose.PoseLandmark.RIGHT_KNEE.value])
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
     return angle3D, hip_angle
 
 
 def Exer3(landmarks1, landmarks2):
+    shoulder_angle = 0
+    hip_angle = 0
+    shoulder_angle_back = 0
+    if landmarks1:
+        shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.RIGHT_HIP.value],
+                                          landmarks1[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
+                                          landmarks1[mp_pose.PoseLandmark.RIGHT_ELBOW.value])
+    if landmarks2:
+        shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.RIGHT_HIP.value],
+                                               landmarks2[mp_pose2.PoseLandmark.RIGHT_SHOULDER.value],
+                                               landmarks2[mp_pose2.PoseLandmark.RIGHT_ELBOW.value])
+        hip_angle = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.RIGHT_SHOULDER.value],
+                                     landmarks2[mp_pose2.PoseLandmark.RIGHT_HIP.value],
+                                     landmarks2[mp_pose2.PoseLandmark.RIGHT_KNEE.value])
+    angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
+    return angle3D, hip_angle
+
+
+def Exer4(landmarks1, landmarks2):
     shoulder_angle = 0
     hip_angle = 0
     shoulder_angle_back = 0
@@ -191,25 +211,7 @@ def Exer3(landmarks1, landmarks2):
         shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.RIGHT_HIP.value],
                                                landmarks2[mp_pose2.PoseLandmark.RIGHT_SHOULDER.value],
                                                landmarks2[mp_pose2.PoseLandmark.RIGHT_ELBOW.value])
-    angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
-    return angle3D, hip_angle
-
-
-def Exer4(landmarks1, landmarks2):
-    shoulder_angle = 0
-    hip_angle = 0
-    shoulder_angle_back = 0
-    if landmarks1:
-        shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.RIGHT_HIP.value],
-                                          landmarks1[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
-                                          landmarks1[mp_pose.PoseLandmark.RIGHT_ELBOW.value])
-    if landmarks2:
-        shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.RIGHT_HIP.value],
-                                               landmarks2[mp_pose2.PoseLandmark.RIGHT_SHOULDER.value],
-                                               landmarks2[mp_pose2.PoseLandmark.RIGHT_ELBOW.value])
-        hip_angle = calculateAngle2D(landmarks2[mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
-                                     landmarks2[mp_pose.PoseLandmark.RIGHT_HIP.value],
-                                     landmarks2[mp_pose.PoseLandmark.RIGHT_KNEE.value])
+        
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
     return angle3D, hip_angle
 
@@ -222,13 +224,14 @@ def Exer5(landmarks1, landmarks2):
         shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.LEFT_HIP.value],
                                           landmarks1[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
                                           landmarks1[mp_pose.PoseLandmark.LEFT_ELBOW.value])
-        hip_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
-                                     landmarks1[mp_pose.PoseLandmark.LEFT_HIP.value],
-                                     landmarks1[mp_pose.PoseLandmark.LEFT_KNEE.value])
+        
     if landmarks2:
         shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.LEFT_HIP.value],
                                                landmarks2[mp_pose2.PoseLandmark.LEFT_SHOULDER.value],
                                                landmarks2[mp_pose2.PoseLandmark.LEFT_ELBOW.value])
+        hip_angle = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.LEFT_SHOULDER.value],
+                                     landmarks2[mp_pose2.PoseLandmark.LEFT_HIP.value],
+                                     landmarks2[mp_pose2.PoseLandmark.LEFT_KNEE.value])
     angle3D = calculateAngle3D(360 - shoulder_angle, 360 - shoulder_angle_back)
     return angle3D, hip_angle
 
@@ -241,18 +244,39 @@ def Exer6(landmarks1, landmarks2):
         shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.LEFT_HIP.value],
                                           landmarks1[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
                                           landmarks1[mp_pose.PoseLandmark.LEFT_ELBOW.value])
+        hip_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
+                                     landmarks1[mp_pose.PoseLandmark.LEFT_HIP.value],
+                                     landmarks1[mp_pose.PoseLandmark.LEFT_KNEE.value])
     if landmarks2:
         shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.LEFT_HIP.value],
                                                landmarks2[mp_pose2.PoseLandmark.LEFT_SHOULDER.value],
                                                landmarks2[mp_pose2.PoseLandmark.LEFT_ELBOW.value])
-        hip_angle = calculateAngle2D(landmarks2[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
-                                     landmarks2[mp_pose.PoseLandmark.LEFT_HIP.value],
-                                     landmarks2[mp_pose.PoseLandmark.LEFT_KNEE.value])
+        
     angle3D = calculateAngle3D(360 - shoulder_angle, 360 - shoulder_angle_back)
     return angle3D, hip_angle
 
 
 def Exer7(landmarks1, landmarks2):
+    shoulder_angle = 0
+    hip_angle = 0
+    shoulder_angle_back = 0
+    if landmarks1:
+        shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.LEFT_HIP.value],
+                                          landmarks1[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
+                                          landmarks1[mp_pose.PoseLandmark.LEFT_ELBOW.value])
+        
+    if landmarks2:
+        shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.LEFT_HIP.value],
+                                               landmarks2[mp_pose2.PoseLandmark.LEFT_SHOULDER.value],
+                                               landmarks2[mp_pose2.PoseLandmark.LEFT_ELBOW.value])
+        hip_angle = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.LEFT_SHOULDER.value],
+                                     landmarks2[mp_pose2.PoseLandmark.LEFT_HIP.value],
+                                     landmarks2[mp_pose2.PoseLandmark.LEFT_KNEE.value])
+    angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
+    return angle3D, hip_angle
+
+
+def Exer8(landmarks1, landmarks2):
     shoulder_angle = 0
     hip_angle = 0
     shoulder_angle_back = 0
@@ -267,25 +291,6 @@ def Exer7(landmarks1, landmarks2):
         shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.LEFT_HIP.value],
                                                landmarks2[mp_pose2.PoseLandmark.LEFT_SHOULDER.value],
                                                landmarks2[mp_pose2.PoseLandmark.LEFT_ELBOW.value])
-    angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
-    return angle3D, hip_angle
-
-
-def Exer8(landmarks1, landmarks2):
-    shoulder_angle = 0
-    hip_angle = 0
-    shoulder_angle_back = 0
-    if landmarks1:
-        shoulder_angle = calculateAngle2D(landmarks1[mp_pose.PoseLandmark.LEFT_HIP.value],
-                                          landmarks1[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
-                                          landmarks1[mp_pose.PoseLandmark.LEFT_ELBOW.value])
-    if landmarks2:
-        shoulder_angle_back = calculateAngle2D(landmarks2[mp_pose2.PoseLandmark.LEFT_HIP.value],
-                                               landmarks2[mp_pose2.PoseLandmark.LEFT_SHOULDER.value],
-                                               landmarks2[mp_pose2.PoseLandmark.LEFT_ELBOW.value])
-        hip_angle = calculateAngle2D(landmarks2[mp_pose.PoseLandmark.LEFT_SHOULDER.value],
-                                     landmarks2[mp_pose.PoseLandmark.LEFT_HIP.value],
-                                     landmarks2[mp_pose.PoseLandmark.LEFT_KNEE.value])
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
     return angle3D, hip_angle
 
@@ -320,6 +325,14 @@ def plot_graph():
     plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot2.png')
     plt.close()
 
+def res_graph():
+    plt.plot(axes_x, axes_y, linestyle='-', color='k')
+    plt.xlim(0, 110)
+    plt.ylim(0, 180)
+    plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot1.png')
+    plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot2.png')
+    plt.close()
+
 #Sending skeleton video to the frontend.
 @app.route('/video')
 @cross_origin(supports_credentials=True)
@@ -342,7 +355,7 @@ def getdata():
     ex_type = json_lst['type']
     isFinished = json_lst['isFinished']
     patient_id =  json_lst['pid']
-    
+    input_hash['isFinished'] = isFinished
     print("pdf will created")
     os.system("python3 graph_output.py " + str(patient_id))
     print("pdf is ready")
@@ -355,7 +368,7 @@ def getdata():
     print(patient_id)
     print()
 
-    input_hash['isFinished'] = isFinished
+    
     input_hash["pid"] =  patient_id
     input_hash["eid"]=ex_id
     input_hash["weak"]=weak
@@ -364,11 +377,7 @@ def getdata():
     return ""
 
 def pose_estimation():
-    side=input_hash["weak"]
-    exercise=input_hash["type"]
-
-    print("\tweek side is ", side)
-    print("\texercise number is " + str(exercise))
+    
     # Setup Pose function for video.
     pose_video = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.1,
                               min_tracking_confidence=0.1)
@@ -408,7 +417,8 @@ def pose_estimation():
 
     # Iterate until the video is accessed successfully.
     while video.isOpened() and video2.isOpened():
-
+        exercise=input_hash["type"]
+        side=input_hash["weak"]
         # Read a frames.
         ok, frame = video.read()
         ok2, frame2 = video2.read()
@@ -472,6 +482,7 @@ def pose_estimation():
             print(r.status_code)
             
             input_hash['isFinished'] = False
+            res_graph()
             sys.exit()
             # Break the loop.
             # break
