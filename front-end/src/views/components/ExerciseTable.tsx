@@ -199,8 +199,13 @@ const ExerciseTable: React.FC<IProps> = (props) => {
           recovery = ((_currentAngle/optimum)*100).toFixed(2);
         }
       } else {
-        progression = (((_currentAngle-_prevAngle)/_prevAngle)*100).toFixed(2);
-        recovery = ((_currentAngle/optimum)*100).toFixed(2);
+        if(_currentAngle == 0){
+          recovery = ((_prevAngle/optimum)*100).toFixed(2);
+          progression = "-";
+        } else {
+          recovery = ((_currentAngle/optimum)*100).toFixed(2);
+          progression = (((_currentAngle-_prevAngle)/_prevAngle)*100).toFixed(2);
+        }
       }
 
       var row = createData(
@@ -260,6 +265,7 @@ const ExerciseTable: React.FC<IProps> = (props) => {
       _weakSide = "RIGHT";
     }
     var exerciseInfo = {
+      pid: props.patientId,
       id: data.exerciseId,
       weak: _weakSide,
       type: exerciseType,

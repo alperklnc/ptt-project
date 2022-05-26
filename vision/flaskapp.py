@@ -1,61 +1,36 @@
-from distutils.log import debug
 import math
-from flask_sock import Sock
 import cv2
 import numpy as np
-from time import sleep, time
+from time import  time
 import mediapipe as mp
 import sys
-from flask import Flask, render_template, Response,request
-from flask_socketio import SocketIO, send
+from flask import Flask,  Response,request, send_file
 from matplotlib import pyplot as plt
 import requests
 from flask_cors import CORS, cross_origin
 import os
 import json
 import logging
-from PIL import Image
+
 
 mp_pose = mp.solutions.pose
 mp_pose2 = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
-mp_drawing_styles = mp.solutions.drawing_styles
 input_hash = {"eid":0,"weak":"LEFT","type":1,"isFinished":False,"pid":2}
 output_hash = {"max": [], "hip": []}
 app = Flask(__name__)
 CORS(app, support_credentials=True)
 logging.getLogger('flask_cors').level = logging.DEBUG
 app.config['SECRET_KEY'] = 'fener1453'
-socketio = SocketIO(app, cors_allowed_origins="*")
 a = 0
-sock = Sock(app)
 axes_x = [0.0, 110.32]
 axes_y = [0.0, 178.69]
 
 
-"""@sock.route('/echo')
-@cross_origin(supports_credentials=True)
-def echo(sock):
-    global a
-    a = 1
-    while True:
-        a += 1
-        sleep(0.5)
-        total_max = output_hash["max"]
-        total_hip = output_hash["hip"]
-        print("total arm angle")
-        print(total_max)
-        print("hip angles")
-        print(total_hip)
-        hmp = {"total_max": total_max, "total_hip": total_hip}
-        sock.send(hmp)"""
-
-def detectPose(image, pose, display=True):
-    # Initializing mediapipe pose class.
-    mp_pose = mp.solutions.pose
+def detectPose(image, pose, display=True,drawBool=False):
     # Setting up the Pose function.
     # Initializing mediapipe drawing class, useful for annotation.
-    mp_drawing = mp.solutions.drawing_utils
+    
     # Create a copy of the input image.
     output_image = image.copy()
     # Convert the image from BGR into RGB format.
@@ -67,21 +42,23 @@ def detectPose(image, pose, display=True):
     # Initialize a list to store the detected landmarks.
     landmarks = []
     # Check if any landmarks are detected.
+    
     if results.pose_landmarks:
         # Draw Pose landmarks on the output image.
-        mp_drawing.draw_landmarks(
-            output_image,
-            results.pose_landmarks,
-            mp_pose.POSE_CONNECTIONS,
-            mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=2, circle_radius=2),
-            mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=15, circle_radius=10))
+        if drawBool:
+            mp_drawing.draw_landmarks(
+                output_image,
+                results.pose_landmarks,
+                mp_pose.POSE_CONNECTIONS,
+                mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=2, circle_radius=2),
+                mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=15, circle_radius=10))
         # Iterate over the detected landmarks.
         for landmark in results.pose_landmarks.landmark:
             # Append the landmark into the list.
             landmarks.append((int(landmark.x * width), int(landmark.y * height),
                               (landmark.z * width)))
     # Return the output image and the found landmarks.
-    return output_image, landmarks, results.pose_landmarks
+    return output_image, landmarks
 
 
 def calculateAngle2D(landmark1, landmark2, landmark3):
@@ -319,36 +296,29 @@ def save_plot():
         lasty = total_hip[-1]
         total_max =total_max[0:-1]
         total_hip = total_hip[0:-1]
-        plt.plot(total_max, total_hip, 'o', 'b')
-        plt.plot([lastx], [lasty], 'g^')
+        plt.plot(total_max, total_hip, 'o', 'b',markersize= 12)
+        plt.plot([lastx], [lasty], 'g^',markersize= 12)
     
     plt.plot(axes_x, axes_y, linestyle='-', color='k')
     plt.xlim(0, 110)
     plt.ylim(0, 180)
-    plt.show(block=False)
-    plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot1.png')
-    plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot2.png')
-    plt.close()
-
-def set_graph():
-    plt.plot(axes_x, axes_y, linestyle='-', color='k')
-    plt.xlim(0, 110)
-    plt.ylim(0, 180)
-    plt.show(block=False)
     plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot1.png')
     plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot2.png')
     plt.close()
 
 
-@app.route('/pdf')
+
+"""@app.route('/pdf', methods=["GET", "POST"])
 @cross_origin(supports_credentials=True)
 def pdffunc():
-    #input_hash["pid"]== request.json['pid']
+    print( request.json['pid'])
+    #print(request.json['pid'])
+    input_hash["pid"] =  request.json['pid']
     print("pdf will created")
     patient_id=input_hash["pid"]
-    os.system("python3 pdf.py " + str(patient_id))
+    os.system("python3 graph_output.py " + str(patient_id))
     print("pdf is ready")
-    return str(3)
+    return send_file('Sample.pdf', attachment_filename='Sample.pdf')"""
 
 @app.route('/video')
 @cross_origin(supports_credentials=True)
@@ -360,29 +330,55 @@ def video():
     return Response(helper(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-"""@app.route('/finished', methods=["GET","POST"])
-@cross_origin(supports_credentials=True)
-def finish():
-    print('exit')
-    input_hash['isFinished'] = True
-    return"""
+
+
+@app.route("/data", methods=["GET", "POST"])
+@cross_origin(supports_credentials=True,allow_headers='*')
+def getdata():
+    ex_id = request.json['id']
+    weak = request.json['weak']
+    ex_type = request.json['type']
+    isFinished = request.json['isFinished']
+    print(ex_id)
+    print(weak)
+    print(ex_type)
+    print(isFinished)
+    input_hash["pid"] =  request.json['pid']
+    print("pdf will created")
+    patient_id=input_hash["pid"]
+    input_hash['isFinished'] = isFinished
+    os.system("python3 graph_output.py " + str(patient_id))
+    print("pdf is ready")
+    
+    print("taken data")
+    print(isFinished)
+    print(ex_id)
+    print(weak)
+    print(ex_type)
+    print()
+
+    
+    input_hash["eid"]=ex_id
+    input_hash["weak"]=weak
+    input_hash["type"]=ex_type
+
+    return send_file('Sample.pdf', attachment_filename='Sample.pdf')
 
 def helper():
     
-    set_graph()
-
+  
     side=input_hash["weak"]
     exercise=input_hash["type"]
 
     print("\tweek side is ", side)
     print("\texercise number is " + str(exercise))
     # Setup Pose function for video.
-    pose_video = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.2,
-                              min_tracking_confidence=0.2)  # , model_complexity=1)
+    pose_video = mp_pose.Pose(static_image_mode=False, min_detection_confidence=0.1,
+                              min_tracking_confidence=0.1)
 
     # Setup Pose function for video2.
-    pose_video2 = mp_pose2.Pose(static_image_mode=False, min_detection_confidence=0.2,
-                                min_tracking_confidence=0.2)  # , model_complexity=1)
+    pose_video2 = mp_pose2.Pose(static_image_mode=False, min_detection_confidence=0.1,
+                                min_tracking_confidence=0.1)
 
     # Initialize the VideoCapture object to read from the webcam.
     # video is external camera (Side)
@@ -394,6 +390,7 @@ def helper():
     cv2.namedWindow('Pose Detection', cv2.WINDOW_NORMAL)
 
     # Set video camera size
+    #1280 960
     video.set(3, 1280)
     video.set(4, 960)
     video2.set(3, 1280)
@@ -432,15 +429,15 @@ def helper():
         frame2_height, frame2_width, _ = frame2.shape
 
         # Resize the frames while keeping the aspect ratio.
-        frame = cv2.resize(frame, (int(frame_width * (640 / frame_height)), 640))
-        frame2 = cv2.resize(frame2, (int(frame2_width * (640 / frame2_height)), 640))
+        frame = cv2.resize(frame, (int(frame_width * (480 / frame_height)), 480))
+        frame2 = cv2.resize(frame2, (int(frame2_width * (480 / frame2_height)), 480))
         image1 = frame2
         frame2.flags.writeable = False
         image = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)
 
         # Perform Pose landmarks detection.
-        frame, landmarks, result_land = detectPose(frame, pose_video, display=False)
-        frame2, landmarks2, result_land2 = detectPose(image, pose_video2, display=False)
+        frame, landmarks= detectPose(frame, pose_video, display=False,drawBool=True)
+        frame2, landmarks2= detectPose(image, pose_video2, display=False,drawBool=True)
 
         ##### Calculate angle
         # shoulder, hip = Selector(1,landmarks,landmarks2)
@@ -464,10 +461,6 @@ def helper():
                 
                 # print("shoulder angle " + str(angle3D))
 
-            lastx, lasty = rotate( [lastx, lasty])
-
-            total_max = output_hash["max"]
-            total_hip = output_hash["hip"]
             # Figure saved here
             save_plot()
             if angle3D < 35 and local_max > 45:
@@ -495,6 +488,7 @@ def helper():
             sys.exit()
             # Break the loop.
             # break
+
         # Update the previous frame time to this frame time.
         # As this frame will become previous frame in next iteration.
         time1 = time2
@@ -526,28 +520,13 @@ def helper():
     cv2.destroyAllWindows()
 
 
-@app.route("/data", methods=["GET", "POST"])
-@cross_origin(supports_credentials=True,allow_headers='*')
-def getdata():
-    
-    ex_id = request.json['id']
-    weak = request.json['weak']
-    ex_type = request.json['type']
-    print(ex_id)
-    print(weak)
-    print(ex_type)
 
-    input_hash["eid"]=ex_id
-    input_hash["weak"]=weak
-    input_hash["type"]=ex_type
-
-    return ""
 
 
 # ---------------------------------------------#
 
 def main():
-    app.run(debug=True)
+    app.run(debug=True, threaded=True)
 
 
 

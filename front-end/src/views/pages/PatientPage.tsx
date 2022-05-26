@@ -2,6 +2,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button, Grid } from "@mui/material";
+import pdf from "../../Sample.pdf";
 
 import NavBar from "../components/NavBar";
 import PatientInfo from "../components/PatientInfo";
@@ -12,6 +13,7 @@ import { ISessionData } from "../../types/Session";
 import PatientDataService from "../../services/PatientService";
 
 import "../css/style-sheet.css";
+import FlaskService from "../../services/FlaskService";
 
 const PatientPage: React.FC = () => {
   const navigate = useNavigate();
@@ -21,6 +23,8 @@ const PatientPage: React.FC = () => {
 
   var [sessionData, setSessionData] = useState<ISessionData[]>([]);
   var [sessionId, setSessionId] = useState(-1);
+
+  const [submitted, setSubmitted] = useState<boolean>(false);
 
   useEffect(() => {
     getCurrentSession();
@@ -44,7 +48,6 @@ const PatientPage: React.FC = () => {
     PatientDataService.getCurrentSession(patientId)
     .then((response) => {
       var currentSession = response.data;
-      console.log(currentSession);
       getSessionId(patientId, currentSession);
     })
     .catch((e: Error) => {
@@ -60,12 +63,18 @@ const PatientPage: React.FC = () => {
     PatientDataService.endSession(sessionId)
     .then((response) => {
       console.log(response);
-      navigate("/doctor-page");
+      navigate('/doctor-page');
     })
     .catch((e: Error) => {
       console.log(e);
     });
   };
+
+ 
+
+  function openPDF () {
+    setTimeout( function() { window.open(pdf)}, 1);
+  }
 
   if (sessionId === null || sessionId == -1) {
     return <h2>Loading patient page...</h2>;
@@ -90,13 +99,32 @@ const PatientPage: React.FC = () => {
           <ExerciseTable patientId={patientId} 
           sessionData={sessionData} sessionId={sessionId}></ExerciseTable>
         </Grid>
-        <Grid container justifyContent="center" style={{paddingTop:"40px"}}>
-          <Button 
-            className="NextPatient-Button"
-            onClick={endSession}
-            >
-              Seansı Bitir
-          </Button>
+        <Grid container direction="column" alignItems="center" style={{paddingTop:"40px"}}>
+          <div>
+            <Button 
+              className="NextPatient-Button"
+              onClick={endSession}
+              >
+                Seansı Bitir
+            </Button>
+          </div>
+          {true ? (
+              <div
+                style={{
+                  paddingBottom: "2vw",
+                }}
+              >
+                <h4>Hasta Gelişim Raporu Oluşturuluyor...</h4>
+              </div>
+            ) : (
+              <h4></h4>
+            )}
+          <div>
+
+            <a className="PDF-Button" onClick={openPDF} target="_blank" rel="noreferrer">
+              Hasta Gelişim Raporu
+            </a>
+          </div>
         </Grid>
       </div>
     </div>
