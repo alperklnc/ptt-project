@@ -69,7 +69,7 @@ const PatientHolder: React.FC<PatientHolderProps> = (props) => {
           className="PatientHolder-Box"
           style={{
             backgroundColor: "#4EC6C7",
-            width: "5vw",
+            width: "4vw",
           }}
         >
           <Typography
