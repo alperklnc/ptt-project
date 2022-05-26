@@ -28,7 +28,20 @@
   color: white !important;
   text-align: center;
   text-decoration: none;
-  
+}
+
+.PDF-Button {
+  background-color: #4ec6c7 !important;
+  font-size: 1vw !important;
+  margin-bottom: 4vh !important;
+  padding: 8px !important;
+  border-radius: 10px !important;
+  text-transform: none !important;
+  min-width: 250px !important;
+  max-width: 400px;
+  color: white !important;
+  text-align: center;
+  text-decoration: none;
 }
 
 .PatientHolder-Box {
