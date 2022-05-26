@@ -296,7 +296,7 @@ def cal_recovery(optimal_ang):
 
 def main():
     # take input
-    glob["patient_id"]=2#sys.argv[1]
+    glob["patient_id"]=sys.argv[1]
     patient_id=glob["patient_id"]
     url_str = 'http://physio-env.eba-u4ctwpu4.eu-central-1.elasticbeanstalk.com/api/patient/{}'.format(patient_id)
     r = requests.get(url_str)
@@ -318,7 +318,6 @@ def main():
     r = requests.get(url_str)
     if r.status_code != 200:
         print("Cannot reach data")
-    print(r)
     data_Process(r)
     cal_recovery(optimal_ang)
     pdf.print_pdf(patient_first_name,patient_last_name ,patient_disease,patient_gender,patient_exercise,patient_weak)
