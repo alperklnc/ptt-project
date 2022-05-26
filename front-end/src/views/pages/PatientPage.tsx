@@ -13,7 +13,6 @@ import { ISessionData } from "../../types/Session";
 import PatientDataService from "../../services/PatientService";
 
 import "../css/style-sheet.css";
-import FlaskService from "../../services/FlaskService";
 
 const PatientPage: React.FC = () => {
   const navigate = useNavigate();
@@ -23,8 +22,6 @@ const PatientPage: React.FC = () => {
 
   var [sessionData, setSessionData] = useState<ISessionData[]>([]);
   var [sessionId, setSessionId] = useState(-1);
-
-  const [submitted, setSubmitted] = useState<boolean>(false);
 
   useEffect(() => {
     getCurrentSession();
@@ -70,10 +67,8 @@ const PatientPage: React.FC = () => {
     });
   };
 
- 
-
   function openPDF () {
-    setTimeout( function() { window.open(pdf)}, 1);
+    window.open(pdf);
   }
 
   if (sessionId === null || sessionId == -1) {
@@ -108,19 +103,7 @@ const PatientPage: React.FC = () => {
                 Seansı Bitir
             </Button>
           </div>
-          {true ? (
-              <div
-                style={{
-                  paddingBottom: "2vw",
-                }}
-              >
-                <h4>Hasta Gelişim Raporu Oluşturuluyor...</h4>
-              </div>
-            ) : (
-              <h4></h4>
-            )}
           <div>
-
             <a className="PDF-Button" onClick={openPDF} target="_blank" rel="noreferrer">
               Hasta Gelişim Raporu
             </a>
