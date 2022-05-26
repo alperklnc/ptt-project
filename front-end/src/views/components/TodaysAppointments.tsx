@@ -1,58 +1,93 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import PatientHolder from "./PatientHolder";
 import HeaderContainer from "./HeaderContainer";
 
 import "../css/style-sheet.css";
+import { ISessionData } from "../../types/Session";
+import PatientDataService from "../../services/PatientService";
+import { IPatientData } from "../../types/Patient";
 
 interface Props {
-  patientName1: string;
-  patientName2: string;
-  patientName3: string;
-  patientName4: string;
-  patientName5: string;
-  patientName6: string;
-  patientName7: string;
-  patientName8: string;
+  sessions: ISessionData[];
 }
 
+let once:number = 0;
+
 const TodaysAppointments: React.FC<Props> = (props) => {
+  var _todaysPatients: IPatientData[] = [];
+
+  const [todaysPatients, setTodaysPatients] = useState<IPatientData[]>(_todaysPatients);
+
+  useEffect(() => {
+    setTodaysPatientsInfo();
+    
+  }, []);
+
+  function setTodaysPatientsInfo() {
+    if(once < 2){
+      once = once + 1;
+      _todaysPatients = [];
+      for (let index = 0; index < props.sessions.length; index++) {
+        PatientDataService.getById(props.sessions[index].pt_id)
+        .then((response) => {
+          todaysPatients[index] = response.data;
+        }).catch((e: Error) => {
+          console.log(e);
+        });
+      };
+    }
+    return "";
+  };
+
+
+  function getPatientName(index: number) {
+    setTodaysPatientsInfo();
+
+    return "todaysPatients[index]";
+  }
+
+  /*
+  function getPatientNamee(index: number, pt_id: number) {
+    PatientDataService.getById(pt_id).then((response) => {
+      var name =
+        response.data.patientFirstName + " " + response.data.patientLastName;
+      todaysPatients[index] = name;
+      setTodaysPatients(todaysPatients);
+    });
+
+    return todaysPatients[index];
+  }
+  */
   return (
     <div className="box-shadow">
+      <div>{setTodaysPatientsInfo()}</div>
       <HeaderContainer title="Bugünün Randevuları" />
       <Grid container item direction="row" height="25vh" className="Container">
         <PatientHolder
-          patientName={props.patientName1}
-          hour="08:30"
+          sessionData={props.sessions[0]}
         ></PatientHolder>
         <PatientHolder
-          patientName={props.patientName2}
-          hour="09:30"
+          sessionData={props.sessions[1]}
         ></PatientHolder>
         <PatientHolder
-          patientName={props.patientName3}
-          hour="10:30"
+          sessionData={props.sessions[2]}
         ></PatientHolder>
         <PatientHolder
-          patientName={props.patientName4}
-          hour="11:30"
-        ></PatientHolder>
-        <PatientHolder patientName="Öğle Arası" hour="12:30"></PatientHolder>
-        <PatientHolder
-          patientName={props.patientName5}
-          hour="13:30"
+          sessionData={props.sessions[3]}
         ></PatientHolder>
         <PatientHolder
-          patientName={props.patientName6}
-          hour="14:30"
+          sessionData={props.sessions[0]}
         ></PatientHolder>
         <PatientHolder
-          patientName={props.patientName7}
-          hour="15:30"
+          sessionData={props.sessions[0]}
         ></PatientHolder>
         <PatientHolder
-          patientName={props.patientName8}
-          hour="16:30"
+          sessionData={props.sessions[0]}
+        ></PatientHolder>
+        <PatientHolder
+          sessionData={props.sessions[0]}
         ></PatientHolder>
       </Grid>
     </div>

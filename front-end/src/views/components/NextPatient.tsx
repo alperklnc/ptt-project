@@ -35,7 +35,7 @@ const NextPatient: React.FC<Props> = (props) => {
 
   return (
     <div className="box-shadow">
-      <HeaderContainer title="Sıradaki Hasta" />
+      <HeaderContainer title="Günün İlk Hastası" />
       <Grid container direction="row" height="40vh">
         <Grid container item sm={8} direction="column" className="Container">
           <Typography className="NextPatient-Text">
