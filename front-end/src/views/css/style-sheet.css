@@ -28,6 +28,7 @@
   color: white !important;
   text-align: center;
   text-decoration: none;
+  outline:0 !important;
 }
 
 .PDF-Button {
@@ -52,8 +53,8 @@
 }
 
 .PatientHolder-Text {
-  display: flex;
-  flex-direction: column;
+  display: flex  !important;
+  flex-direction: row;
   text-align: left;
   padding-left: 15px;
   font-size: 1vw !important;
@@ -71,7 +72,7 @@
   font-size: 1.2vw !important;
   font-weight: bold !important;
   text-align: left;
-  padding: 3vw;
+  padding: 2vw;
   color: white;
 }
 

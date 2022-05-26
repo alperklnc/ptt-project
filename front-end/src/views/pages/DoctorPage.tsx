@@ -103,9 +103,7 @@ const DoctorPage: React.FC = () => {
       <NavBar />
       <div
         style={{
-          padding: "3vw",
-          paddingLeft: "3vw",
-          paddingRight: "3vw",
+          padding: "3vw 5vw 2vw 5vw"
         }}
       >
         <Grid

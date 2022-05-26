@@ -78,7 +78,7 @@ const TodaysAppointments: React.FC<Props> = (props) => {
           sessionData={props.sessions[3]}
         ></PatientHolder>
         <PatientHolder
-          sessionData={props.sessions[0]}
+          sessionData={props.sessions[4]}
         ></PatientHolder>
         <PatientHolder
           sessionData={props.sessions[0]}
