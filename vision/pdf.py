@@ -138,7 +138,9 @@ class PDF(FPDF):
         col_width = epw / 5
 
         width_data=len(ex_max)
-        length_data = len(ex_max[0])
+        length_data = 0
+        if len(ex_max) != 0:
+            length_data = len(ex_max[0])
         data = []
         for i in range(length_data+1):
             col = []
@@ -194,8 +196,9 @@ class PDF(FPDF):
         self.set_line_width(0.2)
 
         #plot the graphs
-    
-        day=np.arange(1,len(ex_max[0])+1)
+        day = np.arange(1, 3)
+        if len(ex_max) !=0:
+            day=np.arange(1,len(ex_max[0])+1)
         length = len(ex_max)
         for i in range(length):
             exer1 = ex_max[i]
@@ -276,7 +279,9 @@ def cal_recovery(optimal_ang):
     length = len(ex_max)
     for i in range(length):
         rec_last.append(max(ex_max[i]))
-    current_rec = int(sum(rec_last) / len(rec_last))
+    current_rec = 0
+    if len(rec_last) != 0:
+        current_rec = int(sum(rec_last) / len(rec_last))
     patient_id=glob["patient_id"]
     recovery_percantage = int((current_rec)/(optimal_ang)*100)
     if recovery_percantage > 100:
@@ -291,7 +296,7 @@ def cal_recovery(optimal_ang):
 
 def main():
     # take input
-    glob["patient_id"]=sys.argv[1]
+    glob["patient_id"]=2#sys.argv[1]
     patient_id=glob["patient_id"]
     url_str = 'http://physio-env.eba-u4ctwpu4.eu-central-1.elasticbeanstalk.com/api/patient/{}'.format(patient_id)
     r = requests.get(url_str)
@@ -313,10 +318,10 @@ def main():
     r = requests.get(url_str)
     if r.status_code != 200:
         print("Cannot reach data")
+    print(r)
     data_Process(r)
     cal_recovery(optimal_ang)
     pdf.print_pdf(patient_first_name,patient_last_name ,patient_disease,patient_gender,patient_exercise,patient_weak)
     pdf.output('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/Sample.pdf', 'F')
-    
 
 main()
