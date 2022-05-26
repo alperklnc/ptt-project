@@ -9,6 +9,11 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 import NavBar from "../components/NavBar";
 
@@ -47,13 +52,18 @@ const NewPatient: React.FC = () => {
     //session: 0,
     recovery: 0,
   };
-
   
   const [patient, setPatient] = useState<IPatientData>(initialPatientState);
   const [weakSide, setWeakSide] = useState<string>("SOL");
   const [disease, setDisease] = useState<string>("Donuk Omuz");
   const [isMan, setGender] = useState<boolean>(false);
-  const [submitted, setSubmitted] = useState<boolean>(false);
+
+  const [openInfo, setOpenInfo] = React.useState(false);
+
+  const closeInfo = () => {
+    setOpenInfo(false);
+    window.location.reload();
+  };
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const target = event.target;
@@ -121,8 +131,7 @@ const NewPatient: React.FC = () => {
 
     PatientDataService.create(data)
       .then((response: any) => {
-        setSubmitted(true);
-        console.log(response.data)
+        setOpenInfo(true);
       })
       .catch((e: Error) => {
         console.log(e);
@@ -407,19 +416,22 @@ const NewPatient: React.FC = () => {
             >
               Yeni Kayıt
             </Button>
-            {submitted ? (
-              <div
-                style={{
-                  paddingTop: "2vw",
-                }}
-              >
-                <h4>Yeni hasta başarıyla kaydedildi.</h4>
-              </div>
-            ) : (
-              <h4></h4>
-            )}
           </div>
         </Grid>
+
+        <Dialog
+        open={openInfo}
+        onClose={closeInfo}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Hasta Başarıyla Eklendi"}
+        </DialogTitle>
+        <DialogActions>
+          <Button onClick={closeInfo}>Tamam</Button>
+        </DialogActions>
+      </Dialog>
       </div>
     </div>
   );
