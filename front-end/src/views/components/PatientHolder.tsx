@@ -1,18 +1,46 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { ISessionData } from "../../types/Session";
+import PatientDataService from "../../services/PatientService";
+import { IPatientData } from "../../types/Patient";
 
 interface PatientHolderProps {
-  patientName: string;
-  hour: string;
-  width?: string;
-  height?: string;
-  color?: string;
-  fontSize?: string;
+  sessionData: ISessionData;
 }
 
 const PatientHolder: React.FC<PatientHolderProps> = (props) => {
   const onClick = () => (window.location.href = "http://github.com");
+
+  var _patientData: IPatientData = {
+    id: -1,
+    patientFirstName: "",
+    patientLastName: "",
+    patientEmail: "",
+    patientTellNo: "",
+    isMan: false,
+    patientDisease: "",
+    sessionAmount: 0,
+    period: 0,
+    weak: "",
+    sessionHour: "",
+    exercises: [],
+    optimum: 0,
+    session: 0,
+    recovery: 0,
+  };
+
+  const [patientData, setPatientData] = useState<IPatientData>(_patientData);
+
+  useEffect(() => {
+    PatientDataService.getById(props.sessionData.pt_id)
+    .then((response) => {
+      setPatientData(response.data);
+    }).catch((e: Error) => {
+      console.log(e);
+    });
+  }, []);
 
   return (
     <div onClick={onClick}>
@@ -28,7 +56,7 @@ const PatientHolder: React.FC<PatientHolderProps> = (props) => {
         <Box
           className="PatientHolder-Box"
           style={{
-            backgroundColor: props.color,
+            backgroundColor: "#4EC6C7",
             width: "5vw",
           }}
         >
@@ -36,31 +64,24 @@ const PatientHolder: React.FC<PatientHolderProps> = (props) => {
             className="PatientHolder-Text"
             style={{ color: "white", textAlign: "center" }}
           >
-            {props.hour}
+            {props.sessionData.time}
           </Typography>
         </Box>
         <Box
           className="PatientHolder-Box"
           style={{
             border: "2px solid #4EC6C7",
-            borderColor: props.color,
+            borderColor: "#4EC6C7",
             width: "30vw",
           }}
         >
           <Typography className="PatientHolder-Text">
-            {props.patientName}
+            {patientData.patientFirstName + " " + patientData.patientLastName}
           </Typography>
         </Box>
       </button>
     </div>
   );
-};
-
-PatientHolder.defaultProps = {
-  width: "500px",
-  height: "40px",
-  color: "#4EC6C7",
-  fontSize: "20px",
 };
 
 export default PatientHolder;

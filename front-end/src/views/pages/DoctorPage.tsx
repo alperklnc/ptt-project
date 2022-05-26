@@ -10,6 +10,8 @@ import { IPatientData } from "../../types/Patient";
 import { ISessionData } from "../../types/Session";
 import PatientDataService from "../../services/PatientService";
 
+let once:boolean = true;
+
 const DoctorPage: React.FC = () => {
   var _todaysSessions: ISessionData[] = [];
   var nextSessionData: ISessionData = {
@@ -39,13 +41,10 @@ const DoctorPage: React.FC = () => {
     recovery: 0,
   };
 
-  var _todaysPatients: string[] = [];
-
   const [todaysSessions, setTodaysSessions] = useState(_todaysSessions);
   const [nextSession, setNextSession] = useState(nextSessionData);
 
   const [nextPatientInfo, setNextPatientInfo] = useState(nextPatientData);
-  const [todaysPatients, setTodaysPatients] = useState(_todaysPatients);
 
   const [currentSession, setCurrentSession] = useState<number>(0);
 
@@ -60,26 +59,24 @@ const DoctorPage: React.FC = () => {
       });
   }, []);
 
-  var once = 0;
-  function setNextPatient(pt_id: number) {
-    if(once == 0) {
-      once = once + 1;
-      PatientDataService.getById(pt_id)
+  
+  function setNextPatient() {
+    if(once) {
+      once = false;
+      PatientDataService.getById(todaysSessions[0].pt_id)
       .then((response) => {
         setNextPatientInfo(response.data);
-        getCurrentSession(pt_id);
+        setCurrentSessionInfo(todaysSessions[0].pt_id);
       })
       .catch((e: Error) => {
         console.log(e);
       });
-      
-      return "";
     }
 
     return "";
   }
 
-  function getCurrentSession(id:number) {
+  function setCurrentSessionInfo(id:number) {
     PatientDataService.getCurrentSession(id)
     .then((response) => {
       setCurrentSession(response.data + 1);
@@ -89,15 +86,8 @@ const DoctorPage: React.FC = () => {
     });
   }
 
-  function getPatientName(index: number, pt_id: number) {
-    PatientDataService.getById(pt_id).then((response) => {
-      var name =
-        response.data.patientFirstName + " " + response.data.patientLastName;
-      todaysPatients[index] = name;
-      setTodaysPatients(todaysPatients);
-    });
-
-    return todaysPatients[index];
+  function getSessions(){
+    return todaysSessions;
   }
 
   if (
@@ -125,7 +115,7 @@ const DoctorPage: React.FC = () => {
           }}
         >
           <Grid container item xs={11.8} sm={5.8}>
-            <div>{setNextPatient(todaysSessions[0].pt_id)}</div>
+            <div>{setNextPatient()}</div>
             <NextPatient
               patientData={nextPatientInfo}
               sessionInfo={nextSession}
@@ -135,14 +125,7 @@ const DoctorPage: React.FC = () => {
           <Grid item xs={0.0} sm={0.2} />
           <Grid container item xs={11.8} sm={5.8}>
             <TodaysAppointments
-              patientName1={getPatientName(0, todaysSessions[0].pt_id)}
-              patientName2={getPatientName(1, todaysSessions[0].pt_id)}
-              patientName3={getPatientName(2, todaysSessions[0].pt_id)}
-              patientName4={getPatientName(3, todaysSessions[0].pt_id)}
-              patientName5={getPatientName(4, todaysSessions[0].pt_id)}
-              patientName6={getPatientName(5, todaysSessions[0].pt_id)}
-              patientName7={getPatientName(6, todaysSessions[0].pt_id)}
-              patientName8={getPatientName(7, todaysSessions[0].pt_id)}
+              sessions = {getSessions()}
             />
           </Grid>
         </Grid>
