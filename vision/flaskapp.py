@@ -12,17 +12,28 @@ import os
 import json
 import logging
 
-
+# MediaPipe Architectures for body pose estimation. 
 mp_pose = mp.solutions.pose
 mp_pose2 = mp.solutions.pose
+
+#For drawing landmarks
 mp_drawing = mp.solutions.drawing_utils
+
+#Hashes for communication with database and frontend
 input_hash = {"eid":0,"weak":"LEFT","type":1,"isFinished":False,"pid":2}
 output_hash = {"max": [], "hip": []}
+
+#Flask server app initialization
 app = Flask(__name__)
+
+#In order to enable the sharing mechanism that allows
+# restricted resources on a web page to be requested from another domain outside the domain
+#we use flask cors policy
 CORS(app, support_credentials=True)
 logging.getLogger('flask_cors').level = logging.DEBUG
-app.config['SECRET_KEY'] = 'fener1453'
+
 a = 0
+#Axes domains for the output graph.
 axes_x = [0.0, 110.32]
 axes_y = [0.0, 178.69]
 
@@ -42,7 +53,6 @@ def detectPose(image, pose, display=True,drawBool=False):
     # Initialize a list to store the detected landmarks.
     landmarks = []
     # Check if any landmarks are detected.
-    
     if results.pose_landmarks:
         # Draw Pose landmarks on the output image.
         if drawBool:
@@ -87,7 +97,11 @@ def calculateAngle3D(Angle1, Angle2):
         angle3D = 180 - angle3D
     return int(angle3D)
 
-
+#This function takes 4 variables, and returns the calculated angles.
+# ex_id -> Exercise id that is assigned for each specific exercise
+#Landmark1 -> Landmark points that are coming from the MediaPipe Pose(front)
+#Landmark1 -> Landmark points that are coming from the MediaPipe Pose(side)
+#Direction -> Which side of an arm is weak
 def Selector(Ex_id, Landmark1, Landmark2, Direction):
     if Direction == 'RIGHT':
         if Ex_id == 1:
@@ -275,7 +289,7 @@ def Exer8(landmarks1, landmarks2):
     angle3D = calculateAngle3D(shoulder_angle, shoulder_angle_back)
     return angle3D, hip_angle
 
-
+#This function takes an array which has two values for x and y values.
 def rotate(point):
     angle = 45
     ox, oy = 0, 0
@@ -285,8 +299,8 @@ def rotate(point):
     return qx, qy
 
 
-
-def save_plot():
+#This function creates the output graph for the datapoints.
+def plot_graph():
     total_max = output_hash["max"]
     total_hip = output_hash["hip"]
     total_max = [s for s in total_max if s != -511 ]
@@ -306,47 +320,30 @@ def save_plot():
     plt.savefig('/Users/adarbayan/Desktop/COMP491_Git_Desktop/ptt-project/front-end/src/testplot2.png')
     plt.close()
 
-
-
-"""@app.route('/pdf', methods=["GET", "POST"])
-@cross_origin(supports_credentials=True)
-def pdffunc():
-    print( request.json['pid'])
-    #print(request.json['pid'])
-    input_hash["pid"] =  request.json['pid']
-    print("pdf will created")
-    patient_id=input_hash["pid"]
-    os.system("python3 graph_output.py " + str(patient_id))
-    print("pdf is ready")
-    return send_file('Sample.pdf', attachment_filename='Sample.pdf')"""
-
+#Sending skeleton video to the frontend.
 @app.route('/video')
 @cross_origin(supports_credentials=True)
 def video():
     print("I am in the video")
-    
     output_hash ["max"]= []
     output_hash["hip"]= []
-    return Response(helper(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(pose_estimation(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 
-
+#Fetching and sending data to frontend.
 @app.route("/data", methods=["GET", "POST"])
 @cross_origin(supports_credentials=True,allow_headers='*')
 def getdata():
-    ex_id = request.json['id']
-    weak = request.json['weak']
-    ex_type = request.json['type']
-    isFinished = request.json['isFinished']
-    print(ex_id)
-    print(weak)
-    print(ex_type)
-    print(isFinished)
-    input_hash["pid"] =  request.json['pid']
+    json_lst=request.json
+
+    ex_id = json_lst['id']
+    weak = json_lst['weak']
+    ex_type = json_lst['type']
+    isFinished = json_lst['isFinished']
+    patient_id =  json_lst['pid']
+    
     print("pdf will created")
-    patient_id=input_hash["pid"]
-    input_hash['isFinished'] = isFinished
     os.system("python3 graph_output.py " + str(patient_id))
     print("pdf is ready")
     
@@ -355,18 +352,18 @@ def getdata():
     print(ex_id)
     print(weak)
     print(ex_type)
+    print(patient_id)
     print()
 
-    
+    input_hash['isFinished'] = isFinished
+    input_hash["pid"] =  patient_id
     input_hash["eid"]=ex_id
     input_hash["weak"]=weak
     input_hash["type"]=ex_type
 
-    return send_file('Sample.pdf', attachment_filename='Sample.pdf')
+    return ""
 
-def helper():
-    
-  
+def pose_estimation():
     side=input_hash["weak"]
     exercise=input_hash["type"]
 
@@ -385,9 +382,6 @@ def helper():
     # video2 is front camera
     video = cv2.VideoCapture(0)
     video2 = cv2.VideoCapture(1)
-
-    # Create named window for resizing purposes
-    cv2.namedWindow('Pose Detection', cv2.WINDOW_NORMAL)
 
     # Set video camera size
     #1280 960
@@ -419,7 +413,6 @@ def helper():
         ok, frame = video.read()
         ok2, frame2 = video2.read()
 
-
         # Flip the frame horizontally for natural (selfie-view) visualization.
         #frame = cv2.flip(frame, 1)
         #frame2 = cv2.flip(frame2, 1)
@@ -431,17 +424,13 @@ def helper():
         # Resize the frames while keeping the aspect ratio.
         frame = cv2.resize(frame, (int(frame_width * (480 / frame_height)), 480))
         frame2 = cv2.resize(frame2, (int(frame2_width * (480 / frame2_height)), 480))
-        image1 = frame2
-        frame2.flags.writeable = False
-        image = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)
+        image = frame
 
         # Perform Pose landmarks detection.
         frame, landmarks= detectPose(frame, pose_video, display=False,drawBool=True)
-        frame2, landmarks2= detectPose(image, pose_video2, display=False,drawBool=True)
+        frame2, landmarks2= detectPose(frame2, pose_video2, display=False,drawBool=True)
 
         ##### Calculate angle
-        # shoulder, hip = Selector(1,landmarks,landmarks2)
-
         angle3D, hip_angle = Selector(exercise, landmarks, landmarks2, side)
         # Set the time for this frame to the current time.
         time2 = time()
@@ -458,11 +447,9 @@ def helper():
                 [a ,b] = rotate([lastx, lasty])
                 output_hash["max"][count] = a
                 output_hash["hip"][count] = b
-                
-                # print("shoulder angle " + str(angle3D))
 
             # Figure saved here
-            save_plot()
+            plot_graph()
             if angle3D < 35 and local_max > 45:
                 local_max = 0
                 ret_shoul[count] = NRLX
@@ -493,18 +480,11 @@ def helper():
         # As this frame will become previous frame in next iteration.
         time1 = time2
 
-        success, image = ok2, frame2
-
-        # To improve performance, optionally we mark the image as not writeable to
-        # pass by reference.
-
-        # Draw the pose annotation on the image.
-        image.flags.writeable = True
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+        image_2=frame
 
         # Skeleton
 
-        skeleton = image - image1
+        skeleton = image_2 - image
         white_skeleton = np.array(skeleton)
         white_skeleton = np.where(white_skeleton > 0, 255, white_skeleton)
 
@@ -516,12 +496,6 @@ def helper():
 
     # Release the VideoCapture object.
     video.release()
-    # Close the windows.
-    cv2.destroyAllWindows()
-
-
-
-
 
 # ---------------------------------------------#
 
