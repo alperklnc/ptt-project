@@ -36,7 +36,7 @@ const NextPatient: React.FC<Props> = (props) => {
   return (
     <div className="box-shadow">
       <HeaderContainer title="Günün İlk Hastası" />
-      <Grid container direction="row" height="40vh" width="40vw">
+      <Grid container direction="row" height="36vh" width="40vw">
         <Grid container item direction="column" className="Container">
           <Typography className="NextPatient-Text">
             Hasta: {props.patientData.patientFirstName +
@@ -52,7 +52,7 @@ const NextPatient: React.FC<Props> = (props) => {
           <Typography className="NextPatient-Text">
             Seans: {props.session}/{props.patientData.sessionAmount}
           </Typography>
-          <Typography className="NextPatient-Text">Toplam İyileşme</Typography>
+          <Typography className="NextPatient-Text" style={{paddingBottom: "15px",}}>Toplam İyileşme</Typography>
 
           <ProgressBar
             className="progress"

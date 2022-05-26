@@ -47,10 +47,9 @@ export default function ExercisePage() {
   return (
     <div>
       <NavBar />
-      <ExerciseInfo type="Sarkaç" session={3} />
       <div
         style={{
-          padding: "3vw 3vw 3vw 3vw",
+          padding: "1vw",
         }}
       >
         <Grid
@@ -64,7 +63,7 @@ export default function ExercisePage() {
             container
             item
             xs={9.8}
-            sm={4.8}
+            sm={5}
             direction="column"
           >
             <HeaderContainer title="Grafik" />
@@ -83,7 +82,7 @@ export default function ExercisePage() {
             <HeaderContainer title="İskelet" />
 
             <div style={{                
-              width:"50vw",
+                width:"55vw",
                 height:"60vh"}}>
               <iframe
                 src="http://127.0.0.1:5000/video"
@@ -113,7 +112,7 @@ export default function ExercisePage() {
             className="NextPatient-Button"
             onClick={endExercise}
             >
-              Seansı Bitir
+              Egzersizi Bitir
           </Button>
         </Grid>
     </div>
